@@ -37,7 +37,7 @@ class WPK_Login_Form {
         </div>
         <?php endif; ?>
 
-        <div class="wpk-login-passkey-wrap<?php echo $show_sep ? '' : ' wpk-no-separator'; ?>">
+        <div class="<?php echo esc_attr( 'wpk-login-passkey-wrap' . ( $show_sep ? '' : ' wpk-no-separator' ) ); ?>">
             <button type="button"
                     id="wpk-signin-passkey"
                     class="button button-large wpk-passkey-btn"

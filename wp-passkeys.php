@@ -76,6 +76,14 @@ register_activation_hook( __FILE__, 'wpk_activate' );
 register_deactivation_hook( __FILE__, 'wpk_deactivate' );
 
 function wpk_activate() {
+    if ( version_compare( PHP_VERSION, '8.0', '<' ) ) {
+        deactivate_plugins( plugin_basename( WPK_PLUGIN_FILE ) );
+        wp_die( esc_html__( 'WP Passkey requires PHP 8.0 or higher. Please upgrade PHP before activating this plugin.', 'wp-passkeys' ) );
+    }
+    if ( version_compare( $GLOBALS['wp_version'], '6.0', '<' ) ) {
+        deactivate_plugins( plugin_basename( WPK_PLUGIN_FILE ) );
+        wp_die( esc_html__( 'WP Passkey requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'wp-passkeys' ) );
+    }
     require_once WPK_PLUGIN_DIR . 'includes/class-wpk-passkeys.php';
     WPK_Passkeys::create_tables();
     WPK_Passkeys::schedule_cron();

@@ -27,7 +27,8 @@
         var node = document.getElementById('wpk-passkey-profile-message');
         if (!node) return;
         node.textContent = text;
-        node.style.color = isError ? '#b32d2e' : '#1d6b1d';
+        node.classList.toggle('wpk-msg-error',   !!isError);
+        node.classList.toggle('wpk-msg-success',  !isError && !!text);
         node.style.display = text ? '' : 'none';
     }
 
@@ -51,6 +52,9 @@
             credentials: 'same-origin',
             body: data,
         });
+        if (!resp.ok) {
+            throw new Error(WPKProfile.messages.failed);
+        }
         return resp.json();
     }
 

@@ -67,6 +67,9 @@
             credentials: 'same-origin',
             body: data,
         });
+        if (!resp.ok) {
+            throw new Error(WPKLogin.messages.genericError);
+        }
         return resp.json();
     }
 
@@ -110,7 +113,16 @@
             throw new Error((finishResp && finishResp.data && finishResp.data.message) || WPKLogin.messages.genericError);
         }
 
-        window.location.href = finishResp.data.redirect;
+        var redirectUrl = finishResp.data.redirect;
+        try {
+            var parsed = new URL(redirectUrl, window.location.origin);
+            if (parsed.origin !== window.location.origin) {
+                throw new Error('Unexpected redirect origin');
+            }
+            window.location.href = parsed.href;
+        } catch (e) {
+            window.location.href = window.location.origin;
+        }
     }
 
     // ── Init ────────────────────────────────────────────────────────────────

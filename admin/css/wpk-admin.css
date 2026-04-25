@@ -774,6 +774,10 @@
 }
 .wpk-inline-message:empty { display: none; }
 
+/* State colours — used via JS class toggle (avoids inline style and honours forced-colors) */
+.wpk-msg-error   { color: var(--wpk-danger) !important; }
+.wpk-msg-success { color: var(--wpk-success) !important; }
+
 .wpk-register-hint {
     color: var(--wpk-muted);
     font-size: 12px !important;

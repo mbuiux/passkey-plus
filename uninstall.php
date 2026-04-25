@@ -21,18 +21,30 @@ $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpk_logs' );           
 // Remove all plugin options
 $options = array(
     'wpk_enabled',
+    'wpk_show_separator',
+    'wpk_show_setup_notice',
     'wpk_eligible_roles',
     'wpk_max_passkeys_per_user',
     'wpk_user_verification',
     'wpk_rate_window',
     'wpk_rate_max_attempts',
     'wpk_rate_lockout',
+    'wpk_challenge_ttl',
+    'wpk_login_redirect',
+    'wpk_log_retention_days',
     'wpk_rp_name',
+    'wpk_migration_last_run',
+    'wpk_migration_imported',
 );
 
 foreach ( $options as $option ) {
     delete_option( $option );
 }
+
+// Remove per-user dismissed-notice meta
+$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+    "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE 'wpk\_notice\_dismissed\_%'"
+);
 
 // Remove any transients left behind
 $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery

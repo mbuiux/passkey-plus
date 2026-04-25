@@ -54,7 +54,7 @@ class WPK_Shortcodes {
         $redirect_to = $atts['redirect_to'] !== ''
             ? esc_url( $atts['redirect_to'] )
             : '';
-        $extra_class = sanitize_html_class( $atts['class'] );
+        $extra_class = implode( ' ', array_map( 'sanitize_html_class', preg_split( '/\s+/', trim( $atts['class'] ) ) ) );
 
         // Enqueue assets if not already queued.
         if ( ! wp_script_is( 'wpk-login', 'enqueued' ) ) {
@@ -125,10 +125,7 @@ class WPK_Shortcodes {
         }
 
         $user = wp_get_current_user();
-        $wpk  = new WPK_Passkeys();
 
-        // Use reflection to access private is_eligible_user().
-        // Instead, we expose a static helper below — simpler.
         if ( ! WPK_Passkeys::user_is_eligible( $user ) ) {
             return '';
         }
@@ -139,7 +136,7 @@ class WPK_Shortcodes {
         ), $atts, 'wpk_register_button' );
 
         $label       = sanitize_text_field( $atts['label'] );
-        $extra_class = sanitize_html_class( $atts['class'] );
+        $extra_class = implode( ' ', array_map( 'sanitize_html_class', preg_split( '/\s+/', trim( $atts['class'] ) ) ) );
 
         // Enqueue assets if not already queued.
         if ( ! wp_script_is( 'wpk-profile', 'enqueued' ) ) {
@@ -176,6 +173,7 @@ class WPK_Shortcodes {
         ?>
         <div class="<?php echo esc_attr( $wrapper_class ); ?>">
             <div class="wpk-register-wrap">
+                <label for="wpk-passkey-label" class="screen-reader-text"><?php esc_html_e( 'Device label (optional)', 'wp-passkeys' ); ?></label>
                 <input type="text"
                        id="wpk-passkey-label"
                        class="wpk-label-input"

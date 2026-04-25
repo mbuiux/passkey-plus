@@ -16,7 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WPK_Settings {
 
     const PAGE_SLUG      = 'wp-passkeys';
-    const ADVANCED_SLUG  = 'wp-passkeys-advanced';
     const OPTION_GROUP   = 'wpk_settings';
 
     public function __construct() {

@@ -76,7 +76,6 @@ class WPK_Passkeys {
         // Admin: Users list column
         add_filter( 'manage_users_columns',       array( $this, 'users_column_header' ) );
         add_filter( 'manage_users_custom_column', array( $this, 'users_column_content' ), 10, 3 );
-        add_filter( 'manage_users_sortable_columns', array( $this, 'users_column_sortable' ) );
 
         // Admin: passkey setup nudge notice
         add_action( 'admin_notices', array( $this, 'render_setup_notice' ) );
@@ -159,9 +158,9 @@ class WPK_Passkeys {
 
     public static function drop_tables(): void {
         global $wpdb;
-        // Only called from uninstall.php when user explicitly removes the plugin.
         $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . self::TABLE_CREDENTIALS ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
         $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . self::TABLE_RATE_LIMITS );  // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        $wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'wpk_logs' );               // phpcs:ignore WordPress.DB.DirectDatabaseQuery
     }
 
     // ──────────────────────────────────────────────────────────
@@ -549,7 +548,7 @@ class WPK_Passkeys {
                 'wp-user-' . (string) $user->ID,
                 (string) $user->user_login,
                 (string) $user->display_name,
-                60,
+                $this->get_challenge_ttl(),
                 true,
                 $this->get_user_verification(),
                 null,
@@ -684,7 +683,7 @@ class WPK_Passkeys {
                     'credential_label'     => $label,
                     'aaguid'               => ! empty( $result->AAGUID ) ? bin2hex( (string) $result->AAGUID ) : null,
                     'backed_up'            => ! empty( $result->isBackedUp ) ? 1 : 0,
-                    'created_at'           => current_time( 'mysql' ),
+                    'created_at'           => gmdate( 'Y-m-d H:i:s' ),
                     'last_used_at'         => null,
                     'revoked_at'           => null,
                 ),
@@ -845,7 +844,7 @@ class WPK_Passkeys {
 
             $get_args = $web_authn->getGetArgs(
                 $cred_ids,
-                60,
+                $this->get_challenge_ttl(),
                 true, true, true, true, true,
                 $this->get_user_verification()
             );
@@ -1005,7 +1004,7 @@ class WPK_Passkeys {
             }
 
             wp_set_current_user( (int) $user->ID );
-            wp_set_auth_cookie( (int) $user->ID, true );
+            wp_set_auth_cookie( (int) $user->ID, false );
             do_action( 'wp_login', $user->user_login, $user );
 
             // Update sign count and last-used timestamp.
@@ -1014,7 +1013,7 @@ class WPK_Passkeys {
                 $table,
                 array(
                     'sign_count'  => is_null( $next_count ) ? (int) $cred->sign_count : (int) $next_count,
-                    'last_used_at'=> current_time( 'mysql' ),
+                    'last_used_at'=> gmdate( 'Y-m-d H:i:s' ),
                 ),
                 array( 'id' => (int) $cred->id ),
                 array( '%d', '%s' ),
@@ -1376,7 +1375,7 @@ class WPK_Passkeys {
             $wpdb->prefix . 'wpk_logs',
             array(
                 'event_type'    => $event,
-                'log_timestamp' => current_time( 'mysql' ),
+                'log_timestamp' => gmdate( 'Y-m-d H:i:s' ),
                 'user_agent'    => sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) ),
                 'log_data'      => wp_json_encode( $data ),
             ),
