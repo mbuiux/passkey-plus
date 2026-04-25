@@ -1,0 +1,17 @@
+{
+    "name": "wp-passkeys/wp-passkeys",
+    "description": "Standalone WordPress passkey (WebAuthn/FIDO2) authentication plugin.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.0",
+        "lbuchs/webauthn": "^2.2"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "platform": {
+            "php": "8.0"
+        }
+    }
+}

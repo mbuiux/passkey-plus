@@ -1,0 +1,821 @@
+/* ==========================================================================
+   WP Passkey — Admin & Login UI (redesigned)
+   Drop-in replacement for admin/css/wpk-admin.css
+   ========================================================================== */
+
+/* ── Design tokens ──────────────────────────────────────────────────────── */
+:root {
+    --wpk-ink:           #1d2327;
+    --wpk-ink-soft:      #2c3338;
+    --wpk-text:          #1d2327;
+    --wpk-muted:         #757575;
+    --wpk-border:        #dcdcde;
+    --wpk-border-strong: #c7c8ca;
+    --wpk-bg:            #f5f6f8;
+    --wpk-surface:       #ffffff;
+    --wpk-surface-alt:   #fafbfc;
+
+    --wpk-pro:           #7e5bef;
+    --wpk-pro-deep:      #4a2ec4;
+    --wpk-pro-soft:      #fbfaff;
+
+    --wpk-migrate:       #0073aa;
+    --wpk-migrate-deep:  #005a87;
+    --wpk-migrate-soft:  #f0f8ff;
+
+    --wpk-success:       #1d6b1d;
+    --wpk-warning-bg:    #fff8e1;
+    --wpk-warning-fg:    #856404;
+    --wpk-warning-bd:    #ffc107;
+    --wpk-danger:        #b32d2e;
+
+    --wpk-radius:        8px;
+    --wpk-radius-sm:     6px;
+    --wpk-shadow-sm:     0 1px 2px rgba(29,35,39,.04), 0 1px 3px rgba(29,35,39,.04);
+    --wpk-shadow:        0 4px 16px -4px rgba(29,35,39,.08);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   SETTINGS PAGE
+   ────────────────────────────────────────────────────────────────────────── */
+
+.wpk-settings-wrap {
+    max-width: 1280px;
+    margin: 12px 20px 40px 0;
+}
+
+/* Hide the default WP <h1> at top of .wrap when we render our own */
+.wpk-settings-wrap > h1:first-child { display: none; }
+
+.wpk-page-header {
+    padding: 4px 0 22px;
+    border-bottom: 1px solid var(--wpk-border);
+    margin-bottom: 26px;
+}
+
+.wpk-page-header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--wpk-ink);
+    margin: 0 0 6px;
+    padding: 0;
+}
+
+.wpk-tagline {
+    color: var(--wpk-muted);
+    margin: 0;
+    font-size: 14px;
+}
+
+.wpk-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(29,107,29,.08);
+    color: var(--wpk-success);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+.wpk-status-pill::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--wpk-success);
+}
+
+.wpk-settings-body {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 320px;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 1100px) {
+    .wpk-settings-body { grid-template-columns: 1fr; }
+}
+
+.wpk-settings-main { min-width: 0; }
+
+.wpk-settings-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* ── Main settings card ────────────────────────────────────────────────── */
+
+.wpk-settings-card {
+    background: var(--wpk-surface);
+    border: 1px solid var(--wpk-border);
+    border-radius: var(--wpk-radius);
+    box-shadow: var(--wpk-shadow-sm);
+    overflow: hidden;
+}
+
+.wpk-settings-card__header {
+    padding: 20px 28px 16px;
+    background: var(--wpk-surface-alt);
+    border-bottom: 1px solid var(--wpk-border);
+}
+.wpk-settings-card__header h2 {
+    margin: 0 0 2px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--wpk-ink);
+}
+.wpk-settings-card__header p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--wpk-muted);
+}
+
+/* Sections rendered by do_settings_sections */
+.wpk-settings-card .form-table {
+    margin: 0;
+    background: transparent;
+}
+
+/* Each <h2> from add_settings_section becomes a section heading */
+.wpk-settings-card > form > h2 {
+    margin: 0;
+    padding: 22px 28px 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--wpk-ink);
+    text-transform: none;
+    letter-spacing: 0;
+    border-top: 1px solid var(--wpk-border);
+}
+.wpk-settings-card > form > h2:first-of-type { border-top: 0; }
+
+.wpk-settings-card > form > p:not(.submit) {
+    margin: 0 28px 8px;
+    font-size: 12px;
+    color: var(--wpk-muted);
+    max-width: 560px;
+}
+
+.wpk-settings-card .form-table {
+    padding: 4px 28px 18px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.wpk-settings-card .form-table th {
+    width: 220px;
+    padding: 16px 24px 16px 28px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--wpk-ink);
+    vertical-align: top;
+}
+
+.wpk-settings-card .form-table td {
+    padding: 14px 28px 14px 0;
+    font-size: 13px;
+}
+
+.wpk-settings-card .form-table .description {
+    color: var(--wpk-muted);
+    font-size: 12px;
+    margin-top: 6px;
+    line-height: 1.55;
+}
+
+/* Inputs */
+.wpk-settings-card input[type="text"],
+.wpk-settings-card input[type="number"],
+.wpk-settings-card select {
+    border: 1px solid var(--wpk-border-strong);
+    border-radius: var(--wpk-radius-sm);
+    padding: 8px 10px;
+    font-size: 13px;
+    background: #fff;
+    color: var(--wpk-ink);
+    box-shadow: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    min-height: 36px;
+    line-height: 1.3;
+}
+.wpk-settings-card input[type="text"]:focus,
+.wpk-settings-card input[type="number"]:focus,
+.wpk-settings-card select:focus {
+    border-color: var(--wpk-ink);
+    box-shadow: 0 0 0 3px rgba(29,35,39,.12);
+    outline: none;
+}
+.wpk-settings-card input.regular-text { width: 100%; max-width: 420px; }
+.wpk-settings-card input.small-text   { width: 96px; }
+
+/* Roles checkbox grid */
+.wpk-settings-card fieldset {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
+    gap: 8px;
+    max-width: 560px;
+}
+.wpk-settings-card fieldset label {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    margin: 0 !important;
+    padding: 8px 12px;
+    border: 1px solid var(--wpk-border);
+    border-radius: var(--wpk-radius-sm);
+    background: #fff;
+    font-size: 13px;
+    color: var(--wpk-ink);
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+}
+.wpk-settings-card fieldset label:hover {
+    border-color: var(--wpk-border-strong);
+    background: var(--wpk-surface-alt);
+}
+.wpk-settings-card fieldset input[type="checkbox"]:checked + ,
+.wpk-settings-card fieldset label:has(input:checked) {
+    border-color: var(--wpk-ink);
+    background: rgba(29,35,39,.04);
+}
+
+/* Submit row — override WP's default negative margins so the grey bg spans full width */
+.wpk-settings-card p.submit {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 16px 28px;
+    background: var(--wpk-surface-alt);
+    border-top: 1px solid var(--wpk-border) !important;
+    padding-top: 16px !important;
+    text-align: right;
+}
+
+.wpk-settings-card .button-primary,
+.wpk-settings-card #submit {
+    background: var(--wpk-ink) !important;
+    border-color: var(--wpk-ink) !important;
+    color: #fff !important;
+    border-radius: var(--wpk-radius-sm) !important;
+    padding: 0 18px !important;
+    height: 36px !important;
+    line-height: 34px !important;
+    font-weight: 500 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+.wpk-settings-card .button-primary:hover,
+.wpk-settings-card #submit:hover {
+    background: var(--wpk-ink-soft) !important;
+    border-color: var(--wpk-ink-soft) !important;
+}
+
+/* ── Sidebar cards ─────────────────────────────────────────────────────── */
+
+.wpk-card {
+    background: var(--wpk-surface);
+    border: 1px solid var(--wpk-border);
+    border-radius: var(--wpk-radius);
+    padding: 18px 20px;
+    margin: 0;
+    box-shadow: var(--wpk-shadow-sm);
+}
+
+.wpk-card h3 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--wpk-ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wpk-card p,
+.wpk-card li {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #3c434a;
+}
+
+.wpk-card p.description { color: var(--wpk-muted); margin: 0 0 10px; }
+
+/* PRO card */
+.wpk-card-pro {
+    border-color: rgba(126,91,239,.4);
+    background: linear-gradient(180deg, var(--wpk-pro-soft) 0%, #fff 60%);
+}
+.wpk-card-pro h3 { color: var(--wpk-pro-deep); }
+.wpk-pro-features {
+    margin: 0 0 14px;
+    padding: 0;
+    list-style: none;
+}
+.wpk-pro-features li {
+    padding: 4px 0;
+    font-size: 12.5px;
+    color: var(--wpk-ink);
+}
+.wpk-btn-pro {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 38px;
+    background: var(--wpk-pro) !important;
+    border-color: var(--wpk-pro) !important;
+    color: #fff !important;
+    border-radius: var(--wpk-radius-sm) !important;
+    font-weight: 500 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+.wpk-btn-pro:hover, .wpk-btn-pro:focus {
+    background: var(--wpk-pro-deep) !important;
+    border-color: var(--wpk-pro-deep) !important;
+    color: #fff !important;
+}
+
+/* Setup steps */
+.wpk-setup-steps {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    counter-reset: wpk-step;
+}
+.wpk-setup-steps li {
+    counter-increment: wpk-step;
+    position: relative;
+    padding: 4px 0 8px 28px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: #3c434a;
+}
+.wpk-setup-steps li::before {
+    content: counter(wpk-step);
+    position: absolute;
+    left: 0; top: 4px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--wpk-ink);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Compatibility list */
+.wpk-card ul.wpk-compat {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.wpk-compat li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 12.5px;
+    color: var(--wpk-ink);
+}
+.wpk-compat__icon {
+    width: 32px; height: 32px;
+    border-radius: var(--wpk-radius-sm);
+    background: var(--wpk-surface-alt);
+    border: 1px solid var(--wpk-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--wpk-ink);
+}
+.wpk-compat__icon svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+/* Per-brand icon colours */
+.wpk-compat li:nth-child(1) .wpk-compat__icon { background: #f5f5f7; border-color: #d2d2d7; color: #1d1d1f; } /* Apple */
+.wpk-compat li:nth-child(2) .wpk-compat__icon { background: #f0f4ff; border-color: #ccd8f5; color: #0078d4; } /* Windows */
+.wpk-compat li:nth-child(3) .wpk-compat__icon { background: #f0faf5; border-color: #b3dfc7; color: #007a3d; } /* YubiKey green */
+.wpk-compat li:nth-child(4) .wpk-compat__icon { background: #f0f8ff; border-color: #c0d8f0; color: #0071e3; } /* iCloud blue */
+.wpk-compat li:nth-child(5) .wpk-compat__icon { background: #f0fff4; border-color: #a8e6bf; color: #3ddc84; } /* Android green */
+
+.wpk-compat__label { font-weight: 500; }
+.wpk-compat__note  { display: block; font-size: 11px; color: var(--wpk-muted); font-weight: 400; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   PROFILE PAGE — Your Passkeys
+   ────────────────────────────────────────────────────────────────────────── */
+
+.wpk-profile-section {
+    margin-top: 28px;
+    max-width: 1100px;
+}
+
+.wpk-profile-section > h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--wpk-ink);
+    margin: 0 0 4px;
+    padding: 0;
+}
+.wpk-profile-section > p.description {
+    color: var(--wpk-muted);
+    font-size: 13px;
+    margin: 0 0 22px;
+}
+
+.wpk-profile-grid {
+    display: grid;
+    grid-template-columns: minmax(0,2fr) minmax(280px,1fr);
+    gap: 22px;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .wpk-profile-grid { grid-template-columns: 1fr; }
+}
+
+/* Registered list panel */
+.wpk-panel {
+    background: var(--wpk-surface);
+    border: 1px solid var(--wpk-border);
+    border-radius: var(--wpk-radius);
+    box-shadow: var(--wpk-shadow-sm);
+    overflow: hidden;
+}
+.wpk-panel__header {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--wpk-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.wpk-panel__header h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--wpk-ink);
+}
+.wpk-panel__header .wpk-panel__sub {
+    display: block;
+    font-size: 11.5px;
+    color: var(--wpk-muted);
+    font-weight: 400;
+    margin-top: 2px;
+}
+
+.wpk-capacity {
+    display: flex;
+    gap: 4px;
+}
+.wpk-capacity span {
+    width: 22px; height: 6px;
+    border-radius: 3px;
+    background: var(--wpk-border);
+}
+.wpk-capacity span.is-on { background: var(--wpk-ink); }
+
+/* Passkey list */
+.wpk-passkey-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.wpk-passkey-list li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--wpk-border);
+    transition: background .15s ease;
+}
+.wpk-passkey-list li:last-child { border-bottom: 0; }
+.wpk-passkey-list li:hover { background: var(--wpk-surface-alt); }
+
+.wpk-passkey-list .wpk-passkey-icon {
+    width: 36px; height: 36px;
+    border-radius: var(--wpk-radius-sm);
+    background: var(--wpk-surface-alt);
+    border: 1px solid var(--wpk-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #4c5358;
+}
+
+.wpk-passkey-meta { flex: 1; min-width: 0; }
+.wpk-passkey-meta__label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wpk-ink);
+    line-height: 1.3;
+}
+.wpk-passkey-meta__sub {
+    font-size: 11.5px;
+    color: var(--wpk-muted);
+    margin-top: 2px;
+}
+.wpk-passkey-meta__sub .sep { margin: 0 8px; opacity: .4; }
+
+.wpk-passkey-revoke {
+    background: transparent !important;
+    border: 0 !important;
+    color: var(--wpk-danger) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    padding: 6px 10px !important;
+    border-radius: var(--wpk-radius-sm) !important;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+.wpk-passkey-revoke:hover {
+    background: rgba(179,45,46,.08) !important;
+    color: var(--wpk-danger) !important;
+}
+
+/* Empty state */
+.wpk-passkey-empty {
+    padding: 40px 22px;
+    text-align: center;
+    color: var(--wpk-muted);
+    font-size: 13px;
+}
+
+/* ── Register area ─────────────────────────────────────────── */
+.wpk-register-wrap {
+    max-width: 400px;
+}
+
+.wpk-label-input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--wpk-border-strong);
+    border-radius: var(--wpk-radius-sm);
+    font-size: 13px;
+    background: #fff;
+    margin-bottom: 0;
+}
+.wpk-label-input:focus {
+    border-color: var(--wpk-ink);
+    box-shadow: 0 0 0 2px rgba(29,35,39,.1);
+    outline: none;
+}
+
+.wpk-register-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+#wpk-passkey-register {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.wpk-inline-message {
+    font-size: 12.5px;
+    margin: 0;
+    line-height: 1.4;
+}
+.wpk-inline-message:empty { display: none; }
+
+.wpk-register-hint {
+    color: var(--wpk-muted);
+    font-size: 12px !important;
+    line-height: 1.5;
+    margin-top: 10px !important;
+}
+
+/* ── Credentials table ─────────────────────────────────────── */
+.wpk-credentials-table {
+    max-width: 680px;
+    border: 1px solid var(--wpk-border) !important;
+    border-radius: var(--wpk-radius-sm);
+    overflow: hidden;
+}
+.wpk-credentials-table thead th {
+    padding: 8px 14px !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--wpk-muted) !important;
+    background: var(--wpk-surface-alt) !important;
+    border-bottom: 1px solid var(--wpk-border) !important;
+}
+.wpk-credentials-table tbody td {
+    padding: 9px 14px !important;
+    font-size: 13px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--wpk-border) !important;
+}
+.wpk-credentials-table tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+.wpk-credentials-table tbody tr:nth-child(odd) {
+    background: var(--wpk-surface-alt);
+}
+.wpk-credentials-table .wpk-col-label {
+    font-weight: 500;
+    color: var(--wpk-ink);
+}
+.wpk-credentials-table .wpk-col-action {
+    width: 72px;
+    text-align: right;
+}
+
+/* Register-new card (legacy, kept for backward compat) */
+.wpk-register-card {
+    background: var(--wpk-surface);
+    border: 1px solid var(--wpk-border);
+    border-radius: var(--wpk-radius);
+    box-shadow: var(--wpk-shadow-sm);
+    overflow: hidden;
+}
+.wpk-register-card__hero {
+    padding: 20px 22px 16px;
+    background: linear-gradient(180deg, rgba(29,35,39,.03), transparent);
+    border-bottom: 1px solid var(--wpk-border);
+}
+.wpk-register-card__icon {
+    width: 40px; height: 40px;
+    border-radius: var(--wpk-radius-sm);
+    background: var(--wpk-ink);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+.wpk-register-card__hero h3 {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--wpk-ink);
+}
+.wpk-register-card__hero p {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--wpk-muted);
+    line-height: 1.5;
+}
+.wpk-register-card__body { padding: 18px 22px 20px; }
+
+.wpk-register-card label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--wpk-ink);
+    margin-bottom: 6px;
+}
+.wpk-register-card input[type="text"] {
+    width: 100%;
+    height: 38px;
+    border: 1px solid var(--wpk-border-strong);
+    border-radius: var(--wpk-radius-sm);
+    padding: 0 12px;
+    font-size: 13px;
+    background: #fff;
+    margin-bottom: 12px;
+    box-shadow: none;
+}
+.wpk-register-card input[type="text"]:focus {
+    border-color: var(--wpk-ink);
+    box-shadow: 0 0 0 3px rgba(29,35,39,.12);
+    outline: none;
+}
+
+#wpk-passkey-register {
+    width: auto;
+    height: 36px;
+    background: var(--wpk-ink) !important;
+    border-color: var(--wpk-ink) !important;
+    color: #fff !important;
+    border-radius: var(--wpk-radius-sm) !important;
+    font-weight: 500 !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+#wpk-passkey-register:hover {
+    background: var(--wpk-ink-soft) !important;
+    border-color: var(--wpk-ink-soft) !important;
+}
+
+.wpk-mobile-hint {
+    color: var(--wpk-muted);
+    font-style: italic;
+    font-size: 11.5px;
+    margin: 10px 0 0 !important;
+}
+
+.wpk-notice-warning {
+    color: var(--wpk-warning-fg);
+    background: var(--wpk-warning-bg);
+    border-left: 3px solid var(--wpk-warning-bd);
+    padding: 10px 12px;
+    border-radius: 0 var(--wpk-radius-sm) var(--wpk-radius-sm) 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    margin: 12px 22px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   LOGIN PAGE — Sign in with Passkey button
+   ────────────────────────────────────────────────────────────────────────── */
+
+.wpk-login-separator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0 14px;
+    color: var(--wpk-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 500;
+}
+.wpk-login-separator::before,
+.wpk-login-separator::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--wpk-border);
+}
+
+.wpk-login-passkey-wrap {
+    margin-bottom: 18px;
+    text-align: center;
+}
+.wpk-login-passkey-wrap.wpk-no-separator {
+    margin-top: 18px;
+}
+
+.wpk-passkey-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 42px;
+    padding: 0 16px;
+    background: var(--wpk-ink) !important;
+    color: #fff !important;
+    border: 1px solid var(--wpk-ink) !important;
+    border-radius: var(--wpk-radius-sm) !important;
+    font-size: 14px;
+    font-weight: 500 !important;
+    cursor: pointer;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    transition: background .15s ease, opacity .15s ease;
+}
+.wpk-passkey-btn:hover,
+.wpk-passkey-btn:focus {
+    background: var(--wpk-ink-soft) !important;
+    border-color: var(--wpk-ink-soft) !important;
+    color: #fff !important;
+}
+.wpk-passkey-btn:disabled,
+.wpk-passkey-btn.wpk-btn-busy {
+    opacity: .65;
+    cursor: wait;
+}
+.wpk-passkey-btn .wpk-passkey-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    color: inherit;
+}
+.wpk-login-message {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: var(--wpk-danger);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 782px) {
+    .wpk-settings-card .form-table th { width: 100%; display: block; padding-bottom: 4px; }
+    .wpk-settings-card .form-table td { display: block; padding-top: 4px; }
+}
