@@ -986,6 +986,62 @@
     border-color: rgba(185, 28, 28, 0.55) !important;
 }
 
+/* Login form passkey button: premium black style, same size as SSO button */
+body.login .wpk-login-passkey-wrap {
+    margin-top: 10px;
+}
+
+body.login .wpk-login-passkey-wrap .wpk-passkey-btn {
+    width: 100% !important;
+    min-height: 30px;
+    margin-bottom: 20px;
+    padding: 0 12px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    border: 1px solid #111820 !important;
+    border-radius: 4px !important;
+    background: #111820 !important;
+    color: #fff !important;
+    font-weight: 600;
+    text-shadow: none;
+    box-shadow: 0 2px 8px rgba(17, 24, 32, 0.22);
+    transition: background 150ms ease, border-color 150ms ease, transform 120ms ease, box-shadow 150ms ease;
+}
+
+body.login .wpk-login-passkey-wrap .wpk-passkey-btn:hover,
+body.login .wpk-login-passkey-wrap .wpk-passkey-btn:focus {
+    border-color: #0b0f14 !important;
+    background: #0b0f14 !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(17, 24, 32, 0.24);
+}
+
+body.login .wpk-login-passkey-wrap .wpk-passkey-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 159, 254, 0.45), 0 6px 14px rgba(17, 24, 32, 0.24);
+}
+
+body.login .wpk-login-passkey-wrap .wpk-passkey-icon {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    color: #fff;
+}
+
+body.login .wpk-login-passkey-wrap .wpk-passkey-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.2;
+}
+
+body.login #wpk-passkey-login-message {
+    margin: 8px 0 0;
+}
+
 @media (max-width: 782px) {
     .wpk-profile-register-row {
         flex-direction: column;
