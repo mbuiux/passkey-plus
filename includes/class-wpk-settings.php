@@ -13,11 +13,80 @@ if (!defined('ABSPATH')) {
 class WPK_Settings {
     private $option_group = 'wpk_settings_group';
     private $page_slug = 'wp-passkeys';
+    private $notice_transient_prefix = 'wpk_settings_notice_';
+
+    private function get_notice_transient_key( $user_id ) {
+        return $this->notice_transient_prefix . absint( $user_id );
+    }
 
     public function __construct() {
-        add_action('admin_menu', array($this, 'add_admin_menu'));
-        add_action('admin_init', array($this, 'register_settings'));
+        add_action('admin_menu',            array($this, 'add_admin_menu'));
+        add_action('admin_init',            array($this, 'register_settings'));
+        add_action('admin_init',            array($this, 'flag_settings_save'), 1);
+        add_action('admin_action_update',   array($this, 'flag_settings_save'), 1);
         add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
+    }
+
+    /**
+     * Detect when our settings form is submitted to options.php and store a
+     * per-user flag BEFORE the redirect happens. Avoids relying on the
+     * settings-updated URL param or the settings_errors transient, both of
+     * which can be consumed or missing depending on environment.
+     */
+    public function flag_settings_save() {
+        if ( 'POST' !== strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) ) {
+            return;
+        }
+
+        if ( empty( $_POST['option_page'] ) ) {
+            return;
+        }
+
+        $option_page = sanitize_text_field( wp_unslash( $_POST['option_page'] ) );
+        if ( $option_page !== $this->option_group ) {
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        if ( $user_id <= 0 ) {
+            return;
+        }
+
+        $notice = array(
+            'type'    => 'success',
+            'message' => __( 'Settings saved.', 'wp-passkeys' ),
+        );
+
+        set_transient( $this->get_notice_transient_key( $user_id ), $notice, 180 );
+    }
+
+    private function consume_save_notice( $user_id ) {
+        if ( $user_id <= 0 ) {
+            return null;
+        }
+
+        $key    = $this->get_notice_transient_key( $user_id );
+        $notice = get_transient( $key );
+
+        if ( false === $notice ) {
+            return null;
+        }
+
+        delete_transient( $key );
+
+        if ( ! is_array( $notice ) || empty( $notice['message'] ) ) {
+            return null;
+        }
+
+        $type = ! empty( $notice['type'] ) ? sanitize_key( $notice['type'] ) : 'success';
+        if ( ! in_array( $type, array( 'success', 'error', 'warning', 'info' ), true ) ) {
+            $type = 'success';
+        }
+
+        return array(
+            'type'    => $type,
+            'message' => wp_kses_post( $notice['message'] ),
+        );
     }
 
     public function add_admin_menu() {
@@ -127,8 +196,99 @@ class WPK_Settings {
         }
 
         $base_url = admin_url('options-general.php?page=' . $this->page_slug);
+
+        $user_id = get_current_user_id();
+
+        $queued_notices = array();
+        $notice_source  = 'none';
+
+        $core_settings_errors = get_settings_errors();
+        foreach ( $core_settings_errors as $notice ) {
+            if ( empty( $notice['message'] ) ) {
+                continue;
+            }
+
+            $type = ! empty( $notice['type'] ) ? sanitize_key( $notice['type'] ) : 'info';
+            if ( 'updated' === $type ) {
+                $type = 'success';
+            }
+            if ( ! in_array( $type, array( 'success', 'error', 'warning', 'info' ), true ) ) {
+                $type = 'info';
+            }
+
+            $queued_notices[] = array(
+                'type'    => $type,
+                'message' => wp_kses_post( $notice['message'] ),
+            );
+        }
+
+        if ( ! empty( $queued_notices ) ) {
+            $notice_source = 'core_settings_errors';
+        }
+
+        $transient_present = false;
+        if ( $user_id > 0 ) {
+            $transient_present = false !== get_transient( $this->get_notice_transient_key( $user_id ) );
+        }
+
+        if ( empty( $queued_notices ) ) {
+            $save_notice = $this->consume_save_notice( $user_id );
+            if ( ! empty( $save_notice ) ) {
+                $queued_notices[] = $save_notice;
+                $notice_source    = 'transient';
+            }
+        }
+
+        if ( empty( $queued_notices ) && isset( $_GET['settings-updated'] ) ) {
+            $updated = sanitize_key( wp_unslash( $_GET['settings-updated'] ) );
+            if ( in_array( $updated, array( '1', 'true' ), true ) ) {
+                $queued_notices[] = array(
+                    'type'    => 'success',
+                    'message' => __( 'Settings saved.', 'wp-passkeys' ),
+                );
+                $notice_source = 'query_arg';
+            }
+        }
+
+        $show_debug = current_user_can( 'manage_options' )
+            && isset( $_GET['wpk_notice_debug'] )
+            && '1' === sanitize_key( wp_unslash( $_GET['wpk_notice_debug'] ) );
+
+        $debug_payload = array();
+        if ( $show_debug ) {
+            $debug_payload = array(
+                'method'                  => isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '',
+                'page'                    => isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '',
+                'tab'                     => $active_tab,
+                'settings_updated_get'    => isset( $_GET['settings-updated'] ) ? sanitize_text_field( wp_unslash( $_GET['settings-updated'] ) ) : '(absent)',
+                'post_option_page'        => isset( $_POST['option_page'] ) ? sanitize_text_field( wp_unslash( $_POST['option_page'] ) ) : '(absent)',
+                'post_action'             => isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : '(absent)',
+                'core_errors_count'       => count( $core_settings_errors ),
+                'transient_present'       => $transient_present ? 'yes' : 'no',
+                'queued_notices_count'    => count( $queued_notices ),
+                'notice_source'           => $notice_source,
+                'user_id'                 => $user_id,
+            );
+        }
         ?>
         <div class="wrap wpk-admin-wrap">
+            <?php if ( $show_debug ) : ?>
+            <div class="wpk-debug-banner" role="status" aria-live="polite">
+                <strong><?php esc_html_e( 'WPK Notice Debug', 'wp-passkeys' ); ?></strong>
+                <pre><?php echo esc_html( wp_json_encode( $debug_payload, JSON_PRETTY_PRINT ) ); ?></pre>
+            </div>
+            <?php endif; ?>
+
+            <?php if ( ! empty( $queued_notices ) ) : ?>
+            <div class="wpk-notices-wrap">
+                <?php foreach ( $queued_notices as $notice ) : ?>
+                <div class="wpk-flash wpk-flash--<?php echo esc_attr( $notice['type'] ); ?>" role="alert">
+                    <p><?php echo wp_kses_post( $notice['message'] ); ?></p>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+
             <div class="wpk-premium-shell">
                 <header class="wpk-hero">
                     <div class="wpk-hero__content">
@@ -151,8 +311,6 @@ class WPK_Settings {
 
                     </div>
                 </header>
-
-                <?php settings_errors(); ?>
 
                 <nav class="wpk-tabs" aria-label="<?php esc_attr_e('WP Passkeys settings tabs', 'wp-passkeys'); ?>">
                     <?php $this->render_tab_link($base_url, 'settings', __('Settings', 'wp-passkeys'), $active_tab); ?>

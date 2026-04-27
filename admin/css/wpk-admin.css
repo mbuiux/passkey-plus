@@ -21,6 +21,16 @@
     color: var(--wpk-ink);
 }
 
+/* Hard-block: any notice injected inside the hero or shell by WP core or
+   third-party plugins is invisible. Our notices live in .wpk-notices-wrap
+   which sits BEFORE .wpk-premium-shell in the DOM. */
+.wpk-premium-shell .notice,
+.wpk-premium-shell .updated,
+.wpk-premium-shell .error,
+.wpk-premium-shell [class*="notice-"] {
+    display: none !important;
+}
+
 .wpk-premium-shell {
     max-width: 1280px;
 }
@@ -128,6 +138,79 @@
     border-radius: 50%;
     background: #38d87b;
     box-shadow: 0 0 0 4px rgba(56, 216, 123, 0.14);
+}
+
+/* Settings notices — rendered above the hero */
+.wpk-notices-wrap {
+    margin-bottom: 16px;
+}
+
+.wpk-debug-banner {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border: 1px solid #e8b949;
+    border-left: 4px solid #e8b949;
+    border-radius: 8px;
+    background: #fff9e8;
+    color: #1d2327;
+    box-shadow: var(--wpk-shadow-soft);
+}
+
+.wpk-debug-banner strong {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.wpk-debug-banner pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #1d2327;
+}
+
+.wpk-flash {
+    margin: 0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border-left: 4px solid #4b5563;
+    background: #fff;
+    color: #1d2327;
+    box-shadow: var(--wpk-shadow-soft);
+}
+
+.wpk-flash + .wpk-flash {
+    margin-top: 10px;
+}
+
+.wpk-flash p {
+    margin: 0;
+    color: #1d2327;
+    font-size: 13.5px;
+}
+
+.wpk-flash--success {
+    border-left-color: #0f9f4b;
+    background: #eefbf3;
+}
+
+.wpk-flash--error {
+    border-left-color: #d63638;
+    background: #fff0f1;
+}
+
+.wpk-flash--warning {
+    border-left-color: #dba617;
+    background: #fff9e8;
+}
+
+.wpk-flash--info {
+    border-left-color: #2271b1;
+    background: #eef6fc;
 }
 
 .wpk-tabs {
