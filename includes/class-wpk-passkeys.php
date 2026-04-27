@@ -427,7 +427,6 @@ class WPK_Passkeys {
                 <div class="wpk-profile-register-row">
                     <div class="wpk-profile-register-header">
                         <span class="wpk-profile-register-title"><?php esc_html_e( 'Register new passkey', 'wp-passkeys' ); ?></span>
-                        <span class="wpk-profile-register-desc"><?php esc_html_e( 'Sign in with your fingerprint, face, or a hardware key — no password needed.', 'wp-passkeys' ); ?></span>
                     </div>
 
                     <?php if ( $at_limit ) : ?>
