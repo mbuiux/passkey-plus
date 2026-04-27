@@ -987,6 +987,173 @@
 }
 
 /* Login form passkey button: premium black style, same size as SSO button */
+/* Front-end shortcode login button: mirror wp-login passkey styling */
+.wpk-shortcode-login-wrap {
+    max-width: 320px;
+    margin: 12px 0;
+}
+
+.wpk-shortcode-login-wrap .wpk-passkey-btn {
+    width: 100% !important;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 12px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    border: 1px solid #111820 !important;
+    border-radius: 4px !important;
+    background: #111820 !important;
+    color: #fff !important;
+    font-weight: 600;
+    text-shadow: none;
+    box-shadow: 0 2px 8px rgba(17, 24, 32, 0.22);
+    transition: background 150ms ease, border-color 150ms ease, transform 120ms ease, box-shadow 150ms ease;
+}
+
+.wpk-shortcode-login-wrap .wpk-passkey-btn:hover,
+.wpk-shortcode-login-wrap .wpk-passkey-btn:focus {
+    border-color: #0b0f14 !important;
+    background: #0b0f14 !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(17, 24, 32, 0.24);
+}
+
+.wpk-shortcode-login-wrap .wpk-passkey-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 159, 254, 0.45), 0 6px 14px rgba(17, 24, 32, 0.24);
+}
+
+.wpk-shortcode-login-wrap .wpk-passkey-icon {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    color: #fff;
+}
+
+.wpk-shortcode-login-wrap .wpk-passkey-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.2;
+}
+
+.wpk-shortcode-login-wrap .wpk-login-message {
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #5f6873;
+}
+
+.wpk-passkey-prompt {
+    margin: 18px 0;
+}
+
+.wpk-passkey-prompt__card {
+    max-width: 640px;
+    padding: 22px;
+    border-radius: 14px;
+    border: 1px solid #dbe2ea;
+    background:
+        radial-gradient(circle at top right, rgba(58, 173, 255, 0.14), transparent 42%),
+        linear-gradient(165deg, #ffffff 0%, #f6f9fc 100%);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.wpk-passkey-prompt__eyebrow {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0f6b8e;
+}
+
+.wpk-passkey-prompt h3 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.25;
+    color: #111827;
+}
+
+.wpk-passkey-prompt__copy {
+    margin: 10px 0 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #3f4b5a;
+}
+
+.wpk-passkey-prompt__benefits {
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+}
+
+.wpk-passkey-prompt__benefits li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #243447;
+    font-size: 13.5px;
+    line-height: 1.4;
+}
+
+.wpk-passkey-prompt__benefits li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1597d4;
+    box-shadow: 0 0 0 4px rgba(21, 151, 212, 0.14);
+    flex: 0 0 8px;
+}
+
+.wpk-passkey-prompt__actions {
+    margin-top: 16px;
+}
+
+.wpk-passkey-prompt .wpk-passkey-prompt-register {
+    max-width: 520px;
+}
+
+.wpk-passkey-prompt .wpk-passkey-prompt-register .wpk-profile-register-controls {
+    gap: 10px;
+}
+
+.wpk-passkey-prompt .wpk-passkey-prompt-register .wpk-profile-tip {
+    margin-top: 6px;
+}
+
+@media (max-width: 782px) {
+    .wpk-passkey-prompt__card {
+        padding: 16px;
+    }
+
+    .wpk-passkey-prompt h3 {
+        font-size: 20px;
+    }
+}
+
+.wpk-passkey-btn.wpk-btn-disabled,
+.wpk-passkey-btn.wpk-btn-disabled:hover,
+.wpk-passkey-btn.wpk-btn-disabled:focus {
+    border-color: #c8ced6 !important;
+    background: #f1f3f5 !important;
+    color: #8a929b !important;
+    box-shadow: none !important;
+    transform: none !important;
+    cursor: not-allowed;
+    opacity: 0.92;
+}
+
+.wpk-passkey-btn.wpk-btn-disabled .wpk-passkey-icon {
+    color: #9aa3ad;
+}
+
 body.login .wpk-login-separator {
     width: 100%;
     margin: 14px 0 12px;
@@ -1067,6 +1234,8 @@ body.login .wpk-login-passkey-wrap .wpk-passkey-icon svg {
 
 body.login #wpk-passkey-login-message {
     margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
 }
 
 @media (max-width: 782px) {

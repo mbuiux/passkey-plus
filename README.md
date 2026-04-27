@@ -1,4 +1,4 @@
-# WP Passkey
+# Passkey Plus
 
 **Passwordless passkey login for WordPress — powered by WebAuthn / FIDO2.**
 
@@ -11,9 +11,9 @@
 
 ## Overview
 
-WP Passkey replaces passwords with passkeys — cryptographic credentials stored in your device's Secure Enclave, Windows Hello, or a hardware key like a YubiKey. Users authenticate with Face ID, Touch ID, fingerprint, or PIN: no password required.
+Passkey Plus replaces passwords with passkeys — cryptographic credentials stored in your device's Secure Enclave, Windows Hello, or a hardware key like a YubiKey. Users authenticate with Face ID, Touch ID, fingerprint, or PIN: no password required.
 
-The **Lite (free)** tier is fully functional and allows up to 5 passkeys per user. **WP Passkey Pro** (coming soon at [wppasskey.com](https://wppasskey.com)) unlocks unlimited passkeys, WooCommerce checkout integration, a device health dashboard, audit log with export, and more.
+The **Lite (free)** tier is fully functional and allows up to 5 passkeys per user. **Passkey Pro** (coming soon at [wppasskey.com](https://wppasskey.com)) unlocks unlimited passkeys, WooCommerce checkout integration, a device health dashboard, audit log with export, and more.
 
 ---
 
@@ -51,17 +51,17 @@ The **Lite (free)** tier is fully functional and allows up to 5 passkeys per use
 
 ### From the WordPress admin
 
-1. Upload the `wp-passkeys` folder to `/wp-content/plugins/`.
+1. Upload the `passkey-plus` folder to `/wp-content/plugins/`.
 2. Activate via **Plugins → Installed Plugins**.
-3. Go to **Settings → WP Passkey** and enable passkeys.
+3. Go to **Settings → Passkey Plus** and enable passkeys.
 4. Visit **Your Profile** and register your first passkey.
 5. Sign out and click **Sign in with Passkey** on the login page.
 
 ### From source (development)
 
 ```bash
-git clone https://github.com/your-org/wp-passkeys.git
-cd wp-passkeys
+git clone https://github.com/your-org/passkey-plus.git
+cd passkey-plus
 composer install
 ```
 
@@ -74,7 +74,7 @@ Then symlink or copy the folder into your WordPress plugins directory and activa
 ## Project Structure
 
 ```
-wp-passkeys/
+passkey-plus/
 ├── admin/
 │   ├── css/
 │   │   └── wpk-admin.css          # All admin + login UI styles
@@ -93,7 +93,7 @@ wp-passkeys/
 ├── index.php                      # Silence is golden
 ├── readme.txt                     # WordPress.org readme
 ├── uninstall.php                  # Drops all custom tables on uninstall
-└── wp-passkeys.php                # Plugin entry point
+└── passkey-plus.php               # Plugin entry point
 ```
 
 ---
@@ -172,13 +172,13 @@ The project targets **WordPress Coding Standards** (PHPCS). To check:
 
 ```bash
 composer require --dev squizlabs/php_codesniffer wp-coding-standards/wpcs
-./vendor/bin/phpcs --standard=WordPress includes/ admin/ wp-passkeys.php
+./vendor/bin/phpcs --standard=WordPress includes/ admin/ passkey-plus.php
 ```
 
 ### Generating a release zip
 
 ```bash
-composer archive --format=zip --dir=./dist --file=wp-passkeys
+composer archive --format=zip --dir=./dist --file=passkey-plus
 ```
 
 This honours `.gitignore` and excludes `vendor/` test directories.

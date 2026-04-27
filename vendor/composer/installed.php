@@ -1,13 +1,13 @@
 <?php return array(
     'root' => array(
-        'name' => 'wp-passkeys/wp-passkeys',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'name' => 'passkey-plus/passkey-plus',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'caac4730cc7d1776623421eff74a4a31a53109f7',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => false,
+        'dev' => true,
     ),
     'versions' => array(
         'lbuchs/webauthn' => array(
@@ -19,10 +19,10 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'wp-passkeys/wp-passkeys' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+        'passkey-plus/passkey-plus' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'caac4730cc7d1776623421eff74a4a31a53109f7',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

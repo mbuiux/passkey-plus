@@ -23,8 +23,16 @@
 
     // ── DOM helpers ─────────────────────────────────────────────────────────
 
-    function setMessage(text) {
-        var node = document.getElementById('wpk-passkey-login-message');
+    function getMessageNode(btn) {
+        var root = btn && btn.closest ? btn.closest('.wpk-login-passkey-wrap, .wpk-shortcode-login-wrap') : null;
+        if (!root) {
+            return document.getElementById('wpk-passkey-login-message');
+        }
+        return root.querySelector('.wpk-login-message') || document.getElementById('wpk-passkey-login-message');
+    }
+
+    function setMessage(btn, text) {
+        var node = getMessageNode(btn);
         if (!node) return;
         node.textContent = text;
         node.style.display = text ? '' : 'none';
@@ -35,11 +43,11 @@
         btn.disabled = busy;
         btn.classList.toggle('wpk-btn-busy', busy);
         if (busy) {
-            btn.setAttribute('data-original-text', btn.textContent);
+            btn.setAttribute('data-original-html', btn.innerHTML);
             btn.textContent = WPKLogin.messages.signingIn || 'Signing in…';
         } else {
-            var orig = btn.getAttribute('data-original-text');
-            if (orig) btn.textContent = orig;
+            var orig = btn.getAttribute('data-original-html');
+            if (orig) btn.innerHTML = orig;
         }
     }
 
@@ -75,8 +83,8 @@
 
     // ── Sign-in flow ─────────────────────────────────────────────────────────
 
-    async function signInWithPasskey() {
-        setMessage('');
+    async function signInWithPasskey(btn) {
+        setMessage(btn, '');
 
         var beginData = new FormData();
         beginData.append('action', 'wpk_begin_login');
@@ -128,16 +136,25 @@
     // ── Init ────────────────────────────────────────────────────────────────
 
     function init() {
-        var btn = document.getElementById('wpk-signin-passkey');
-        if (!btn) return;
+        var buttons = Array.prototype.slice.call(document.querySelectorAll('#wpk-signin-passkey, [data-wpk-passkey-login-btn="1"]'));
+        if (!buttons.length) return;
 
         // Graceful degradation for unsupported browsers
         if (!window.PublicKeyCredential || !navigator.credentials || !navigator.credentials.get) {
-            btn.disabled = true;
-            btn.title = WPKLogin.messages.notSupported;
-            setMessage(WPKLogin.messages.notSupported);
+            buttons.forEach(function (btn) {
+                btn.disabled = true;
+                btn.classList.add('wpk-btn-disabled');
+                btn.setAttribute('aria-disabled', 'true');
+                btn.title = WPKLogin.messages.notSupported;
+                setMessage(btn, WPKLogin.messages.notSupported);
+            });
             return;
         }
+
+        buttons.forEach(function (btn) {
+            btn.classList.remove('wpk-btn-disabled');
+            btn.removeAttribute('aria-disabled');
+        });
 
         // Optional: auto-trigger discoverable credential prompt on page load
         // (usernameless passkey sign-in — the credential chooser appears immediately).
@@ -150,20 +167,22 @@
         //     });
         // }
 
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            setButtonState(btn, true);
-            signInWithPasskey()
-                .catch(function (err) {
-                    // Ignore user-cancelled gestures silently
-                    if (err && err.name === 'NotAllowedError') {
-                        setMessage('');
-                    } else {
-                        setMessage(err.message || WPKLogin.messages.genericError);
-                    }
-                })
-                .finally(function () {
-                    setButtonState(btn, false);
+        buttons.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                setButtonState(btn, true);
+                signInWithPasskey(btn)
+                    .catch(function (err) {
+                        // Ignore user-cancelled gestures silently
+                        if (err && err.name === 'NotAllowedError') {
+                            setMessage(btn, '');
+                        } else {
+                            setMessage(btn, (err && err.message) || WPKLogin.messages.genericError);
+                        }
+                    })
+                    .finally(function () {
+                        setButtonState(btn, false);
+                    });
                 });
         });
     }

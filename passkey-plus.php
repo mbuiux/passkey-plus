@@ -1,17 +1,17 @@
 <?php
 /**
- * Plugin Name: WP Passkey
+ * Plugin Name: Passkey Plus
  * Plugin URI:  https://wppasskey.com
- * Description: Passwordless passkey login for WordPress (free / Lite). Supports Face ID, Touch ID, Windows Hello, YubiKey, and more. Upgrade to WP Passkey Pro for unlimited passkeys, WooCommerce support, audit logs, and advanced access controls.
+ * Description: Passwordless passkey login for WordPress (free / Lite). Supports Face ID, Touch ID, Windows Hello, YubiKey, and more. Upgrade to Passkey Pro for unlimited passkeys, WooCommerce support, audit logs, and advanced access controls.
  * Version:     1.1.0
- * Author:      WP Passkey
+ * Author:      Passkey Plus
  * Author URI:  https://wppasskey.com
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: wp-passkeys
+ * Text Domain: passkey-plus
  * Domain Path: /languages
  * Requires at least: 6.0
- * Tested up to: 6.8
+ * Tested up to: 6.9
  * Requires PHP: 8.0
  */
 
@@ -57,8 +57,6 @@ require_once WPK_PLUGIN_DIR . 'includes/class-wpk-shortcodes.php';
 // Bootstrap
 // ──────────────────────────────────────────────────────────────
 function wpk_init() {
-    load_plugin_textdomain( 'wp-passkeys', false, dirname( plugin_basename( WPK_PLUGIN_FILE ) ) . '/languages' );
-
     new WPK_Passkeys();
     new WPK_Login_Form();
     new WPK_Shortcodes();
@@ -126,11 +124,11 @@ register_deactivation_hook( __FILE__, 'wpk_deactivate' );
 function wpk_activate( bool $network_wide = false ) {
     if ( version_compare( PHP_VERSION, '8.0', '<' ) ) {
         deactivate_plugins( plugin_basename( WPK_PLUGIN_FILE ) );
-        wp_die( esc_html__( 'WP Passkey requires PHP 8.0 or higher. Please upgrade PHP before activating this plugin.', 'wp-passkeys' ) );
+        wp_die( esc_html__( 'Passkey Plus requires PHP 8.0 or higher. Please upgrade PHP before activating this plugin.', 'passkey-plus' ) );
     }
     if ( version_compare( $GLOBALS['wp_version'], '6.0', '<' ) ) {
         deactivate_plugins( plugin_basename( WPK_PLUGIN_FILE ) );
-        wp_die( esc_html__( 'WP Passkey requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'wp-passkeys' ) );
+        wp_die( esc_html__( 'Passkey Plus requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'passkey-plus' ) );
     }
 
     require_once WPK_PLUGIN_DIR . 'includes/class-wpk-passkeys.php';
@@ -174,8 +172,8 @@ add_action( 'wp_initialize_site', 'wpk_multisite_initialize_site' );
 // Settings link on Plugins page
 // ──────────────────────────────────────────────────────────────
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function ( $links ) {
-    $url  = admin_url( 'options-general.php?page=wp-passkeys' );
-    array_unshift( $links, sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'Settings', 'wp-passkeys' ) ) );
+    $url  = admin_url( 'options-general.php?page=passkey-plus' );
+    array_unshift( $links, sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'Settings', 'passkey-plus' ) ) );
     return $links;
 } );
 
@@ -193,7 +191,7 @@ add_action( 'admin_notices', function () {
     if ( empty( $warnings ) ) {
         return;
     }
-    echo '<div class="notice notice-error"><p><strong>WP Passkey security warning:</strong></p><ul>';
+    echo '<div class="notice notice-error"><p><strong>Passkey Plus security warning:</strong></p><ul>';
     foreach ( $warnings as $w ) {
         echo '<li>' . wp_kses( $w, array( 'strong' => array() ) ) . '</li>';
     }

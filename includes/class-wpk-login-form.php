@@ -62,8 +62,8 @@ class WPK_Login_Form {
         </style>
 
         <?php if ( $show_sep ) : ?>
-        <div class="wpk-login-separator" role="separator" aria-label="<?php esc_attr_e( 'or', 'wp-passkeys' ); ?>">
-            <span><?php esc_html_e( 'OR', 'wp-passkeys' ); ?></span>
+        <div class="wpk-login-separator" role="separator" aria-label="<?php esc_attr_e( 'or', 'passkey-plus' ); ?>">
+            <span><?php esc_html_e( 'OR', 'passkey-plus' ); ?></span>
         </div>
         <?php endif; ?>
 
@@ -71,7 +71,7 @@ class WPK_Login_Form {
             <button type="button"
                     id="wpk-signin-passkey"
                     class="button button-large wpk-passkey-btn"
-                    aria-label="<?php esc_attr_e( 'Sign in with a passkey (Face ID, Touch ID, or security key)', 'wp-passkeys' ); ?>">
+                    aria-label="<?php esc_attr_e( 'Sign in with a passkey (Face ID, Touch ID, or security key)', 'passkey-plus' ); ?>">
                 <span class="wpk-passkey-icon" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12.4 2.7a2.5 2.5 0 0 1 3.4 0l5.5 5.5a2.5 2.5 0 0 1 0 3.4l-3.7 3.7a2.5 2.5 0 0 1-3.4 0L8.7 9.8a2.5 2.5 0 0 1 0-3.4z"/>
@@ -79,7 +79,7 @@ class WPK_Login_Form {
                         <path d="m9.4 10.6-6.814 6.814A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814"/>
                     </svg>
                 </span>
-                <?php esc_html_e( 'Sign in with Passkey', 'wp-passkeys' ); ?>
+                <?php esc_html_e( 'Sign in with Passkey', 'passkey-plus' ); ?>
             </button>
             <p id="wpk-passkey-login-message"
                class="wpk-login-message"
@@ -94,11 +94,16 @@ class WPK_Login_Form {
      * passkey AJAX login handler can honour it without JS state.
      */
     public function store_redirect_cookie(): void {
-        if ( ! isset( $_REQUEST['redirect_to'] ) ) {
+        if ( ! isset( $_GET['redirect_to'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only redirect hint capture, no stateful privileged action.
             return;
         }
 
-        $redirect = wp_validate_redirect( wp_unslash( $_REQUEST['redirect_to'] ), '' );
+        $redirect_raw = wp_unslash( $_GET['redirect_to'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized via esc_url_raw/wp_validate_redirect.
+        if ( ! is_string( $redirect_raw ) ) {
+            return;
+        }
+
+        $redirect = wp_validate_redirect( esc_url_raw( $redirect_raw ), '' );
         if ( $redirect === '' ) {
             return;
         }

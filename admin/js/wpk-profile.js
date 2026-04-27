@@ -23,13 +23,45 @@
 
     // ── DOM helpers ─────────────────────────────────────────────────────────
 
-    function setMessage(text, isError) {
-        var node = document.getElementById('wpk-passkey-profile-message');
+    function getDefaultMessageNode() {
+        return document.getElementById('wpk-passkey-profile-message') || document.querySelector('.wpk-profile-tip');
+    }
+
+    function setMessage(node, text, isError) {
+        node = node || getDefaultMessageNode();
         if (!node) return;
         node.textContent = text;
         node.classList.toggle('wpk-msg-error',   !!isError);
         node.classList.toggle('wpk-msg-success',  !isError && !!text);
         node.style.display = text ? '' : 'none';
+    }
+
+    function getRegisterContext(btn) {
+        var inputId = btn ? btn.getAttribute('data-wpk-passkey-input-id') : '';
+        var messageId = btn ? btn.getAttribute('data-wpk-passkey-message-id') : '';
+
+        var labelInput = inputId ? document.getElementById(inputId) : null;
+        var messageNode = messageId ? document.getElementById(messageId) : null;
+
+        if ((!labelInput || !messageNode) && btn && btn.closest) {
+            var root = btn.closest('.wpk-profile-register-controls');
+            if (root) {
+                labelInput = labelInput || root.querySelector('.wpk-profile-label-input');
+                messageNode = messageNode || root.querySelector('.wpk-profile-tip');
+            }
+        }
+
+        if (!labelInput) {
+            labelInput = document.getElementById('wpk-passkey-label');
+        }
+        if (!messageNode) {
+            messageNode = getDefaultMessageNode();
+        }
+
+        return {
+            labelInput: labelInput,
+            messageNode: messageNode,
+        };
     }
 
     function hydrateCreateOptions(options) {
@@ -60,11 +92,12 @@
 
     // ── Register ────────────────────────────────────────────────────────────
 
-    async function registerPasskey() {
-        var labelInput = document.getElementById('wpk-passkey-label');
+    async function registerPasskey(context) {
+        var labelInput = context && context.labelInput ? context.labelInput : null;
         var label = labelInput ? labelInput.value.trim() : '';
+        var messageNode = context && context.messageNode ? context.messageNode : null;
 
-        setMessage(WPKProfile.messages.starting, false);
+        setMessage(messageNode, WPKProfile.messages.starting, false);
 
         var beginData = new FormData();
         beginData.append('action', 'wpk_begin_registration');
@@ -100,7 +133,7 @@
             throw new Error((finishResp && finishResp.data && finishResp.data.message) || WPKProfile.messages.failed);
         }
 
-        setMessage(WPKProfile.messages.success, false);
+        setMessage(messageNode, WPKProfile.messages.success, false);
         setTimeout(function () { window.location.reload(); }, 800);
     }
 
@@ -126,24 +159,30 @@
 
     function init() {
         // Check WebAuthn support
-        var registerBtn = document.getElementById('wpk-passkey-register');
-        if (registerBtn) {
+        var registerButtons = Array.prototype.slice.call(document.querySelectorAll('#wpk-passkey-register, [data-wpk-passkey-register="1"]'));
+        if (registerButtons.length) {
             if (!window.PublicKeyCredential || !navigator.credentials || !navigator.credentials.create) {
-                registerBtn.disabled = true;
-                setMessage(WPKProfile.messages.notSupported, true);
+                registerButtons.forEach(function (btn) {
+                    var context = getRegisterContext(btn);
+                    btn.disabled = true;
+                    setMessage(context.messageNode, WPKProfile.messages.notSupported, true);
+                });
                 return;
             }
 
-            registerBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                registerBtn.disabled = true;
-                registerPasskey()
-                    .catch(function (err) {
-                        setMessage(err.message || WPKProfile.messages.failed, true);
-                    })
-                    .finally(function () {
-                        registerBtn.disabled = false;
-                    });
+            registerButtons.forEach(function (registerBtn) {
+                registerBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var context = getRegisterContext(registerBtn);
+                    registerBtn.disabled = true;
+                    registerPasskey(context)
+                        .catch(function (err) {
+                            setMessage(context.messageNode, (err && err.message) || WPKProfile.messages.failed, true);
+                        })
+                        .finally(function () {
+                            registerBtn.disabled = false;
+                        });
+                });
             });
         }
 
@@ -156,7 +195,7 @@
                 if (!row) return;
                 btn.disabled = true;
                 revokePasskey(row).catch(function (err) {
-                    setMessage(err.message || WPKProfile.messages.revokeFailed, true);
+                    setMessage(getDefaultMessageNode(), (err && err.message) || WPKProfile.messages.revokeFailed, true);
                     btn.disabled = false;
                 });
             });
