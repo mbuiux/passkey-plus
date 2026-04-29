@@ -1,4 +1,4 @@
-=== Passkey Plus ===
+=== Passkey Hub ===
 Contributors: markbest
 Tags: passkeys, webauthn, passwordless, login, security
 Requires at least: 6.0
@@ -12,7 +12,7 @@ Passwordless passkey login for WordPress using Face ID, Touch ID, Windows Hello,
 
 == Description ==
 
-**Passkey Plus** brings the FIDO2 / WebAuthn passkey standard to WordPress. Users register a passkey once — using their device's biometric sensor (Face ID, Touch ID, fingerprint) or a hardware security key — and then sign in instantly with no password needed.
+**Passkey Hub** brings the FIDO2 / WebAuthn passkey standard to WordPress. Users register a passkey once — using their device's biometric sensor (Face ID, Touch ID, fingerprint) or a hardware security key — and then sign in instantly with no password needed.
 
 Passkeys are phishing-resistant by design. There is no password to steal, no credential to replay, and no username/password form to brute-force.
 
@@ -59,20 +59,20 @@ Passkeys are phishing-resistant by design. There is no password to steal, no cre
 = Automatic installation =
 
 1. In your WordPress admin, go to **Plugins > Add New**
-2. Search for **Passkey Plus**
+2. Search for **Passkey Hub**
 3. Click **Install Now** then **Activate**
-4. Go to **Settings > Passkey Plus** and enable passkeys
+4. Go to **Settings > Passkey Hub** and enable passkeys
 
 = Manual installation =
 
 1. Download the plugin ZIP from WordPress.org
 2. Go to **Plugins > Add New > Upload Plugin** and upload the ZIP
 3. Click **Activate**
-4. Go to **Settings > Passkey Plus** and enable passkeys
+4. Go to **Settings > Passkey Hub** and enable passkeys
 
 = After activation =
 
-1. Go to **Settings > Passkey Plus** — verify passkeys are enabled and select which roles may use them
+1. Go to **Settings > Passkey Hub** — verify passkeys are enabled and select which roles may use them
 2. Visit **Users > Your Profile** and register your first passkey
 3. Sign out and confirm the **Sign in with Passkey** button appears on the login page
 4. Register a backup passkey on a second device to avoid lockout
@@ -101,7 +101,7 @@ Yes, in production. The WebAuthn specification only allows passkey operations ov
 
 = Can I control which user roles can use passkeys? =
 
-Yes — in **Settings > Passkey Plus > Eligible Roles**. By default only Administrators. Passkey Pro extends this to any role including custom ones.
+Yes — in **Settings > Passkey Hub > Eligible Roles**. By default only Administrators. Passkey Pro extends this to any role including custom ones.
 
 = What happens if I deactivate or delete the plugin? =
 
@@ -120,7 +120,7 @@ Yes — add `define( 'WPK_RP_ID', 'example.com' );` to `wp-config.php`.
 1. The passkey sign-in button on the WordPress login screen
 2. Registering a new passkey from the user profile page
 3. The registered passkeys table with revoke action
-4. The Passkey Plus settings page
+4. The Passkey Hub settings page
 
 == Changelog ==
 
@@ -128,7 +128,7 @@ Yes — add `define( 'WPK_RP_ID', 'example.com' );` to `wp-config.php`.
 * Added: dismissible "set up your passkey" nudge notice for eligible users
 * Added: Passkeys column in the admin Users list showing count per user
 * Added: Scheduled daily cleanup of expired rate-limit rows and old log entries
-* Added: Challenge timeout setting in Settings > Passkey Plus > Advanced
+* Added: Challenge timeout setting in Settings > Passkey Hub > Advanced
 * Added: Login redirect URL field in settings (fallback after passkey login)
 * Added: `[wpk_login_button]` and `[wpk_register_button]` shortcodes
 * Added: Log retention period setting (days)

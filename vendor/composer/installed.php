@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
-        'name' => 'passkey-plus/passkey-plus',
+        'name' => 'passkey-hub/passkey-hub',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'caac4730cc7d1776623421eff74a4a31a53109f7',
+        'reference' => 'de97c326ca09917edcb665d53e67e410246d3a76',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -19,10 +19,10 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'passkey-plus/passkey-plus' => array(
+        'passkey-hub/passkey-hub' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'caac4730cc7d1776623421eff74a4a31a53109f7',
+            'reference' => 'de97c326ca09917edcb665d53e67e410246d3a76',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

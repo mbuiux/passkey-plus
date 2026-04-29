@@ -1,6 +1,6 @@
 <?php
 /**
- * Passkey Plus premium admin settings screen.
+ * Passkey Hub premium admin settings screen.
  *
  * Drop this in place of your existing settings class file, or copy the markup
  * methods into your current class if your plugin already wires settings elsewhere.
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 class WPK_Settings {
     private $option_group = 'wpk_settings_group';
-    private $page_slug = 'passkey-plus';
+    private $page_slug = 'passkey-hub';
     private $notice_transient_prefix = 'wpk_settings_notice_';
 
     private function get_notice_transient_key( $user_id ) {
@@ -71,7 +71,7 @@ class WPK_Settings {
 
         $notice = array(
             'type'    => 'success',
-            'message' => __( 'Settings saved.', 'passkey-plus' ),
+            'message' => __( 'Settings saved.', 'passkey-hub' ),
         );
 
         set_transient( $this->get_notice_transient_key( $user_id ), $notice, 180 );
@@ -108,8 +108,8 @@ class WPK_Settings {
 
     public function add_admin_menu() {
         add_options_page(
-            __('Passkey Plus', 'passkey-plus'),
-            __('Passkey Plus', 'passkey-plus'),
+            __('Passkey Hub', 'passkey-hub'),
+            __('Passkey Hub', 'passkey-hub'),
             'manage_options',
             $this->page_slug,
             array($this, 'render_settings_page')
@@ -125,7 +125,7 @@ class WPK_Settings {
         $css_url = '';
 
         /*
-         * Support the common Passkey Plus plugin structure first:
+         * Support the common Passkey Hub plugin structure first:
          * /admin/css/wpk-admin.css. The other paths are fallbacks for simple
          * copy/paste installs and older generated bundles.
          */
@@ -208,7 +208,7 @@ class WPK_Settings {
 
     public function render_settings_page() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to access this page.', 'passkey-plus'));
+            wp_die(esc_html__('You do not have permission to access this page.', 'passkey-hub'));
         }
 
         $active_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash($_GET['tab'])) : 'settings';
@@ -267,7 +267,7 @@ class WPK_Settings {
             if ( in_array( $updated, array( '1', 'true' ), true ) ) {
                 $queued_notices[] = array(
                     'type'    => 'success',
-                    'message' => __( 'Settings saved.', 'passkey-plus' ),
+                    'message' => __( 'Settings saved.', 'passkey-hub' ),
                 );
                 $notice_source = 'query_arg';
             }
@@ -297,7 +297,7 @@ class WPK_Settings {
         <div class="wrap wpk-admin-wrap">
             <?php if ( $show_debug ) : ?>
             <div class="wpk-debug-banner" role="status" aria-live="polite">
-                <strong><?php esc_html_e( 'WPK Notice Debug', 'passkey-plus' ); ?></strong>
+                <strong><?php esc_html_e( 'WPK Notice Debug', 'passkey-hub' ); ?></strong>
                 <pre><?php echo esc_html( wp_json_encode( $debug_payload, JSON_PRETTY_PRINT ) ); ?></pre>
             </div>
             <?php endif; ?>
@@ -318,27 +318,27 @@ class WPK_Settings {
                         <div class="wpk-product-mark">
                             <span class="wpk-product-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"></path><path d="M14 13.12c0 2.38 0 6.38-1 8.88"></path><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path><path d="M2 12a10 10 0 0 1 18-6"></path><path d="M2 16h.01"></path><path d="M21.8 16c.2-2 .131-5.354 0-6"></path><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"></path><path d="M8.65 22c.21-.66.45-1.32.57-2"></path><path d="M9 6.8a6 6 0 0 1 9 5.2v2"></path></svg></span>
                             <div>
-                                <p class="wpk-eyebrow"><?php esc_html_e('Passkey Hub', 'passkey-plus'); ?></p>
-                                <h1><?php esc_html_e('Passkey Plus', 'passkey-plus'); ?></h1>
+                                <p class="wpk-eyebrow"><?php esc_html_e('Welcome to', 'passkey-hub'); ?></p>
+                                <h1><?php esc_html_e('Passkey Hub', 'passkey-hub'); ?></h1>
                             </div>
                         </div>
                         <p class="wpk-hero__copy">
-                            <?php esc_html_e('A premium passwordless authentication control center built for WordPress.', 'passkey-plus'); ?>
+                            <?php esc_html_e('A premium passwordless authentication control center built for WordPress.', 'passkey-hub'); ?>
                         </p>
                     </div>
                     <div class="wpk-hero__actions">
                         <span class="wpk-status-pill wpk-status-pill--success">
                             <span class="wpk-status-dot" aria-hidden="true"></span>
-                            <?php esc_html_e('Ready', 'passkey-plus'); ?>
+                            <?php esc_html_e('Ready', 'passkey-hub'); ?>
                         </span>
 
                     </div>
                 </header>
 
-                <nav class="wpk-tabs" aria-label="<?php esc_attr_e('Passkey Plus settings tabs', 'passkey-plus'); ?>">
-                    <?php $this->render_tab_link($base_url, 'settings', __('Settings', 'passkey-plus'), $active_tab); ?>
-                    <?php $this->render_tab_link($base_url, 'advanced', __('Advanced', 'passkey-plus'), $active_tab); ?>
-                    <?php $this->render_tab_link($base_url, 'shortcodes', __('Shortcodes', 'passkey-plus'), $active_tab); ?>
+                <nav class="wpk-tabs" aria-label="<?php esc_attr_e('Passkey Hub settings tabs', 'passkey-hub'); ?>">
+                    <?php $this->render_tab_link($base_url, 'settings', __('Settings', 'passkey-hub'), $active_tab); ?>
+                    <?php $this->render_tab_link($base_url, 'advanced', __('Advanced', 'passkey-hub'), $active_tab); ?>
+                    <?php $this->render_tab_link($base_url, 'shortcodes', __('Shortcodes', 'passkey-hub'), $active_tab); ?>
                 </nav>
 
                 <div class="wpk-layout">
@@ -351,14 +351,14 @@ class WPK_Settings {
                                 <?php $this->render_preserved_hidden_fields($active_tab); ?>
                                 <?php $active_tab === 'advanced' ? $this->render_advanced_tab() : $this->render_settings_tab(); ?>
                                 <footer class="wpk-form-footer">
-                                    <p><?php esc_html_e('Changes apply immediately after saving.', 'passkey-plus'); ?></p>
-                                    <?php submit_button(__('Save Settings', 'passkey-plus'), 'primary wpk-save-button', 'submit', false); ?>
+                                    <p><?php esc_html_e('Changes apply immediately after saving.', 'passkey-hub'); ?></p>
+                                    <?php submit_button(__('Save Settings', 'passkey-hub'), 'primary wpk-save-button', 'submit', false); ?>
                                 </footer>
                             </form>
                         <?php endif; ?>
                     </main>
 
-                    <aside class="wpk-sidebar" aria-label="<?php esc_attr_e('Passkey Plus quick actions', 'passkey-plus'); ?>">
+                    <aside class="wpk-sidebar" aria-label="<?php esc_attr_e('Passkey Hub quick actions', 'passkey-hub'); ?>">
                         <?php $this->render_sidebar_cards(); ?>
                     </aside>
                 </div>
@@ -423,29 +423,29 @@ class WPK_Settings {
         ?>
         <section class="wpk-section-header">
             <div>
-                <p class="wpk-eyebrow"><?php esc_html_e('Settings', 'passkey-plus'); ?></p>
-                <h2><?php esc_html_e('Everyday passkey controls', 'passkey-plus'); ?></h2>
+                <p class="wpk-eyebrow"><?php esc_html_e('Settings', 'passkey-hub'); ?></p>
+                <h2><?php esc_html_e('Everyday passkey controls', 'passkey-hub'); ?></h2>
             </div>
-            <span class="wpk-badge wpk-badge--pro"><?php esc_html_e('Premium defaults', 'passkey-plus'); ?></span>
+            <span class="wpk-badge wpk-badge--pro"><?php esc_html_e('Premium defaults', 'passkey-hub'); ?></span>
         </section>
 
         <div class="wpk-card wpk-card--setting">
             <div class="wpk-setting-copy">
-                <h3><?php esc_html_e('Enable passkeys', 'passkey-plus'); ?></h3>
-                <p><?php esc_html_e('Allow eligible users to register and sign in with secure device passkeys.', 'passkey-plus'); ?></p>
+                <h3><?php esc_html_e('Enable passkeys', 'passkey-hub'); ?></h3>
+                <p><?php esc_html_e('Allow eligible users to register and sign in with secure device passkeys.', 'passkey-hub'); ?></p>
             </div>
             <label class="wpk-switch">
                 <input type="checkbox" name="wpk_enabled" value="1" <?php checked($enabled); ?> />
                 <span class="wpk-switch__track"><span class="wpk-switch__thumb"></span></span>
-                <span class="screen-reader-text"><?php esc_html_e('Enable passkeys', 'passkey-plus'); ?></span>
+                <span class="screen-reader-text"><?php esc_html_e('Enable passkeys', 'passkey-hub'); ?></span>
             </label>
         </div>
 
         <div class="wpk-card">
             <div class="wpk-card__header">
                 <div>
-                    <h3><?php esc_html_e('Eligible user roles', 'passkey-plus'); ?></h3>
-                    <p><?php esc_html_e('Choose which WordPress roles can create and use passkeys.', 'passkey-plus'); ?></p>
+                    <h3><?php esc_html_e('Eligible user roles', 'passkey-hub'); ?></h3>
+                    <p><?php esc_html_e('Choose which WordPress roles can create and use passkeys.', 'passkey-hub'); ?></p>
                 </div>
             </div>
             <div class="wpk-role-grid">
@@ -461,24 +461,24 @@ class WPK_Settings {
         <div class="wpk-card wpk-grid-2">
             <div class="wpk-field">
                 <div class="wpk-label-row">
-                    <label for="wpk_max_passkeys_per_user"><?php esc_html_e('Passkeys per user', 'passkey-plus'); ?></label>
-                    <span class="wpk-badge"><?php esc_html_e('Lite limit: 5', 'passkey-plus'); ?></span>
+                    <label for="wpk_max_passkeys_per_user"><?php esc_html_e('Passkeys per user', 'passkey-hub'); ?></label>
+                    <span class="wpk-badge"><?php esc_html_e('Lite limit: 5', 'passkey-hub'); ?></span>
                 </div>
                 <input id="wpk_max_passkeys_per_user" class="regular-text" type="number" min="1" max="5" name="wpk_max_passkeys_per_user" value="<?php echo esc_attr($max_passkeys); ?>" />
-                <p><?php esc_html_e('Maximum number of passkeys each user can register.', 'passkey-plus'); ?></p>
+                <p><?php esc_html_e('Maximum number of passkeys each user can register.', 'passkey-hub'); ?></p>
             </div>
 
             <div class="wpk-field">
                 <div class="wpk-label-row">
-                    <label for="wpk_user_verification"><?php esc_html_e('User verification', 'passkey-plus'); ?></label>
-                    <span class="wpk-badge wpk-badge--success"><?php esc_html_e('Recommended', 'passkey-plus'); ?></span>
+                    <label for="wpk_user_verification"><?php esc_html_e('User verification', 'passkey-hub'); ?></label>
+                    <span class="wpk-badge wpk-badge--success"><?php esc_html_e('Recommended', 'passkey-hub'); ?></span>
                 </div>
                 <select id="wpk_user_verification" name="wpk_user_verification">
-                    <option value="required" <?php selected($verification, 'required'); ?>><?php esc_html_e('Required — biometric or device PIN', 'passkey-plus'); ?></option>
-                    <option value="preferred" <?php selected($verification, 'preferred'); ?>><?php esc_html_e('Preferred — use when available', 'passkey-plus'); ?></option>
-                    <option value="discouraged" <?php selected($verification, 'discouraged'); ?>><?php esc_html_e('Discouraged — presence only', 'passkey-plus'); ?></option>
+                    <option value="required" <?php selected($verification, 'required'); ?>><?php esc_html_e('Required — biometric or device PIN', 'passkey-hub'); ?></option>
+                    <option value="preferred" <?php selected($verification, 'preferred'); ?>><?php esc_html_e('Preferred — use when available', 'passkey-hub'); ?></option>
+                    <option value="discouraged" <?php selected($verification, 'discouraged'); ?>><?php esc_html_e('Discouraged — presence only', 'passkey-hub'); ?></option>
                 </select>
-                <p><?php esc_html_e('Required verification gives the strongest account protection.', 'passkey-plus'); ?></p>
+                <p><?php esc_html_e('Required verification gives the strongest account protection.', 'passkey-hub'); ?></p>
             </div>
         </div>
         <?php
@@ -494,59 +494,59 @@ class WPK_Settings {
         ?>
         <section class="wpk-section-header">
             <div>
-                <p class="wpk-eyebrow"><?php esc_html_e('Advanced', 'passkey-plus'); ?></p>
-                <h2><?php esc_html_e('Technical configuration', 'passkey-plus'); ?></h2>
+                <p class="wpk-eyebrow"><?php esc_html_e('Advanced', 'passkey-hub'); ?></p>
+                <h2><?php esc_html_e('Technical configuration', 'passkey-hub'); ?></h2>
             </div>
         </section>
 
         <div class="wpk-card wpk-card--setting">
             <div class="wpk-setting-copy">
-                <h3><?php esc_html_e('Show login OR separator', 'passkey-plus'); ?></h3>
-                <p><?php esc_html_e('Display the centered OR divider above the passkey button on wp-login.php.', 'passkey-plus'); ?></p>
+                <h3><?php esc_html_e('Show login OR separator', 'passkey-hub'); ?></h3>
+                <p><?php esc_html_e('Display the centered OR divider above the passkey button on wp-login.php.', 'passkey-hub'); ?></p>
             </div>
             <label class="wpk-switch">
                 <input type="checkbox" name="wpk_show_separator" value="1" <?php checked($show_separator); ?> />
                 <span class="wpk-switch__track"><span class="wpk-switch__thumb"></span></span>
-                <span class="screen-reader-text"><?php esc_html_e('Show login OR separator', 'passkey-plus'); ?></span>
+                <span class="screen-reader-text"><?php esc_html_e('Show login OR separator', 'passkey-hub'); ?></span>
             </label>
         </div>
 
         <div class="wpk-card wpk-grid-2">
             <div class="wpk-field">
-                <label for="wpk_rp_name"><?php esc_html_e('Relying Party Name', 'passkey-plus'); ?></label>
+                <label for="wpk_rp_name"><?php esc_html_e('Relying Party Name', 'passkey-hub'); ?></label>
                 <input id="wpk_rp_name" class="regular-text" type="text" name="wpk_rp_name" value="<?php echo esc_attr($rp_name); ?>" placeholder="<?php echo esc_attr(get_bloginfo('name')); ?>" />
-                <p><?php esc_html_e('The name users see in their passkey prompt. Leave blank to use the site name.', 'passkey-plus'); ?></p>
+                <p><?php esc_html_e('The name users see in their passkey prompt. Leave blank to use the site name.', 'passkey-hub'); ?></p>
             </div>
             <div class="wpk-field">
-                <label for="wpk_rp_id"><?php esc_html_e('Relying Party ID', 'passkey-plus'); ?></label>
+                <label for="wpk_rp_id"><?php esc_html_e('Relying Party ID', 'passkey-hub'); ?></label>
                 <input id="wpk_rp_id" class="regular-text" type="text" name="wpk_rp_id" value="<?php echo esc_attr($rp_id); ?>" placeholder="<?php echo esc_attr(wp_parse_url(home_url(), PHP_URL_HOST)); ?>" />
-                <p><?php esc_html_e('Usually your root domain. Leave blank unless you know you need to customize it.', 'passkey-plus'); ?></p>
+                <p><?php esc_html_e('Usually your root domain. Leave blank unless you know you need to customize it.', 'passkey-hub'); ?></p>
             </div>
         </div>
 
         <div class="wpk-card">
             <div class="wpk-card__header">
                 <div>
-                    <h3><?php esc_html_e('Rate limiting', 'passkey-plus'); ?></h3>
-                    <p><?php esc_html_e('Protect authentication endpoints from repeated failed attempts.', 'passkey-plus'); ?></p>
+                    <h3><?php esc_html_e('Rate limiting', 'passkey-hub'); ?></h3>
+                    <p><?php esc_html_e('Protect authentication endpoints from repeated failed attempts.', 'passkey-hub'); ?></p>
                 </div>
-                <span class="wpk-badge wpk-badge--success"><?php esc_html_e('Protected', 'passkey-plus'); ?></span>
+                <span class="wpk-badge wpk-badge--success"><?php esc_html_e('Protected', 'passkey-hub'); ?></span>
             </div>
             <div class="wpk-grid-3">
                 <div class="wpk-field">
-                    <label for="wpk_rate_limit_window"><?php esc_html_e('Failure window', 'passkey-plus'); ?></label>
+                    <label for="wpk_rate_limit_window"><?php esc_html_e('Failure window', 'passkey-hub'); ?></label>
                     <input id="wpk_rate_limit_window" type="number" min="60" max="3600" name="wpk_rate_limit_window" value="<?php echo esc_attr($window); ?>" />
-                    <p><?php esc_html_e('Seconds.', 'passkey-plus'); ?></p>
+                    <p><?php esc_html_e('Seconds.', 'passkey-hub'); ?></p>
                 </div>
                 <div class="wpk-field">
-                    <label for="wpk_rate_limit_max_failures"><?php esc_html_e('Max failures', 'passkey-plus'); ?></label>
+                    <label for="wpk_rate_limit_max_failures"><?php esc_html_e('Max failures', 'passkey-hub'); ?></label>
                     <input id="wpk_rate_limit_max_failures" type="number" min="1" max="50" name="wpk_rate_limit_max_failures" value="<?php echo esc_attr($max_failures); ?>" />
-                    <p><?php esc_html_e('Attempts before lockout.', 'passkey-plus'); ?></p>
+                    <p><?php esc_html_e('Attempts before lockout.', 'passkey-hub'); ?></p>
                 </div>
                 <div class="wpk-field">
-                    <label for="wpk_rate_limit_lockout"><?php esc_html_e('Lockout duration', 'passkey-plus'); ?></label>
+                    <label for="wpk_rate_limit_lockout"><?php esc_html_e('Lockout duration', 'passkey-hub'); ?></label>
                     <input id="wpk_rate_limit_lockout" type="number" min="60" max="86400" name="wpk_rate_limit_lockout" value="<?php echo esc_attr($lockout); ?>" />
-                    <p><?php esc_html_e('Seconds.', 'passkey-plus'); ?></p>
+                    <p><?php esc_html_e('Seconds.', 'passkey-hub'); ?></p>
                 </div>
             </div>
         </div>
@@ -557,35 +557,35 @@ class WPK_Settings {
     private function render_shortcodes_tab() {
         $shortcodes = array(
             array(
-                'title' => __('Login Form', 'passkey-plus'),
+                'title' => __('Login Form', 'passkey-hub'),
                 'code' => '[wpk_login_button]',
-                'description' => __('Display a passkey login form on any page.', 'passkey-plus'),
-                'placement' => __('Best for custom login pages.', 'passkey-plus'),
+                'description' => __('Display a passkey login form on any page.', 'passkey-hub'),
+                'placement' => __('Best for custom login pages.', 'passkey-hub'),
             ),
             array(
-                'title' => __('Register Button', 'passkey-plus'),
+                'title' => __('Register Button', 'passkey-hub'),
                 'code' => '[wpk_register_button]',
-                'description' => __('Let signed-in users register a new passkey.', 'passkey-plus'),
-                'placement' => __('Best for account and onboarding pages.', 'passkey-plus'),
+                'description' => __('Let signed-in users register a new passkey.', 'passkey-hub'),
+                'placement' => __('Best for account and onboarding pages.', 'passkey-hub'),
             ),
             array(
-                'title' => __('Account Passkeys', 'passkey-plus'),
+                'title' => __('Account Passkeys', 'passkey-hub'),
                 'code' => '[wp_passkey_profile]',
-                'description' => __('Show a user-facing passkey management area.', 'passkey-plus'),
-                'placement' => __('Best for profile or dashboard pages.', 'passkey-plus'),
+                'description' => __('Show a user-facing passkey management area.', 'passkey-hub'),
+                'placement' => __('Best for profile or dashboard pages.', 'passkey-hub'),
             ),
             array(
-                'title' => __('Conditional Prompt', 'passkey-plus'),
+                'title' => __('Conditional Prompt', 'passkey-hub'),
                 'code' => '[wp_passkey_prompt]',
-                'description' => __('Prompt eligible users to set up passwordless login.', 'passkey-plus'),
-                'placement' => __('Best after login or checkout.', 'passkey-plus'),
+                'description' => __('Prompt eligible users to set up passwordless login.', 'passkey-hub'),
+                'placement' => __('Best after login or checkout.', 'passkey-hub'),
             ),
         );
         ?>
         <section class="wpk-section-header">
             <div>
-                <p class="wpk-eyebrow"><?php esc_html_e('Shortcodes', 'passkey-plus'); ?></p>
-                <h2><?php esc_html_e('Drop-in passkey experiences', 'passkey-plus'); ?></h2>
+                <p class="wpk-eyebrow"><?php esc_html_e('Shortcodes', 'passkey-hub'); ?></p>
+                <h2><?php esc_html_e('Drop-in passkey experiences', 'passkey-hub'); ?></h2>
             </div>
         </section>
         <div class="wpk-shortcode-grid">
@@ -604,32 +604,32 @@ class WPK_Settings {
     private function render_sidebar_cards() {
         ?>
         <section class="wpk-side-card wpk-side-card--pro">
-            <span class="wpk-badge wpk-badge--pro"><?php esc_html_e('Pro', 'passkey-plus'); ?></span>
-            <h2><?php esc_html_e('Passkey Pro', 'passkey-plus'); ?></h2>
-            <p><?php esc_html_e('Unlock a premium passwordless experience with unlimited passkeys and advanced controls.', 'passkey-plus'); ?></p>
+            <span class="wpk-badge wpk-badge--pro"><?php esc_html_e('Pro', 'passkey-hub'); ?></span>
+            <h2><?php esc_html_e('Passkey Hub Pro', 'passkey-hub'); ?></h2>
+            <p><?php esc_html_e('Unlock a premium passwordless experience with unlimited passkeys and advanced controls.', 'passkey-hub'); ?></p>
             <ul>
-                <li><?php esc_html_e('Unlimited passkeys per user', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Passkey-only mode per role', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Magic-link account recovery', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('WooCommerce checkout support', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Gutenberg &amp; Elementor blocks', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Device health dashboard', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Full audit log + CSV export', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Conditional access by role &amp; URL', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('WP-CLI commands', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('White-label &amp; agency tools', 'passkey-plus'); ?></li>
+                <li><?php esc_html_e('Unlimited passkeys per user', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Passkey-only mode per role', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Magic-link account recovery', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('WooCommerce checkout support', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Gutenberg &amp; Elementor blocks', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Device health dashboard', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Full audit log + CSV export', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Conditional access by role &amp; URL', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('WP-CLI commands', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('White-label &amp; agency tools', 'passkey-hub'); ?></li>
             </ul>
-            <a href="#" class="wpk-button wpk-button--pro"><?php esc_html_e('Upgrade to Pro', 'passkey-plus'); ?></a>
+            <a href="#" class="wpk-button wpk-button--pro"><?php esc_html_e('Upgrade to Pro', 'passkey-hub'); ?></a>
         </section>
 
         <section class="wpk-side-card">
-            <h2><?php esc_html_e('Quick setup', 'passkey-plus'); ?></h2>
+            <h2><?php esc_html_e('Quick setup', 'passkey-hub'); ?></h2>
             <ol class="wpk-checklist">
-                <li><?php esc_html_e('Activate the plugin', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Enable passkeys in Settings', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Choose eligible roles', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Register your first passkey in Your Profile', 'passkey-plus'); ?></li>
-                <li><?php esc_html_e('Sign out and test the login button', 'passkey-plus'); ?></li>
+                <li><?php esc_html_e('Activate the plugin', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Enable passkeys in Settings', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Choose eligible roles', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Register your first passkey in Your Profile', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Sign out and test the login button', 'passkey-hub'); ?></li>
             </ol>
         </section>
         <?php

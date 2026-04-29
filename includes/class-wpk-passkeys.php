@@ -180,7 +180,7 @@ class WPK_Passkeys {
             return;
         }
         echo '<div class="notice notice-error"><p>' .
-            esc_html__( 'Passkey Plus: The WebAuthn library is missing. Run composer install in the passkey-plus plugin directory.', 'passkey-plus' ) .
+            esc_html__( 'Passkey Hub: The WebAuthn library is missing. Run composer install in the passkey-hub plugin directory.', 'passkey-hub' ) .
             '</p></div>';
     }
 
@@ -212,12 +212,12 @@ class WPK_Passkeys {
         ?>
         <div class="notice notice-info is-dismissible wpk-setup-notice" data-nonce="<?php echo esc_attr( $nonce ); ?>">
             <p>
-                <strong><?php esc_html_e( 'Set up a passkey for faster, more secure sign-ins.', 'passkey-plus' ); ?></strong>
+                <strong><?php esc_html_e( 'Set up a passkey for faster, more secure sign-ins.', 'passkey-hub' ); ?></strong>
                 <?php
                 printf(
                     wp_kses(
                         /* translators: %s profile URL */
-                        __( ' <a href="%s">Register a passkey now</a> — sign in with Face ID, Touch ID, or a security key, no password needed.', 'passkey-plus' ),
+                        __( ' <a href="%s">Register a passkey now</a> — sign in with Face ID, Touch ID, or a security key, no password needed.', 'passkey-hub' ),
                         array( 'a' => array( 'href' => array() ) )
                     ),
                     esc_url( $profile_url )
@@ -259,7 +259,7 @@ class WPK_Passkeys {
     // ──────────────────────────────────────────────────────────
 
     public function users_column_header( array $columns ): array {
-        $columns['wpk_passkeys'] = __( 'Passkeys', 'passkey-plus' );
+        $columns['wpk_passkeys'] = __( 'Passkeys', 'passkey-hub' );
         return $columns;
     }
 
@@ -287,7 +287,7 @@ class WPK_Passkeys {
             esc_url( $url ),
             esc_attr( sprintf(
                 /* translators: %d passkey count, %s username */
-                __( '%1$d passkey(s) for %2$s — click to manage', 'passkey-plus' ),
+                __( '%1$d passkey(s) for %2$s — click to manage', 'passkey-hub' ),
                 $count,
                 $user->user_login
             ) ),
@@ -369,15 +369,15 @@ class WPK_Passkeys {
             'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
             'nonce'    => wp_create_nonce( 'wpk_profile' ),
             'messages' => array(
-                'labelPlaceholder' => __( 'e.g. iPhone 15, YubiKey 5', 'passkey-plus' ),
-                'starting'         => __( 'Starting passkey registration…', 'passkey-plus' ),
-                'success'          => __( 'Passkey registered successfully.', 'passkey-plus' ),
-                'failed'           => __( 'Passkey registration failed. Try again.', 'passkey-plus' ),
-                'notSupported'     => __( 'This browser does not support passkeys.', 'passkey-plus' ),
-                'mobileHint'       => __( 'Tip: open this page on your phone to save a passkey to iCloud Keychain or Google Password Manager.', 'passkey-plus' ),
-                'confirmRevoke'    => __( 'Revoke this passkey? You will need to re-register to use it again.', 'passkey-plus' ),
-                'revokeFailed'     => __( 'Failed to revoke passkey.', 'passkey-plus' ),
-                'limitReached'     => __( 'You have reached the maximum number of passkeys. Revoke an existing one to add a new one.', 'passkey-plus' ),
+                'labelPlaceholder' => __( 'e.g. iPhone 15, YubiKey 5', 'passkey-hub' ),
+                'starting'         => __( 'Starting passkey registration…', 'passkey-hub' ),
+                'success'          => __( 'Passkey registered successfully.', 'passkey-hub' ),
+                'failed'           => __( 'Passkey registration failed. Try again.', 'passkey-hub' ),
+                'notSupported'     => __( 'This browser does not support passkeys.', 'passkey-hub' ),
+                'mobileHint'       => __( 'Tip: open this page on your phone to save a passkey to iCloud Keychain or Google Password Manager.', 'passkey-hub' ),
+                'confirmRevoke'    => __( 'Revoke this passkey? You will need to re-register to use it again.', 'passkey-hub' ),
+                'revokeFailed'     => __( 'Failed to revoke passkey.', 'passkey-hub' ),
+                'limitReached'     => __( 'You have reached the maximum number of passkeys. Revoke an existing one to add a new one.', 'passkey-hub' ),
             ),
         ) );
 
@@ -397,9 +397,9 @@ class WPK_Passkeys {
             'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
             'nonce'    => wp_create_nonce( 'wpk_login' ),
             'messages' => array(
-                'notSupported' => __( 'Passkeys are unavailable here. Use HTTPS (or localhost) in a passkey-capable browser, or sign in with your password.', 'passkey-plus' ),
-                'genericError' => __( 'Passkey sign-in failed. Please try again or use your password.', 'passkey-plus' ),
-                'signingIn'    => __( 'Signing in…', 'passkey-plus' ),
+                'notSupported' => __( 'Passkeys are unavailable here. Use HTTPS (or localhost) in a passkey-capable browser, or sign in with your password.', 'passkey-hub' ),
+                'genericError' => __( 'Passkey sign-in failed. Please try again or use your password.', 'passkey-hub' ),
+                'signingIn'    => __( 'Signing in…', 'passkey-hub' ),
             ),
         ) );
 
@@ -427,12 +427,12 @@ class WPK_Passkeys {
 
             <div class="wpk-profile-header">
                 <div>
-                    <h2><?php esc_html_e( 'Passkeys', 'passkey-plus' ); ?></h2>
-                    <p><?php esc_html_e( 'Sign in with your fingerprint, face, or a hardware security key — no password needed.', 'passkey-plus' ); ?></p>
+                    <h2><?php esc_html_e( 'Passkeys', 'passkey-hub' ); ?></h2>
+                    <p><?php esc_html_e( 'Sign in with your fingerprint, face, or a hardware security key — no password needed.', 'passkey-hub' ); ?></p>
                 </div>
                 <span class="wpk-profile-count">
                     <?php echo esc_html( count( $credentials ) ); ?>&thinsp;/&thinsp;<?php echo esc_html( $max_passkeys ); ?>
-                    <span class="wpk-profile-count-label"><?php esc_html_e( 'passkeys', 'passkey-plus' ); ?></span>
+                    <span class="wpk-profile-count-label"><?php esc_html_e( 'passkeys', 'passkey-hub' ); ?></span>
                 </span>
             </div>
 
@@ -440,7 +440,7 @@ class WPK_Passkeys {
 
                 <div class="wpk-profile-register-row">
                     <div class="wpk-profile-register-header">
-                        <span class="wpk-profile-register-title"><?php esc_html_e( 'Register new passkey', 'passkey-plus' ); ?></span>
+                        <span class="wpk-profile-register-title"><?php esc_html_e( 'Register new passkey', 'passkey-hub' ); ?></span>
                     </div>
 
                     <?php if ( $at_limit ) : ?>
@@ -448,7 +448,7 @@ class WPK_Passkeys {
                             <?php
                             printf(
                                 /* translators: %d number of passkeys */
-                                esc_html__( 'You have reached the maximum of %d passkeys. Revoke one to add another.', 'passkey-plus' ),
+                                esc_html__( 'You have reached the maximum of %d passkeys. Revoke one to add another.', 'passkey-hub' ),
                                 (int) $max_passkeys
                             );
                             ?>
@@ -456,17 +456,17 @@ class WPK_Passkeys {
                         </div>
                     <?php else : ?>
                         <div class="wpk-profile-register-controls">
-                            <label for="wpk-passkey-label" class="screen-reader-text"><?php esc_html_e( 'Device label (optional)', 'passkey-plus' ); ?></label>
+                            <label for="wpk-passkey-label" class="screen-reader-text"><?php esc_html_e( 'Device label (optional)', 'passkey-hub' ); ?></label>
                             <input type="text"
                                    id="wpk-passkey-label"
                                    class="wpk-profile-label-input"
-                                   placeholder="<?php esc_attr_e( 'Device label (optional)', 'passkey-plus' ); ?>"
+                                   placeholder="<?php esc_attr_e( 'Device label (optional)', 'passkey-hub' ); ?>"
                                    maxlength="100" />
                             <button type="button" class="wpk-profile-btn" id="wpk-passkey-register">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>
-                                <?php esc_html_e( 'Register New Passkey', 'passkey-plus' ); ?>
+                                <?php esc_html_e( 'Register New Passkey', 'passkey-hub' ); ?>
                             </button>
-                            <p class="wpk-profile-tip"><?php esc_html_e( 'Tip: open this page on your phone to save to iCloud Keychain or Google Password Manager.', 'passkey-plus' ); ?></p>
+                            <p class="wpk-profile-tip"><?php esc_html_e( 'Tip: open this page on your phone to save to iCloud Keychain or Google Password Manager.', 'passkey-hub' ); ?></p>
                             <p id="wpk-passkey-profile-message" class="wpk-inline-message" role="alert" aria-live="assertive"></p>
                         </div>
                     <?php endif; ?>
@@ -477,18 +477,18 @@ class WPK_Passkeys {
                     <?php if ( count( $credentials ) === 1 ) : ?>
                         <div class="wpk-profile-warning">
                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                            <?php esc_html_e( 'Only one passkey registered. Add a backup on another device to avoid getting locked out.', 'passkey-plus' ); ?>
+                            <?php esc_html_e( 'Only one passkey registered. Add a backup on another device to avoid getting locked out.', 'passkey-hub' ); ?>
                         </div>
                     <?php endif; ?>
 
                     <table class="wpk-creds-table">
                         <thead>
                             <tr>
-                                <th><?php esc_html_e( 'Label', 'passkey-plus' ); ?></th>
-                                <th><?php esc_html_e( 'Registered', 'passkey-plus' ); ?></th>
-                                <th><?php esc_html_e( 'Last Used', 'passkey-plus' ); ?></th>
+                                <th><?php esc_html_e( 'Label', 'passkey-hub' ); ?></th>
+                                <th><?php esc_html_e( 'Registered', 'passkey-hub' ); ?></th>
+                                <th><?php esc_html_e( 'Last Used', 'passkey-hub' ); ?></th>
                                 <?php do_action( 'wpk_profile_table_header', $user ); ?>
-                                <th><?php esc_html_e( 'Action', 'passkey-plus' ); ?></th>
+                                <th><?php esc_html_e( 'Action', 'passkey-hub' ); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -496,14 +496,14 @@ class WPK_Passkeys {
                                 <tr data-credential-id="<?php echo esc_attr( (string) $cred->id ); ?>">
                                     <td class="wpk-creds-label">
                                         <span class="wpk-creds-dot" aria-hidden="true"></span>
-                                        <?php echo esc_html( $cred->credential_label ?: __( 'Passkey', 'passkey-plus' ) ); ?>
+                                        <?php echo esc_html( $cred->credential_label ?: __( 'Passkey', 'passkey-hub' ) ); ?>
                                     </td>
                                     <td><?php echo esc_html( mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $cred->created_at ) ); ?></td>
-                                    <td><?php echo $cred->last_used_at ? esc_html( mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $cred->last_used_at ) ) : esc_html__( 'Never', 'passkey-plus' ); ?></td>
+                                    <td><?php echo $cred->last_used_at ? esc_html( mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $cred->last_used_at ) ) : esc_html__( 'Never', 'passkey-hub' ); ?></td>
                                     <?php do_action( 'wpk_profile_table_row', $cred, $user ); ?>
                                     <td>
                                         <button class="wpk-revoke-btn wpk-passkey-revoke" type="button">
-                                            <?php esc_html_e( 'Revoke', 'passkey-plus' ); ?>
+                                            <?php esc_html_e( 'Revoke', 'passkey-hub' ); ?>
                                         </button>
                                     </td>
                                 </tr>

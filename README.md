@@ -1,4 +1,4 @@
-# Passkey Plus
+# Passkey Hub
 
 **Passwordless passkey login for WordPress — powered by WebAuthn / FIDO2.**
 
@@ -11,7 +11,7 @@
 
 ## Overview
 
-Passkey Plus replaces passwords with passkeys — cryptographic credentials stored in your device's Secure Enclave, Windows Hello, or a hardware key like a YubiKey. Users authenticate with Face ID, Touch ID, fingerprint, or PIN: no password required.
+Passkey Hub replaces passwords with passkeys — cryptographic credentials stored in your device's Secure Enclave, Windows Hello, or a hardware key like a YubiKey. Users authenticate with Face ID, Touch ID, fingerprint, or PIN: no password required.
 
 The **Lite (free)** tier is fully functional and allows up to 5 passkeys per user. **Passkey Pro** (coming soon at [wppasskey.com](https://wppasskey.com)) unlocks unlimited passkeys, WooCommerce checkout integration, a device health dashboard, audit log with export, and more.
 
@@ -32,7 +32,7 @@ The **Lite (free)** tier is fully functional and allows up to 5 passkeys per use
 - Rate limiting on login and revoke endpoints
 - Daily cron cleanup of expired rate-limit rows and activity logs
 - Challenge TTL, login redirect URL, RP name, and log retention are all configurable
-- Fully translatable — `.pot` file included, `wp-passkeys` text domain
+- Fully translatable — `.pot` file included, `passkey-hub` text domain
 
 ---
 
@@ -51,17 +51,17 @@ The **Lite (free)** tier is fully functional and allows up to 5 passkeys per use
 
 ### From the WordPress admin
 
-1. Upload the `passkey-plus` folder to `/wp-content/plugins/`.
+1. Upload the `passkey-hub` folder to `/wp-content/plugins/`.
 2. Activate via **Plugins → Installed Plugins**.
-3. Go to **Settings → Passkey Plus** and enable passkeys.
+3. Go to **Settings → Passkey Hub** and enable passkeys.
 4. Visit **Your Profile** and register your first passkey.
 5. Sign out and click **Sign in with Passkey** on the login page.
 
 ### From source (development)
 
 ```bash
-git clone https://github.com/your-org/passkey-plus.git
-cd passkey-plus
+git clone https://github.com/your-org/passkey-hub.git
+cd passkey-hub
 composer install
 ```
 
@@ -74,7 +74,7 @@ Then symlink or copy the folder into your WordPress plugins directory and activa
 ## Project Structure
 
 ```
-passkey-plus/
+passkey-hub/
 ├── admin/
 │   ├── css/
 │   │   └── wpk-admin.css          # All admin + login UI styles
@@ -93,7 +93,7 @@ passkey-plus/
 ├── index.php                      # Silence is golden
 ├── readme.txt                     # WordPress.org readme
 ├── uninstall.php                  # Drops all custom tables on uninstall
-└── passkey-plus.php               # Plugin entry point
+└── passkey-hub.php               # Plugin entry point
 ```
 
 ---
@@ -172,13 +172,13 @@ The project targets **WordPress Coding Standards** (PHPCS). To check:
 
 ```bash
 composer require --dev squizlabs/php_codesniffer wp-coding-standards/wpcs
-./vendor/bin/phpcs --standard=WordPress includes/ admin/ passkey-plus.php
+./vendor/bin/phpcs --standard=WordPress includes/ admin/ passkey-hub.php
 ```
 
 ### Generating a release zip
 
 ```bash
-composer archive --format=zip --dir=./dist --file=passkey-plus
+composer archive --format=zip --dir=./dist --file=passkey-hub
 ```
 
 This honours `.gitignore` and excludes `vendor/` test directories.

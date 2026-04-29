@@ -1,5 +1,5 @@
 {
-    "name": "passkey-plus/passkey-plus",
+    "name": "passkey-hub/passkey-hub",
     "description": "Standalone WordPress passkey (WebAuthn/FIDO2) authentication plugin.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",

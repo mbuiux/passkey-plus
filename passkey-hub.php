@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Passkey Plus
+ * Plugin Name: Passkey Hub
  * Plugin URI:  https://www.wppasskey.com/
- * Description: Passwordless passkey login for WordPress (free / Lite). Supports Face ID, Touch ID, Windows Hello, YubiKey, and more. Upgrade to Passkey Pro for unlimited passkeys, WooCommerce support, audit logs, and advanced access controls.
+ * Description: Passkey Hub enables passwordless passkey login for WordPress (free / Lite). Supports Face ID, Touch ID, Windows Hello, YubiKey, and more. Upgrade to Passkey Pro for unlimited passkeys, WooCommerce support, audit logs, and advanced access controls.
  * Version:     1.1.0
- * Author:      Passkey Plus
+ * Author:      Passkey Hub
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: passkey-plus
+ * Text Domain: passkey-hub
  * Domain Path: /languages
  * Requires at least: 6.0
  * Tested up to: 6.9
@@ -40,7 +40,21 @@ unset( $_wpk_const, $v );
 // ──────────────────────────────────────────────────────────────
 $_wpk_autoload = WPK_PLUGIN_DIR . 'vendor/autoload.php';
 if ( PHP_VERSION_ID >= 80000 && file_exists( $_wpk_autoload ) ) {
-    require_once $_wpk_autoload;
+    $should_load_autoloader = true;
+
+    $autoload_real = WPK_PLUGIN_DIR . 'vendor/composer/autoload_real.php';
+    if ( file_exists( $autoload_real ) ) {
+        $autoload_real_src = file_get_contents( $autoload_real );
+        if ( is_string( $autoload_real_src ) && preg_match( '/class\s+(ComposerAutoloaderInit[0-9a-fA-F_]+)/', $autoload_real_src, $m ) ) {
+            if ( ! empty( $m[1] ) && class_exists( (string) $m[1], false ) ) {
+                $should_load_autoloader = false;
+            }
+        }
+    }
+
+    if ( $should_load_autoloader ) {
+        require_once $_wpk_autoload;
+    }
 }
 unset( $_wpk_autoload );
 
@@ -123,11 +137,11 @@ register_deactivation_hook( __FILE__, 'wpk_deactivate' );
 function wpk_activate( bool $network_wide = false ) {
     if ( version_compare( PHP_VERSION, '8.0', '<' ) ) {
         deactivate_plugins( plugin_basename( WPK_PLUGIN_FILE ) );
-        wp_die( esc_html__( 'Passkey Plus requires PHP 8.0 or higher. Please upgrade PHP before activating this plugin.', 'passkey-plus' ) );
+        wp_die( esc_html__( 'Passkey Hub requires PHP 8.0 or higher. Please upgrade PHP before activating this plugin.', 'passkey-hub' ) );
     }
     if ( version_compare( $GLOBALS['wp_version'], '6.0', '<' ) ) {
         deactivate_plugins( plugin_basename( WPK_PLUGIN_FILE ) );
-        wp_die( esc_html__( 'Passkey Plus requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'passkey-plus' ) );
+        wp_die( esc_html__( 'Passkey Hub requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'passkey-hub' ) );
     }
 
     require_once WPK_PLUGIN_DIR . 'includes/class-wpk-passkeys.php';
@@ -171,8 +185,8 @@ add_action( 'wp_initialize_site', 'wpk_multisite_initialize_site' );
 // Settings link on Plugins page
 // ──────────────────────────────────────────────────────────────
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function ( $links ) {
-    $url  = admin_url( 'options-general.php?page=passkey-plus' );
-    array_unshift( $links, sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'Settings', 'passkey-plus' ) ) );
+    $url  = admin_url( 'options-general.php?page=passkey-hub' );
+    array_unshift( $links, sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'Settings', 'passkey-hub' ) ) );
     return $links;
 } );
 
@@ -190,7 +204,7 @@ add_action( 'admin_notices', function () {
     if ( empty( $warnings ) ) {
         return;
     }
-    echo '<div class="notice notice-error"><p><strong>Passkey Plus security warning:</strong></p><ul>';
+    echo '<div class="notice notice-error"><p><strong>Passkey Hub security warning:</strong></p><ul>';
     foreach ( $warnings as $w ) {
         echo '<li>' . wp_kses( $w, array( 'strong' => array() ) ) . '</li>';
     }
