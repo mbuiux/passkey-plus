@@ -5,10 +5,43 @@
     // ── Base64url helpers ───────────────────────────────────────────────────
 
     function b64urlToBuffer(input) {
-        var base64 = input.replace(/-/g, '+').replace(/_/g, '/');
+        if (input instanceof ArrayBuffer) {
+            return input;
+        }
+
+        if (ArrayBuffer.isView(input)) {
+            return input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength);
+        }
+
+        if (Array.isArray(input)) {
+            return new Uint8Array(input).buffer;
+        }
+
+        if (input && typeof input === 'object' && Array.isArray(input.data)) {
+            return new Uint8Array(input.data).buffer;
+        }
+
+        if (typeof input !== 'string') {
+            throw new Error('Invalid credential format. Please refresh and try again.');
+        }
+
+        var raw = input.trim().replace(/\s+/g, '');
+        if (!raw) {
+            throw new Error('Invalid credential format. Please refresh and try again.');
+        }
+
+        // Accept both base64url and base64 encodings from varying server/client implementations.
+        var base64 = raw.replace(/-/g, '+').replace(/_/g, '/');
         var pad = base64.length % 4;
         if (pad) base64 += '='.repeat(4 - pad);
-        var binary = atob(base64);
+
+        var binary;
+        try {
+            binary = atob(base64);
+        } catch (err) {
+            throw new Error('Invalid passkey data received. Please refresh and try again.');
+        }
+
         var bytes = new Uint8Array(binary.length);
         for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
         return bytes.buffer;
@@ -52,19 +85,47 @@
     }
 
     function hydrateGetOptions(options) {
-        options.publicKey.challenge = b64urlToBuffer(options.publicKey.challenge);
-        if (Array.isArray(options.publicKey.allowCredentials)) {
-            options.publicKey.allowCredentials = options.publicKey.allowCredentials.map(function (item) {
-                item.id = b64urlToBuffer(item.id);
-                return item;
-            });
+        var pk = options && options.publicKey ? options.publicKey : options;
+        if (!pk || !pk.challenge) {
+            throw new Error('Passkey options are incomplete. Please refresh and try again.');
         }
+
+        pk.challenge = b64urlToBuffer(pk.challenge);
+
+        if (Array.isArray(pk.allowCredentials)) {
+            var hydratedAllow = [];
+            pk.allowCredentials.forEach(function (item) {
+                if (!item || !item.id) return;
+                try {
+                    item.id = b64urlToBuffer(item.id);
+                    hydratedAllow.push(item);
+                } catch (e) {
+                    // Skip malformed credential IDs so a single legacy/bad record does not break all passkey sign-ins.
+                }
+            });
+
+            if (hydratedAllow.length) {
+                pk.allowCredentials = hydratedAllow;
+            } else {
+                delete pk.allowCredentials;
+            }
+        }
+
+        options.publicKey = pk;
         return options;
     }
 
     function getLoginIdentifier() {
         var node = document.getElementById('user_login');
         return node ? (node.value || '').trim() : '';
+    }
+
+    function toFriendlyErrorMessage(err) {
+        var msg = (err && err.message) ? String(err.message) : '';
+        if (msg && /did not match the expected pattern/i.test(msg)) {
+            return 'Your passkey request data was invalid. Please refresh this page and try again.';
+        }
+        return msg || WPKLogin.messages.genericError;
     }
 
     // ── AJAX ────────────────────────────────────────────────────────────────
@@ -75,10 +136,21 @@
             credentials: 'same-origin',
             body: data,
         });
-        if (!resp.ok) {
-            throw new Error(WPKLogin.messages.genericError);
+
+        var rawText = await resp.text();
+        var payload;
+
+        try {
+            payload = JSON.parse(rawText);
+        } catch (e) {
+            throw new Error('Server returned non-JSON response. Check PHP/server logs and verify admin-ajax.php is reachable.');
         }
-        return resp.json();
+
+        if (!resp.ok) {
+            throw new Error((payload && payload.data && payload.data.message) || WPKLogin.messages.genericError);
+        }
+
+        return payload;
     }
 
     // ── Sign-in flow ─────────────────────────────────────────────────────────
@@ -177,7 +249,7 @@
                         if (err && err.name === 'NotAllowedError') {
                             setMessage(btn, '');
                         } else {
-                            setMessage(btn, (err && err.message) || WPKLogin.messages.genericError);
+                            setMessage(btn, toFriendlyErrorMessage(err));
                         }
                     })
                     .finally(function () {

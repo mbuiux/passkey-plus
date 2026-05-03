@@ -40,6 +40,8 @@ function wpk_uninstall_cleanup_current_blog(): void {
         'wpk_rate_max_attempts',
         'wpk_rate_lockout',
         'wpk_challenge_ttl',
+        'wpk_login_challenge_ttl',
+        'wpk_registration_challenge_ttl',
         'wpk_login_redirect',
         'wpk_log_retention_days',
         'wpk_rp_name',

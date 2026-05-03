@@ -523,8 +523,8 @@ class WPK_Passkeys {
                                         <span class="wpk-creds-dot" aria-hidden="true"></span>
                                         <?php echo esc_html( $cred->credential_label ?: __( 'Passkey', 'passkey-hub' ) ); ?>
                                     </td>
-                                    <td><?php echo esc_html( mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $cred->created_at ) ); ?></td>
-                                    <td><?php echo $cred->last_used_at ? esc_html( mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $cred->last_used_at ) ) : esc_html__( 'Never', 'passkey-hub' ); ?></td>
+                                    <td><?php echo esc_html( $this->format_utc_datetime_for_display( (string) $cred->created_at ) ); ?></td>
+                                    <td><?php echo $cred->last_used_at ? esc_html( $this->format_utc_datetime_for_display( (string) $cred->last_used_at ) ) : esc_html__( 'Never', 'passkey-hub' ); ?></td>
                                     <?php do_action( 'wpk_profile_table_row', $cred, $user ); ?>
                                     <td>
                                         <button class="wpk-revoke-btn wpk-passkey-revoke" type="button">
@@ -599,7 +599,7 @@ class WPK_Passkeys {
                 'wp-user-' . (string) $user->ID,
                 (string) $user->user_login,
                 (string) $user->display_name,
-                $this->get_challenge_ttl(),
+                $this->get_registration_challenge_ttl(),
                 true,
                 $this->get_user_verification(),
                 null,
@@ -613,7 +613,7 @@ class WPK_Passkeys {
                     'user_id'   => (int) $user->ID,
                     'challenge' => base64_encode( $web_authn->getChallenge()->getBinaryString() ),
                 ),
-                $this->get_challenge_ttl()
+                $this->get_registration_challenge_ttl()
             );
 
             $this->clear_failures( 'reg_begin_ip', $ip );
@@ -901,7 +901,7 @@ class WPK_Passkeys {
 
             $get_args = $web_authn->getGetArgs(
                 $cred_ids,
-                $this->get_challenge_ttl(),
+                $this->get_login_challenge_ttl(),
                 true, true, true, true, true,
                 $this->get_user_verification()
             );
@@ -913,7 +913,7 @@ class WPK_Passkeys {
                     'user_id'   => $state_uid,
                     'challenge' => base64_encode( $web_authn->getChallenge()->getBinaryString() ),
                 ),
-                $this->get_challenge_ttl()
+                $this->get_login_challenge_ttl()
             );
 
             $this->clear_failures( 'login_begin_ip', $ip );
@@ -1181,6 +1181,24 @@ class WPK_Passkeys {
             return min( 600, $opt );
         }
         return 300;
+    }
+
+    private function get_login_challenge_ttl(): int {
+        $opt = (int) get_option( 'wpk_login_challenge_ttl', 0 );
+        if ( $opt >= 30 ) {
+            return min( 1200, $opt );
+        }
+
+        return $this->get_challenge_ttl();
+    }
+
+    private function get_registration_challenge_ttl(): int {
+        $opt = (int) get_option( 'wpk_registration_challenge_ttl', 0 );
+        if ( $opt >= 30 ) {
+            return min( 1200, $opt );
+        }
+
+        return $this->get_challenge_ttl();
     }
 
     private function get_user_verification(): string {
@@ -1460,6 +1478,34 @@ class WPK_Passkeys {
     // ──────────────────────────────────────────────────────────
     // Private helpers — Misc
     // ──────────────────────────────────────────────────────────
+
+    private function utc_datetime_to_timestamp( string $raw_datetime ): int {
+        $raw_datetime = trim( $raw_datetime );
+        if ( $raw_datetime === '' ) {
+            return 0;
+        }
+
+        $date_utc = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $raw_datetime, new DateTimeZone( 'UTC' ) );
+        if ( $date_utc instanceof DateTimeImmutable ) {
+            return $date_utc->getTimestamp();
+        }
+
+        $fallback_ts = strtotime( $raw_datetime . ' UTC' );
+        return $fallback_ts ? (int) $fallback_ts : 0;
+    }
+
+    private function format_utc_datetime_for_display( string $raw_datetime ): string {
+        $timestamp = $this->utc_datetime_to_timestamp( $raw_datetime );
+        if ( $timestamp <= 0 ) {
+            return $raw_datetime;
+        }
+
+        return wp_date(
+            get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
+            $timestamp,
+            wp_timezone()
+        );
+    }
 
     private function is_secure_context(): bool {
         if ( is_ssl() ) {

@@ -157,6 +157,12 @@ class WPK_Settings {
             'default' => true,
         ));
 
+        register_setting($this->option_group, 'wpk_show_setup_notice', array(
+            'type' => 'boolean',
+            'sanitize_callback' => array($this, 'sanitize_checkbox'),
+            'default' => true,
+        ));
+
         register_setting($this->option_group, 'wpk_eligible_roles', array(
             'type' => 'array',
             'sanitize_callback' => array($this, 'sanitize_roles'),
@@ -185,6 +191,18 @@ class WPK_Settings {
             'type' => 'string',
             'sanitize_callback' => array($this, 'sanitize_rp_id'),
             'default' => '',
+        ));
+
+        register_setting($this->option_group, 'wpk_login_challenge_ttl', array(
+            'type' => 'integer',
+            'sanitize_callback' => array($this, 'sanitize_challenge_ttl'),
+            'default' => 300,
+        ));
+
+        register_setting($this->option_group, 'wpk_registration_challenge_ttl', array(
+            'type' => 'integer',
+            'sanitize_callback' => array($this, 'sanitize_challenge_ttl'),
+            'default' => 300,
         ));
 
         register_setting($this->option_group, 'wpk_rate_limit_window', array(
@@ -384,11 +402,13 @@ class WPK_Settings {
     private function render_preserved_hidden_fields($active_tab) {
         if ($active_tab === 'advanced') {
             $enabled = (bool) get_option('wpk_enabled', true);
+            $show_setup_notice = (bool) get_option('wpk_show_setup_notice', true);
             $roles = (array) get_option('wpk_eligible_roles', array('administrator'));
             $max_passkeys = absint(get_option('wpk_max_passkeys_per_user', 5));
             $verification = get_option('wpk_user_verification', 'required');
 
             echo '<input type="hidden" name="wpk_enabled" value="' . esc_attr($enabled ? '1' : '0') . '" />';
+            echo '<input type="hidden" name="wpk_show_setup_notice" value="' . esc_attr($show_setup_notice ? '1' : '0') . '" />';
             foreach ($roles as $role) {
                 echo '<input type="hidden" name="wpk_eligible_roles[]" value="' . esc_attr(sanitize_key($role)) . '" />';
             }
@@ -401,6 +421,8 @@ class WPK_Settings {
             $show_separator = (bool) get_option('wpk_show_separator', true);
             $rp_name = get_option('wpk_rp_name', '');
             $rp_id = get_option('wpk_rp_id', '');
+            $login_challenge_ttl = absint(get_option('wpk_login_challenge_ttl', 300));
+            $registration_challenge_ttl = absint(get_option('wpk_registration_challenge_ttl', 300));
             $window = absint(get_option('wpk_rate_limit_window', 300));
             $max_failures = absint(get_option('wpk_rate_limit_max_failures', 8));
             $lockout = absint(get_option('wpk_rate_limit_lockout', 900));
@@ -408,6 +430,8 @@ class WPK_Settings {
             echo '<input type="hidden" name="wpk_show_separator" value="' . esc_attr($show_separator ? '1' : '0') . '" />';
             echo '<input type="hidden" name="wpk_rp_name" value="' . esc_attr((string) $rp_name) . '" />';
             echo '<input type="hidden" name="wpk_rp_id" value="' . esc_attr((string) $rp_id) . '" />';
+            echo '<input type="hidden" name="wpk_login_challenge_ttl" value="' . esc_attr((string) $login_challenge_ttl) . '" />';
+            echo '<input type="hidden" name="wpk_registration_challenge_ttl" value="' . esc_attr((string) $registration_challenge_ttl) . '" />';
             echo '<input type="hidden" name="wpk_rate_limit_window" value="' . esc_attr((string) $window) . '" />';
             echo '<input type="hidden" name="wpk_rate_limit_max_failures" value="' . esc_attr((string) $max_failures) . '" />';
             echo '<input type="hidden" name="wpk_rate_limit_lockout" value="' . esc_attr((string) $lockout) . '" />';
@@ -416,6 +440,7 @@ class WPK_Settings {
 
     private function render_settings_tab() {
         $enabled = (bool) get_option('wpk_enabled', true);
+        $show_setup_notice = (bool) get_option('wpk_show_setup_notice', true);
         $eligible_roles = (array) get_option('wpk_eligible_roles', array('administrator'));
         $max_passkeys = absint(get_option('wpk_max_passkeys_per_user', 5));
         $verification = get_option('wpk_user_verification', 'required');
@@ -438,6 +463,18 @@ class WPK_Settings {
                 <input type="checkbox" name="wpk_enabled" value="1" <?php checked($enabled); ?> />
                 <span class="wpk-switch__track"><span class="wpk-switch__thumb"></span></span>
                 <span class="screen-reader-text"><?php esc_html_e('Enable passkeys', 'passkey-hub'); ?></span>
+            </label>
+        </div>
+
+        <div class="wpk-card wpk-card--setting">
+            <div class="wpk-setting-copy">
+                <h3><?php esc_html_e('Show setup alert on profile', 'passkey-hub'); ?></h3>
+                <p><?php esc_html_e('Show or hide the admin alert that reminds users to set up a passkey on their profile page.', 'passkey-hub'); ?></p>
+            </div>
+            <label class="wpk-switch">
+                <input type="checkbox" name="wpk_show_setup_notice" value="1" <?php checked($show_setup_notice); ?> />
+                <span class="wpk-switch__track"><span class="wpk-switch__thumb"></span></span>
+                <span class="screen-reader-text"><?php esc_html_e('Show setup alert on profile', 'passkey-hub'); ?></span>
             </label>
         </div>
 
@@ -488,6 +525,8 @@ class WPK_Settings {
         $show_separator = (bool) get_option('wpk_show_separator', true);
         $rp_name = get_option('wpk_rp_name', '');
         $rp_id = get_option('wpk_rp_id', '');
+        $login_challenge_ttl = absint(get_option('wpk_login_challenge_ttl', 300));
+        $registration_challenge_ttl = absint(get_option('wpk_registration_challenge_ttl', 300));
         $window = absint(get_option('wpk_rate_limit_window', 300));
         $max_failures = absint(get_option('wpk_rate_limit_max_failures', 8));
         $lockout = absint(get_option('wpk_rate_limit_lockout', 900));
@@ -521,6 +560,28 @@ class WPK_Settings {
                 <label for="wpk_rp_id"><?php esc_html_e('Relying Party ID', 'passkey-hub'); ?></label>
                 <input id="wpk_rp_id" class="regular-text" type="text" name="wpk_rp_id" value="<?php echo esc_attr($rp_id); ?>" placeholder="<?php echo esc_attr(wp_parse_url(home_url(), PHP_URL_HOST)); ?>" />
                 <p><?php esc_html_e('Usually your root domain. Leave blank unless you know you need to customize it.', 'passkey-hub'); ?></p>
+            </div>
+        </div>
+
+        <div class="wpk-card">
+            <div class="wpk-card__header">
+                <div>
+                    <h3><?php esc_html_e('Passkey challenge timeouts', 'passkey-hub'); ?></h3>
+                    <p><?php esc_html_e('Control how long users have to complete passkey login or registration after a challenge is issued.', 'passkey-hub'); ?></p>
+                </div>
+                <span class="wpk-badge"><?php esc_html_e('Seconds', 'passkey-hub'); ?></span>
+            </div>
+            <div class="wpk-grid-2">
+                <div class="wpk-field">
+                    <label for="wpk_login_challenge_ttl"><?php esc_html_e('Login challenge timeout', 'passkey-hub'); ?></label>
+                    <input id="wpk_login_challenge_ttl" type="number" min="30" max="1200" name="wpk_login_challenge_ttl" value="<?php echo esc_attr($login_challenge_ttl); ?>" />
+                    <p><?php esc_html_e('How long a user has to complete passkey sign-in.', 'passkey-hub'); ?></p>
+                </div>
+                <div class="wpk-field">
+                    <label for="wpk_registration_challenge_ttl"><?php esc_html_e('Registration challenge timeout', 'passkey-hub'); ?></label>
+                    <input id="wpk_registration_challenge_ttl" type="number" min="30" max="1200" name="wpk_registration_challenge_ttl" value="<?php echo esc_attr($registration_challenge_ttl); ?>" />
+                    <p><?php esc_html_e('How long a user has to finish passkey registration.', 'passkey-hub'); ?></p>
+                </div>
             </div>
         </div>
 
@@ -611,7 +672,14 @@ class WPK_Settings {
                 <li><?php esc_html_e('Unlimited passkeys per user', 'passkey-hub'); ?></li>
                 <li><?php esc_html_e('Passkey-only mode per role', 'passkey-hub'); ?></li>
                 <li><?php esc_html_e('Magic-link account recovery', 'passkey-hub'); ?></li>
-                <li><?php esc_html_e('WooCommerce checkout support', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('WooCommerce support', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Easy Digital Downloads support', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('MemberPress support', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Ultimate Member support', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('LearnDash support', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('BuddyBoss support', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Gravity Forms support', 'passkey-hub'); ?></li>
+                <li><?php esc_html_e('Paid Memberships Pro support', 'passkey-hub'); ?></li>
                 <li><?php esc_html_e('Gutenberg &amp; Elementor blocks', 'passkey-hub'); ?></li>
                 <li><?php esc_html_e('Device health dashboard', 'passkey-hub'); ?></li>
                 <li><?php esc_html_e('Full audit log + CSV export', 'passkey-hub'); ?></li>
@@ -672,5 +740,9 @@ class WPK_Settings {
 
     public function sanitize_rate_limit_lockout($value) {
         return min(86400, max(60, absint($value)));
+    }
+
+    public function sanitize_challenge_ttl($value) {
+        return min(1200, max(30, absint($value)));
     }
 }

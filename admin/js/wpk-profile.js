@@ -5,10 +5,43 @@
     // ── Base64url helpers ───────────────────────────────────────────────────
 
     function b64urlToBuffer(input) {
-        var base64 = input.replace(/-/g, '+').replace(/_/g, '/');
+        if (input instanceof ArrayBuffer) {
+            return input;
+        }
+
+        if (ArrayBuffer.isView(input)) {
+            return input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength);
+        }
+
+        if (Array.isArray(input)) {
+            return new Uint8Array(input).buffer;
+        }
+
+        if (input && typeof input === 'object' && Array.isArray(input.data)) {
+            return new Uint8Array(input.data).buffer;
+        }
+
+        if (typeof input !== 'string') {
+            throw new Error('Invalid credential format. Please refresh and try again.');
+        }
+
+        var raw = input.trim().replace(/\s+/g, '');
+        if (!raw) {
+            throw new Error('Invalid credential format. Please refresh and try again.');
+        }
+
+        // Accept both base64url and base64 encodings from varying server/client implementations.
+        var base64 = raw.replace(/-/g, '+').replace(/_/g, '/');
         var pad = base64.length % 4;
         if (pad) base64 += '='.repeat(4 - pad);
-        var binary = atob(base64);
+
+        var binary;
+        try {
+            binary = atob(base64);
+        } catch (err) {
+            throw new Error('Invalid passkey data received. Please refresh and try again.');
+        }
+
         var bytes = new Uint8Array(binary.length);
         for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
         return bytes.buffer;
@@ -64,6 +97,14 @@
         };
     }
 
+    function toFriendlyErrorMessage(err) {
+        var msg = (err && err.message) ? String(err.message) : '';
+        if (msg && /did not match the expected pattern/i.test(msg)) {
+            return 'Your passkey request data was invalid. Please refresh this page and try again.';
+        }
+        return msg || WPKProfile.messages.failed;
+    }
+
     function hydrateCreateOptions(options) {
         options.publicKey.challenge = b64urlToBuffer(options.publicKey.challenge);
         options.publicKey.user.id  = b64urlToBuffer(options.publicKey.user.id);
@@ -84,10 +125,21 @@
             credentials: 'same-origin',
             body: data,
         });
-        if (!resp.ok) {
-            throw new Error(WPKProfile.messages.failed);
+
+        var rawText = await resp.text();
+        var payload;
+
+        try {
+            payload = JSON.parse(rawText);
+        } catch (e) {
+            throw new Error('Server returned non-JSON response. Check PHP/server logs and verify admin-ajax.php is reachable.');
         }
-        return resp.json();
+
+        if (!resp.ok) {
+            throw new Error((payload && payload.data && payload.data.message) || WPKProfile.messages.failed);
+        }
+
+        return payload;
     }
 
     // ── Register ────────────────────────────────────────────────────────────
@@ -177,7 +229,7 @@
                     registerBtn.disabled = true;
                     registerPasskey(context)
                         .catch(function (err) {
-                            setMessage(context.messageNode, (err && err.message) || WPKProfile.messages.failed, true);
+                            setMessage(context.messageNode, toFriendlyErrorMessage(err), true);
                         })
                         .finally(function () {
                             registerBtn.disabled = false;
