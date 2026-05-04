@@ -68,7 +68,21 @@
         var node = getMessageNode(btn);
         if (!node) return;
         node.textContent = text;
-        node.style.display = text ? '' : 'none';
+        node.classList.toggle('wpk-is-hidden', !text);
+    }
+
+    function relocateLoginPasskeyBlock() {
+        var form = document.getElementById('loginform');
+        var block = document.getElementById('wpk-login-passkey-block');
+        if (!form || !block) return;
+
+        var submitRow = form.querySelector('p.submit');
+        if (submitRow && submitRow.parentNode === form) {
+            submitRow.insertAdjacentElement('afterend', block);
+            return;
+        }
+
+        form.appendChild(block);
     }
 
     function setButtonState(btn, busy) {
@@ -208,6 +222,8 @@
     // ── Init ────────────────────────────────────────────────────────────────
 
     function init() {
+        relocateLoginPasskeyBlock();
+
         var buttons = Array.prototype.slice.call(document.querySelectorAll('#wpk-signin-passkey, [data-wpk-passkey-login-btn="1"]'));
         if (!buttons.length) return;
 

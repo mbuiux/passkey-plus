@@ -30,9 +30,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          PLUGIN_SLUG="passkey-hub"
+          PLUGIN_SLUG="passkeyflow"
           BUILD_ROOT="dist/${PLUGIN_SLUG}"
-          ZIP_PATH="dist/${PLUGIN_SLUG}.zip"
 
           rm -rf dist
           mkdir -p "${BUILD_ROOT}"
@@ -41,18 +40,16 @@ jobs:
           cp -R includes "${BUILD_ROOT}/"
           cp -R languages "${BUILD_ROOT}/"
           cp -R vendor "${BUILD_ROOT}/"
-          cp index.php passkey-hub.php readme.txt uninstall.php "${BUILD_ROOT}/"
+          cp index.php passkeyflow.php readme.txt uninstall.php "${BUILD_ROOT}/"
 
           (
             cd dist
             zip -r "${PLUGIN_SLUG}.zip" "${PLUGIN_SLUG}"
           )
 
-          echo "ZIP_PATH=${ZIP_PATH}" >> "$GITHUB_ENV"
-
       - name: Upload installable ZIP artifact
         uses: actions/upload-artifact@v4
         with:
-          name: passkey-hub-main-build
-          path: ${{ env.ZIP_PATH }}
+          name: passkeyflow-main-build
+          path: dist/passkeyflow.zip
           if-no-files-found: error

@@ -1,9 +1,9 @@
-=== Passkey Hub ===
+=== PasskeyFlow ===
 Contributors: markbest
 Tags: passkeys, webauthn, passwordless, login, security
 Requires at least: 6.0
 Tested up to: 6.9
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -12,7 +12,7 @@ Passwordless passkey login for WordPress using Face ID, Touch ID, Windows Hello,
 
 == Description ==
 
-**Passkey Hub** brings the FIDO2 / WebAuthn passkey standard to WordPress. Users register a passkey once — using their device's biometric sensor (Face ID, Touch ID, fingerprint) or a hardware security key — and then sign in instantly with no password needed.
+**PasskeyFlow** brings the FIDO2 / WebAuthn passkey standard to WordPress. Users register a passkey once — using their device's biometric sensor (Face ID, Touch ID, fingerprint) or a hardware security key — and then sign in instantly with no password needed.
 
 Passkeys are phishing-resistant by design. There is no password to steal, no credential to replay, and no username/password form to brute-force.
 
@@ -21,16 +21,15 @@ Passkeys are phishing-resistant by design. There is no password to steal, no cre
 * One-click "Sign in with Passkey" button on the WordPress login screen
 * Register and manage passkeys from your user profile page
 * Supports Face ID, Touch ID, Windows Hello, YubiKey, iCloud Keychain, and Google Password Manager
-* Per-user passkey cap (up to 5 in Lite)
+* Configurable per-user passkey limit (or no limit)
 * Configurable eligible roles (default: administrators)
 * Built-in brute-force protection with configurable rate limiting
 * Clean uninstall — no orphaned tables or options left behind
 
 = Passkey Pro =
 
-[Passkey Pro](https://wppasskey.com/pro) removes all Lite limits and adds:
+[Passkey Pro](https://wppasskey.com/pro) adds advanced controls and integrations:
 
-* Unlimited passkeys per user
 * Passkey-only mode by role (require passkeys, disallow passwords)
 * Magic link account recovery flow
 * WooCommerce checkout passkey support
@@ -59,20 +58,20 @@ Passkeys are phishing-resistant by design. There is no password to steal, no cre
 = Automatic installation =
 
 1. In your WordPress admin, go to **Plugins > Add New**
-2. Search for **Passkey Hub**
+2. Search for **PasskeyFlow**
 3. Click **Install Now** then **Activate**
-4. Go to **Settings > Passkey Hub** and enable passkeys
+4. Go to **Settings > PasskeyFlow** and enable passkeys
 
 = Manual installation =
 
 1. Download the plugin ZIP from WordPress.org
 2. Go to **Plugins > Add New > Upload Plugin** and upload the ZIP
 3. Click **Activate**
-4. Go to **Settings > Passkey Hub** and enable passkeys
+4. Go to **Settings > PasskeyFlow** and enable passkeys
 
 = After activation =
 
-1. Go to **Settings > Passkey Hub** — verify passkeys are enabled and select which roles may use them
+1. Go to **Settings > PasskeyFlow** — verify passkeys are enabled and select which roles may use them
 2. Visit **Users > Your Profile** and register your first passkey
 3. Sign out and confirm the **Sign in with Passkey** button appears on the login page
 4. Register a backup passkey on a second device to avoid lockout
@@ -101,7 +100,7 @@ Yes, in production. The WebAuthn specification only allows passkey operations ov
 
 = Can I control which user roles can use passkeys? =
 
-Yes — in **Settings > Passkey Hub > Eligible Roles**. By default only Administrators. Passkey Pro extends this to any role including custom ones.
+Yes — in **Settings > PasskeyFlow > Eligible Roles**. By default only Administrators. Passkey Pro extends this to any role including custom ones.
 
 = What happens if I deactivate or delete the plugin? =
 
@@ -120,15 +119,21 @@ Yes — add `define( 'WPK_RP_ID', 'example.com' );` to `wp-config.php`.
 1. The passkey sign-in button on the WordPress login screen
 2. Registering a new passkey from the user profile page
 3. The registered passkeys table with revoke action
-4. The Passkey Hub settings page
+4. The PasskeyFlow settings page
 
 == Changelog ==
+
+= 1.1.1 =
+* Rebrand: plugin identity updated to PasskeyFlow (`passkeyflow` slug and text domain)
+* Added: clean-install package validation for `passkeyflow.php` entry file
+* Added: uninstall Pro compatibility check supports both legacy and renamed Pro basenames
+* Updated: translation template generated as `languages/passkeyflow.pot`
 
 = 1.1.0 =
 * Added: dismissible "set up your passkey" nudge notice for eligible users
 * Added: Passkeys column in the admin Users list showing count per user
 * Added: Scheduled daily cleanup of expired rate-limit rows and old log entries
-* Added: Challenge timeout setting in Settings > Passkey Hub > Advanced
+* Added: Challenge timeout setting in Settings > PasskeyFlow > Advanced
 * Added: Login redirect URL field in settings (fallback after passkey login)
 * Added: `[wpk_login_button]` and `[wpk_register_button]` shortcodes
 * Added: Log retention period setting (days)
@@ -139,5 +144,5 @@ Yes — add `define( 'WPK_RP_ID', 'example.com' );` to `wp-config.php`.
 
 == Upgrade Notice ==
 
-= 1.1.0 =
-Recommended update: improved security hardening, multisite provisioning, and settings reliability.
+= 1.1.1 =
+Recommended update: PasskeyFlow identity migration, packaging verification, and release-readiness improvements.

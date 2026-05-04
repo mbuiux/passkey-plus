@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
-        'name' => 'passkey-hub/passkey-hub',
+        'name' => 'passkeyflow/passkeyflow',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'de97c326ca09917edcb665d53e67e410246d3a76',
+        'reference' => '612c56567347c354fbe92b56f07e786f2d33e3b2',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -19,10 +19,10 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'passkey-hub/passkey-hub' => array(
+        'passkeyflow/passkeyflow' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'de97c326ca09917edcb665d53e67e410246d3a76',
+            'reference' => '612c56567347c354fbe92b56f07e786f2d33e3b2',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

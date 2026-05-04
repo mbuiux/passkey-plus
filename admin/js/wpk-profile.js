@@ -207,9 +207,36 @@
         window.location.reload();
     }
 
+    function wireSetupNoticeDismiss() {
+        var notice = document.querySelector('.wpk-setup-notice');
+        if (!notice) return;
+
+        notice.addEventListener('click', function (e) {
+            if (!e.target || !e.target.classList.contains('notice-dismiss')) return;
+
+            var nonce = notice.getAttribute('data-nonce');
+            var ajaxUrl = (window.WPKProfile && WPKProfile.ajaxUrl) ? WPKProfile.ajaxUrl : (window.ajaxurl || '');
+            if (!nonce || !ajaxUrl) return;
+
+            var data = new FormData();
+            data.append('action', 'wpk_dismiss_notice');
+            data.append('nonce', nonce);
+
+            fetch(ajaxUrl, {
+                method: 'POST',
+                credentials: 'same-origin',
+                body: data,
+            }).catch(function () {
+                // No-op: dismissal state can be retried next page load.
+            });
+        });
+    }
+
     // ── Event binding ───────────────────────────────────────────────────────
 
     function init() {
+        wireSetupNoticeDismiss();
+
         // Check WebAuthn support
         var registerButtons = Array.prototype.slice.call(document.querySelectorAll('#wpk-passkey-register, [data-wpk-passkey-register="1"]'));
         if (registerButtons.length) {

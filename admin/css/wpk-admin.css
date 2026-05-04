@@ -1164,6 +1164,19 @@
     color: #9aa3ad;
 }
 
+.wpk-is-hidden {
+    display: none !important;
+}
+
+.wpk-user-passkeys-muted {
+    color: #8a8f96;
+}
+
+body.login #wpk-login-passkey-block {
+    clear: both;
+    margin-top: 18px;
+}
+
 body.login .wpk-login-separator {
     width: 100%;
     margin: 14px 0 12px;

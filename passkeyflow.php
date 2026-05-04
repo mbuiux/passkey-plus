@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Passkey Hub
+ * Plugin Name: PasskeyFlow
  * Plugin URI:  https://www.wppasskey.com/
- * Description: Passkey Hub enables passwordless passkey login for WordPress (free / Lite). Supports Face ID, Touch ID, Windows Hello, YubiKey, and more. Upgrade to Passkey Pro for unlimited passkeys, WooCommerce support, audit logs, and advanced access controls.
- * Version:     1.1.0
+ * Description: PasskeyFlow enables passwordless passkey login for WordPress. Supports Face ID, Touch ID, Windows Hello, YubiKey, and more.
+ * Version:     1.1.1
  * Author:      Red Wolf Designs LLC
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: passkey-hub
+ * Text Domain: passkeyflow
  * Domain Path: /languages
  * Requires at least: 6.0
  * Tested up to: 6.9
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'WPK_VERSION',     '1.1.0' );
+define( 'WPK_VERSION',     '1.1.1' );
 define( 'WPK_PLUGIN_FILE', __FILE__ );
 define( 'WPK_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'WPK_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
@@ -137,11 +137,11 @@ register_deactivation_hook( __FILE__, 'wpk_deactivate' );
 function wpk_activate( bool $network_wide = false ) {
     if ( version_compare( PHP_VERSION, '8.0', '<' ) ) {
         deactivate_plugins( plugin_basename( WPK_PLUGIN_FILE ) );
-        wp_die( esc_html__( 'Passkey Hub requires PHP 8.0 or higher. Please upgrade PHP before activating this plugin.', 'passkey-hub' ) );
+        wp_die( esc_html__( 'PasskeyFlow requires PHP 8.0 or higher. Please upgrade PHP before activating this plugin.', 'passkeyflow' ) );
     }
     if ( version_compare( $GLOBALS['wp_version'], '6.0', '<' ) ) {
         deactivate_plugins( plugin_basename( WPK_PLUGIN_FILE ) );
-        wp_die( esc_html__( 'Passkey Hub requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'passkey-hub' ) );
+        wp_die( esc_html__( 'PasskeyFlow requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'passkeyflow' ) );
     }
 
     require_once WPK_PLUGIN_DIR . 'includes/class-wpk-passkeys.php';
@@ -185,8 +185,8 @@ add_action( 'wp_initialize_site', 'wpk_multisite_initialize_site' );
 // Settings link on Plugins page
 // ──────────────────────────────────────────────────────────────
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function ( $links ) {
-    $url  = admin_url( 'options-general.php?page=passkey-hub' );
-    array_unshift( $links, sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'Settings', 'passkey-hub' ) ) );
+    $url  = admin_url( 'options-general.php?page=passkeyflow' );
+    array_unshift( $links, sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'Settings', 'passkeyflow' ) ) );
     return $links;
 } );
 
@@ -204,7 +204,7 @@ add_action( 'admin_notices', function () {
     if ( empty( $warnings ) ) {
         return;
     }
-    echo '<div class="notice notice-error"><p><strong>Passkey Hub security warning:</strong></p><ul>';
+    echo '<div class="notice notice-error"><p><strong>PasskeyFlow security warning:</strong></p><ul>';
     foreach ( $warnings as $w ) {
         echo '<li>' . wp_kses( $w, array( 'strong' => array() ) ) . '</li>';
     }

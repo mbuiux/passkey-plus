@@ -27,6 +27,10 @@ class WPK_Shortcodes {
     public function __construct() {
         add_shortcode( 'wpk_login_button',    array( $this, 'render_login_button' ) );
         add_shortcode( 'wpk_register_button', array( $this, 'render_register_button' ) );
+        add_shortcode( 'wpk_passkey_profile', array( $this, 'render_passkey_profile' ) );
+        add_shortcode( 'wpk_passkey_prompt',  array( $this, 'render_passkey_prompt' ) );
+
+        // Legacy aliases kept for backward compatibility during shortcode migration.
         add_shortcode( 'wp_passkey_profile',  array( $this, 'render_passkey_profile' ) );
         add_shortcode( 'wp_passkey_prompt',   array( $this, 'render_passkey_prompt' ) );
     }
@@ -62,15 +66,15 @@ class WPK_Shortcodes {
                 'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
                 'nonce'    => wp_create_nonce( 'wpk_profile' ),
                 'messages' => array(
-                    'labelPlaceholder' => __( 'e.g. iPhone 15, YubiKey 5', 'passkey-hub' ),
-                    'starting'         => __( 'Starting passkey registration…', 'passkey-hub' ),
-                    'success'          => __( 'Passkey registered successfully.', 'passkey-hub' ),
-                    'failed'           => __( 'Passkey registration failed. Try again.', 'passkey-hub' ),
-                    'notSupported'     => __( 'This browser does not support passkeys.', 'passkey-hub' ),
-                    'mobileHint'       => __( 'Tip: open this page on your phone to save a passkey to iCloud Keychain or Google Password Manager.', 'passkey-hub' ),
-                    'confirmRevoke'    => __( 'Revoke this passkey? You will need to re-register to use it again.', 'passkey-hub' ),
-                    'revokeFailed'     => __( 'Failed to revoke passkey.', 'passkey-hub' ),
-                    'limitReached'     => __( 'You have reached the maximum number of passkeys. Revoke an existing one to add a new one.', 'passkey-hub' ),
+                    'labelPlaceholder' => __( 'e.g. iPhone 15, YubiKey 5', 'passkeyflow' ),
+                    'starting'         => __( 'Starting passkey registration…', 'passkeyflow' ),
+                    'success'          => __( 'Passkey registered successfully.', 'passkeyflow' ),
+                    'failed'           => __( 'Passkey registration failed. Try again.', 'passkeyflow' ),
+                    'notSupported'     => __( 'This browser does not support passkeys.', 'passkeyflow' ),
+                    'mobileHint'       => __( 'Tip: open this page on your phone to save a passkey to iCloud Keychain or Google Password Manager.', 'passkeyflow' ),
+                    'confirmRevoke'    => __( 'Revoke this passkey? You will need to re-register to use it again.', 'passkeyflow' ),
+                    'revokeFailed'     => __( 'Failed to revoke passkey.', 'passkeyflow' ),
+                    'limitReached'     => __( 'You have reached the maximum number of passkeys. Revoke an existing one to add a new one.', 'passkeyflow' ),
                 ),
             ) );
         }
@@ -128,12 +132,12 @@ class WPK_Shortcodes {
         }
 
         $atts = shortcode_atts( array(
-            'title'        => __( 'Upgrade your account security with a passkey', 'passkey-hub' ),
-            'message'      => __( 'Use Face ID, Touch ID, Windows Hello, or a hardware key for fast passwordless sign-in.', 'passkey-hub' ),
-            'button_label' => __( 'Register a Passkey', 'passkey-hub' ),
+            'title'        => __( 'Upgrade your account security with a passkey', 'passkeyflow' ),
+            'message'      => __( 'Use Face ID, Touch ID, Windows Hello, or a hardware key for fast passwordless sign-in.', 'passkeyflow' ),
+            'button_label' => __( 'Register a Passkey', 'passkeyflow' ),
             'class'        => '',
             'force_show'   => '0',
-        ), $atts, 'wp_passkey_prompt' );
+        ), $atts, 'wpk_passkey_prompt' );
 
         $force_show = in_array( strtolower( (string) $atts['force_show'] ), array( '1', 'true', 'yes' ), true )
             && current_user_can( 'manage_options' );
@@ -159,15 +163,15 @@ class WPK_Shortcodes {
 
         ob_start();
         ?>
-        <section class="<?php echo esc_attr( $wrapper_class ); ?>" aria-label="<?php esc_attr_e( 'Passkey setup prompt', 'passkey-hub' ); ?>">
+        <section class="<?php echo esc_attr( $wrapper_class ); ?>" aria-label="<?php esc_attr_e( 'Passkey setup prompt', 'passkeyflow' ); ?>">
             <div class="wpk-passkey-prompt__card">
-                <p class="wpk-passkey-prompt__eyebrow"><?php esc_html_e( 'Recommended', 'passkey-hub' ); ?></p>
+                <p class="wpk-passkey-prompt__eyebrow"><?php esc_html_e( 'Recommended', 'passkeyflow' ); ?></p>
                 <h3><?php echo esc_html( $title ); ?></h3>
                 <p class="wpk-passkey-prompt__copy"><?php echo esc_html( $message ); ?></p>
                 <ul class="wpk-passkey-prompt__benefits" role="list">
-                    <li><?php esc_html_e( 'Biometric login in seconds', 'passkey-hub' ); ?></li>
-                    <li><?php esc_html_e( 'Stronger protection than passwords', 'passkey-hub' ); ?></li>
-                    <li><?php esc_html_e( 'Works across your trusted devices', 'passkey-hub' ); ?></li>
+                    <li><?php esc_html_e( 'Biometric login in seconds', 'passkeyflow' ); ?></li>
+                    <li><?php esc_html_e( 'Stronger protection than passwords', 'passkeyflow' ); ?></li>
+                    <li><?php esc_html_e( 'Works across your trusted devices', 'passkeyflow' ); ?></li>
                 </ul>
                 <div class="wpk-passkey-prompt__actions">
                     <?php echo $register_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -196,7 +200,7 @@ class WPK_Shortcodes {
         }
 
         $atts = shortcode_atts( array(
-            'label'       => __( 'Sign in with Passkey', 'passkey-hub' ),
+            'label'       => __( 'Sign in with Passkey', 'passkeyflow' ),
             'redirect_to' => '',
             'class'       => '',
             'allow_multiple' => '0',
@@ -226,9 +230,9 @@ class WPK_Shortcodes {
                 'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
                 'nonce'    => wp_create_nonce( 'wpk_login' ),
                 'messages' => array(
-                    'notSupported' => __( 'Passkeys are unavailable here. Use HTTPS (or localhost) in a passkey-capable browser, or sign in with your password.', 'passkey-hub' ),
-                    'genericError' => __( 'Passkey sign-in failed. Please try again or use your password.', 'passkey-hub' ),
-                    'signingIn'    => __( 'Signing in…', 'passkey-hub' ),
+                    'notSupported' => __( 'Passkeys are unavailable here. Use HTTPS (or localhost) in a passkey-capable browser, or sign in with your password.', 'passkeyflow' ),
+                    'genericError' => __( 'Passkey sign-in failed. Please try again or use your password.', 'passkeyflow' ),
+                    'signingIn'    => __( 'Signing in…', 'passkeyflow' ),
                 ),
             ) );
         }
@@ -245,7 +249,7 @@ class WPK_Shortcodes {
             <button type="button"
                     class="wpk-passkey-btn wpk-sc-btn wpk-signin-passkey"
                     data-wpk-passkey-login-btn="1"
-                    aria-label="<?php esc_attr_e( 'Sign in with a passkey (Face ID, Touch ID, or security key)', 'passkey-hub' ); ?>"
+                    aria-label="<?php esc_attr_e( 'Sign in with a passkey (Face ID, Touch ID, or security key)', 'passkeyflow' ); ?>"
                     <?php if ( $redirect_to ) : ?>data-redirect="<?php echo esc_attr( $redirect_to ); ?>"<?php endif; ?>>
                 <span class="wpk-passkey-icon" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -256,9 +260,8 @@ class WPK_Shortcodes {
                 </span>
                 <?php echo esc_html( $label ); ?>
             </button>
-            <p class="wpk-login-message"
-               aria-live="polite"
-               style="display:none;"></p>
+            <p class="wpk-login-message wpk-is-hidden"
+               aria-live="polite"></p>
         </div>
         <?php
         return ob_get_clean();
@@ -288,7 +291,7 @@ class WPK_Shortcodes {
         }
 
         $atts = shortcode_atts( array(
-            'label' => __( 'Register a Passkey', 'passkey-hub' ),
+            'label' => __( 'Register a Passkey', 'passkeyflow' ),
             'class' => '',
         ), $atts, 'wpk_register_button' );
 
@@ -306,11 +309,11 @@ class WPK_Shortcodes {
         ?>
         <div class="<?php echo esc_attr( $wrapper_class ); ?>">
             <div class="wpk-profile-register-controls">
-                <label for="<?php echo esc_attr( $input_id ); ?>" class="screen-reader-text"><?php esc_html_e( 'Device label (optional)', 'passkey-hub' ); ?></label>
+                <label for="<?php echo esc_attr( $input_id ); ?>" class="screen-reader-text"><?php esc_html_e( 'Device label (optional)', 'passkeyflow' ); ?></label>
                 <input type="text"
                        id="<?php echo esc_attr( $input_id ); ?>"
                        class="wpk-profile-label-input"
-                       placeholder="<?php esc_attr_e( 'Device label (optional)', 'passkey-hub' ); ?>"
+                       placeholder="<?php esc_attr_e( 'Device label (optional)', 'passkeyflow' ); ?>"
                        maxlength="100" />
                 <div class="wpk-register-actions">
                     <button type="button" class="wpk-profile-btn" data-wpk-passkey-register="1" data-wpk-passkey-input-id="<?php echo esc_attr( $input_id ); ?>" data-wpk-passkey-message-id="<?php echo esc_attr( $message_id ); ?>" aria-describedby="<?php echo esc_attr( $message_id ); ?>">

@@ -1,19 +1,19 @@
-# Passkey Hub
+# PasskeyFlow
 
 **Passwordless passkey login for WordPress — powered by WebAuthn / FIDO2.**
 
 [![WordPress tested up to 6.8](https://img.shields.io/badge/WordPress-6.8-3858e9?logo=wordpress&logoColor=white)](https://wordpress.org)
 [![PHP 8.0+](https://img.shields.io/badge/PHP-8.0%2B-777bb4?logo=php&logoColor=white)](https://php.net)
 [![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-[![Version](https://img.shields.io/badge/version-1.1.0-success)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.1.1-success)](CHANGELOG.md)
 
 ---
 
 ## Overview
 
-Passkey Hub replaces passwords with passkeys — cryptographic credentials stored in your device's Secure Enclave, Windows Hello, or a hardware key like a YubiKey. Users authenticate with Face ID, Touch ID, fingerprint, or PIN: no password required.
+PasskeyFlow replaces passwords with passkeys — cryptographic credentials stored in your device's Secure Enclave, Windows Hello, or a hardware key like a YubiKey. Users authenticate with Face ID, Touch ID, fingerprint, or PIN: no password required.
 
-The **Lite (free)** tier is fully functional and allows up to 5 passkeys per user. **Passkey Pro** (coming soon at [wppasskey.com](https://wppasskey.com)) unlocks unlimited passkeys, WooCommerce checkout integration, a device health dashboard, audit log with export, and more.
+**Passkey Pro** (coming soon at [wppasskey.com](https://wppasskey.com)) adds WooCommerce checkout integration, a device health dashboard, audit log with export, and more.
 
 ---
 
@@ -24,7 +24,7 @@ The **Lite (free)** tier is fully functional and allows up to 5 passkeys per use
 - Drop-in passkey button on `wp-login.php` — no template edits required
 - `[wpk_login_button]` and `[wpk_register_button]` shortcodes for front-end placement
 - Per-role eligibility control — grant passkeys to admins only, or all users
-- Up to **5 passkeys per user** (Pro removes this cap)
+- Configurable per-user passkey limit (or no limit)
 - Passkey management in the **user profile** (rename, revoke, capacity indicator)
 - Dismissible admin notice prompting eligible users to register their first passkey
 - **Users list column** showing each user's passkey count
@@ -32,7 +32,7 @@ The **Lite (free)** tier is fully functional and allows up to 5 passkeys per use
 - Rate limiting on login and revoke endpoints
 - Daily cron cleanup of expired rate-limit rows and activity logs
 - Challenge TTL, login redirect URL, RP name, and log retention are all configurable
-- Fully translatable — `.pot` file included, `passkey-hub` text domain
+- Fully translatable — `.pot` file included, `passkeyflow` text domain
 
 ---
 
@@ -51,17 +51,17 @@ The **Lite (free)** tier is fully functional and allows up to 5 passkeys per use
 
 ### From the WordPress admin
 
-1. Upload the `passkey-hub` folder to `/wp-content/plugins/`.
+1. Upload the `passkeyflow` folder to `/wp-content/plugins/`.
 2. Activate via **Plugins → Installed Plugins**.
-3. Go to **Settings → Passkey Hub** and enable passkeys.
+3. Go to **Settings → PasskeyFlow** and enable passkeys.
 4. Visit **Your Profile** and register your first passkey.
 5. Sign out and click **Sign in with Passkey** on the login page.
 
 ### From source (development)
 
 ```bash
-git clone https://github.com/your-org/passkey-hub.git
-cd passkey-hub
+git clone https://github.com/your-org/passkeyflow.git
+cd passkeyflow
 composer install
 ```
 
@@ -74,7 +74,7 @@ Then symlink or copy the folder into your WordPress plugins directory and activa
 ## Project Structure
 
 ```
-passkey-hub/
+passkeyflow/
 ├── admin/
 │   ├── css/
 │   │   └── wpk-admin.css          # All admin + login UI styles
@@ -93,7 +93,7 @@ passkey-hub/
 ├── index.php                      # Silence is golden
 ├── readme.txt                     # WordPress.org readme
 ├── uninstall.php                  # Drops all custom tables on uninstall
-└── passkey-hub.php               # Plugin entry point
+└── passkeyflow.php               # Plugin entry point
 ```
 
 ---
@@ -172,13 +172,13 @@ The project targets **WordPress Coding Standards** (PHPCS). To check:
 
 ```bash
 composer require --dev squizlabs/php_codesniffer wp-coding-standards/wpcs
-./vendor/bin/phpcs --standard=WordPress includes/ admin/ passkey-hub.php
+./vendor/bin/phpcs --standard=WordPress includes/ admin/ passkeyflow.php
 ```
 
 ### Generating a release zip
 
 ```bash
-composer archive --format=zip --dir=./dist --file=passkey-hub
+composer archive --format=zip --dir=./dist --file=passkeyflow
 ```
 
 This honours `.gitignore` and excludes `vendor/` test directories.

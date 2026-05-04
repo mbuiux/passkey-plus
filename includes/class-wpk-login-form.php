@@ -32,44 +32,10 @@ class WPK_Login_Form {
 
         ?>
 
-        <style id="wpk-login-separator-inline">
-            body.login #wpk-login-passkey-block {
-                clear: both;
-                margin-top: 18px;
-            }
-
-            body.login .wpk-login-separator {
-                width: 100%;
-                margin: 0 0 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #8b949e;
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: 0.08em;
-                text-transform: uppercase;
-            }
-
-            body.login .wpk-login-separator::before,
-            body.login .wpk-login-separator::after {
-                content: "";
-                flex: 1 1 auto;
-                border-top: 1px solid #d8dde3;
-            }
-
-            body.login .wpk-login-separator span {
-                display: inline-block;
-                padding: 0 10px;
-                line-height: 1;
-                background: #fff;
-            }
-        </style>
-
         <div id="wpk-login-passkey-block">
             <?php if ( $show_sep ) : ?>
-            <div class="wpk-login-separator" role="separator" aria-label="<?php esc_attr_e( 'or', 'passkey-hub' ); ?>">
-                <span><?php esc_html_e( 'OR', 'passkey-hub' ); ?></span>
+            <div class="wpk-login-separator" role="separator" aria-label="<?php esc_attr_e( 'or', 'passkeyflow' ); ?>">
+                <span><?php esc_html_e( 'OR', 'passkeyflow' ); ?></span>
             </div>
             <?php endif; ?>
 
@@ -77,7 +43,7 @@ class WPK_Login_Form {
                 <button type="button"
                         id="wpk-signin-passkey"
                         class="button button-large wpk-passkey-btn"
-                        aria-label="<?php esc_attr_e( 'Sign in with a passkey (Face ID, Touch ID, or security key)', 'passkey-hub' ); ?>">
+                        aria-label="<?php esc_attr_e( 'Sign in with a passkey (Face ID, Touch ID, or security key)', 'passkeyflow' ); ?>">
                     <span class="wpk-passkey-icon" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12.4 2.7a2.5 2.5 0 0 1 3.4 0l5.5 5.5a2.5 2.5 0 0 1 0 3.4l-3.7 3.7a2.5 2.5 0 0 1-3.4 0L8.7 9.8a2.5 2.5 0 0 1 0-3.4z"/>
@@ -85,40 +51,14 @@ class WPK_Login_Form {
                             <path d="m9.4 10.6-6.814 6.814A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814"/>
                         </svg>
                     </span>
-                    <?php esc_html_e( 'Sign in with Passkey', 'passkey-hub' ); ?>
+                    <?php esc_html_e( 'Sign in with Passkey', 'passkeyflow' ); ?>
                 </button>
                 <p id="wpk-passkey-login-message"
-                   class="wpk-login-message"
+                   class="wpk-login-message wpk-is-hidden"
                    aria-live="polite"
-                   style="display:none;"></p>
+                   ></p>
             </div>
         </div>
-        <script id="wpk-login-passkey-relocate">
-            (function () {
-                function movePasskeyBlock() {
-                    var form = document.getElementById('loginform');
-                    var block = document.getElementById('wpk-login-passkey-block');
-                    if (!form || !block) {
-                        return;
-                    }
-
-                    var submitRow = form.querySelector('p.submit');
-                    if (submitRow && submitRow.parentNode === form) {
-                        submitRow.insertAdjacentElement('afterend', block);
-                        return;
-                    }
-
-                    form.appendChild(block);
-                }
-
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', movePasskeyBlock);
-                    return;
-                }
-
-                movePasskeyBlock();
-            })();
-        </script>
         <?php
     }
 
