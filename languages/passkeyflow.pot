@@ -271,7 +271,7 @@ msgid "Everyday passkey controls"
 msgstr ""
 
 #: includes/class-wpk-settings.php:454
-msgid "Premium defaults"
+msgid "Recommended defaults"
 msgstr ""
 
 #: includes/class-wpk-settings.php:459
@@ -473,86 +473,6 @@ msgstr ""
 
 #: includes/class-wpk-settings.php:648
 msgid "Drop-in passkey experiences"
-msgstr ""
-
-#: includes/class-wpk-settings.php:667
-msgid "Pro"
-msgstr ""
-
-#: includes/class-wpk-settings.php:668
-msgid "PasskeyFlow Pro"
-msgstr ""
-
-#: includes/class-wpk-settings.php:669
-msgid "Unlock a premium passwordless experience with advanced controls and integrations."
-msgstr ""
-
-#: includes/class-wpk-settings.php:671
-msgid "Passkey-only mode per role"
-msgstr ""
-
-#: includes/class-wpk-settings.php:672
-msgid "Magic-link account recovery"
-msgstr ""
-
-#: includes/class-wpk-settings.php:673
-msgid "WooCommerce support"
-msgstr ""
-
-#: includes/class-wpk-settings.php:674
-msgid "Easy Digital Downloads support"
-msgstr ""
-
-#: includes/class-wpk-settings.php:675
-msgid "MemberPress support"
-msgstr ""
-
-#: includes/class-wpk-settings.php:676
-msgid "Ultimate Member support"
-msgstr ""
-
-#: includes/class-wpk-settings.php:677
-msgid "LearnDash support"
-msgstr ""
-
-#: includes/class-wpk-settings.php:678
-msgid "BuddyBoss support"
-msgstr ""
-
-#: includes/class-wpk-settings.php:679
-msgid "Gravity Forms support"
-msgstr ""
-
-#: includes/class-wpk-settings.php:680
-msgid "Paid Memberships Pro support"
-msgstr ""
-
-#: includes/class-wpk-settings.php:681
-msgid "Gutenberg &amp; Elementor blocks"
-msgstr ""
-
-#: includes/class-wpk-settings.php:682
-msgid "Device health dashboard"
-msgstr ""
-
-#: includes/class-wpk-settings.php:683
-msgid "Full audit log + CSV export"
-msgstr ""
-
-#: includes/class-wpk-settings.php:684
-msgid "Conditional access by role &amp; URL"
-msgstr ""
-
-#: includes/class-wpk-settings.php:685
-msgid "WP-CLI commands"
-msgstr ""
-
-#: includes/class-wpk-settings.php:686
-msgid "White-label &amp; agency tools"
-msgstr ""
-
-#: includes/class-wpk-settings.php:688
-msgid "Upgrade to Pro"
 msgstr ""
 
 #: includes/class-wpk-settings.php:692

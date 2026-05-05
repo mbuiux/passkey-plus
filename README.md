@@ -13,8 +13,6 @@
 
 PasskeyFlow for Secure Login replaces passwords with passkeys — cryptographic credentials stored in your device's Secure Enclave, Windows Hello, or a hardware key like a YubiKey. Users authenticate with Face ID, Touch ID, fingerprint, or PIN: no password required.
 
-**PasskeyFlow Pro** (coming soon at [wppasskey.com](https://wppasskey.com)) adds passkey-only enforcement, device health analytics, audit exports, and agency tooling.
-
 ---
 
 ## Features
@@ -22,8 +20,8 @@ PasskeyFlow for Secure Login replaces passwords with passkeys — cryptographic 
 - Passkey registration and authentication via the **WebAuthn Level 2** spec
 - Works with **Face ID, Touch ID, Windows Hello, Android biometrics, YubiKey** and any FIDO2 authenticator
 - Drop-in passkey button on `wp-login.php` — no template edits required
-- `[wpk_login_button]` and `[wpk_register_button]` shortcodes for front-end placement
-- Integration-aware passkey modules for **WooCommerce, Easy Digital Downloads, MemberPress, Ultimate Member, LearnDash, BuddyBoss, Gravity Forms, and Paid Memberships Pro**
+- `[pkflow_login_button]` and `[pkflow_register_button]` shortcodes for front-end placement
+- Integration-aware passkey modules for **WooCommerce, Easy Digital Downloads, MemberPress, Ultimate Member, LearnDash, BuddyBoss, Gravity Forms, and PMPro**
 - Integration shortcodes and Gutenberg blocks auto-register when supported plugins are active
 - Per-role eligibility control — grant passkeys to admins only, or all users
 - Configurable per-user passkey limit (or no limit)
@@ -86,7 +84,7 @@ passkeyflow/
 │   ├── class-wpk-passkeys.php     # Core WebAuthn engine, AJAX handlers, rate limiting
 │   ├── class-wpk-settings.php     # Settings page, tabs, field renderers
 │   ├── class-wpk-login-form.php   # Injects passkey button on wp-login.php
-│   ├── class-wpk-shortcodes.php   # [wpk_login_button] and [wpk_register_button]
+│   ├── class-wpk-shortcodes.php   # [pkflow_login_button] and [pkflow_register_button]
 │   └── class-wpk-integration-manager.php # Integration modules, shortcodes, and blocks
 ├── languages/                     # Translation files (.pot)
 ├── vendor/                        # Composer dependencies
@@ -119,18 +117,18 @@ All three tables are dropped on plugin uninstall via `uninstall.php`.
 Add any of these to `wp-config.php` to override database settings at the server level:
 
 ```php
-define( 'WPK_CHALLENGE_TTL',  120 );          // Challenge timeout in seconds (default: 300)
-define( 'WPK_ENABLE_LOGGING', true );          // Enable activity logging to wp_wpk_logs
-define( 'WPK_RP_ID',          'example.com' ); // Override the WebAuthn Relying Party ID
-define( 'WPK_RP_NAME',        'My Site' );     // Override the RP display name
-define( 'WPK_ALLOW_HTTP',     true );          // Allow passkeys over HTTP (dev only — never in production)
+define( 'PKFLOW_CHALLENGE_TTL',  120 );          // Challenge timeout in seconds (default: 300)
+define( 'PKFLOW_ENABLE_LOGGING', true );          // Enable activity logging to wp_wpk_logs
+define( 'PKFLOW_RP_ID',          'example.com' ); // Override the WebAuthn Relying Party ID
+define( 'PKFLOW_RP_NAME',        'My Site' );     // Override the RP display name
+define( 'PKFLOW_ALLOW_HTTP',     true );          // Allow passkeys over HTTP (dev only — never in production)
 ```
 
 ---
 
 ## Shortcodes
 
-### `[wpk_login_button]`
+### `[pkflow_login_button]`
 
 Renders the passkey sign-in button for logged-out visitors.
 
@@ -141,10 +139,10 @@ Renders the passkey sign-in button for logged-out visitors.
 | `class` | — | Extra CSS class(es) on the wrapper |
 
 ```
-[wpk_login_button label="Sign in with your passkey" redirect_to="/dashboard"]
+[pkflow_login_button label="Sign in with your passkey" redirect_to="/dashboard"]
 ```
 
-### `[wpk_register_button]`
+### `[pkflow_register_button]`
 
 Renders the passkey registration button for logged-in eligible users.
 
@@ -154,7 +152,7 @@ Renders the passkey registration button for logged-in eligible users.
 | `class` | — | Extra CSS class(es) on the wrapper |
 
 ```
-[wpk_register_button label="Add a passkey to your account"]
+[pkflow_register_button label="Add a passkey to your account"]
 ```
 
 ---
@@ -216,7 +214,7 @@ See [readme.txt](readme.txt) for the full changelog in WordPress.org format.
 - Daily cron cleanup (expired rate limits + old log entries)
 - Challenge TTL setting (30–600 s)
 - Login redirect URL setting
-- `[wpk_login_button]` and `[wpk_register_button]` shortcodes
+- `[pkflow_login_button]` and `[pkflow_register_button]` shortcodes
 
 ### 1.0.0
 - Initial release

@@ -152,7 +152,7 @@
         setMessage(messageNode, WPKProfile.messages.starting, false);
 
         var beginData = new FormData();
-        beginData.append('action', 'wpk_begin_registration');
+        beginData.append('action', 'pkflow_begin_registration');
         beginData.append('nonce',  WPKProfile.nonce);
 
         var beginResp = await postForm(beginData);
@@ -169,7 +169,7 @@
         var credential = await navigator.credentials.create(options);
 
         var finishData = new FormData();
-        finishData.append('action',            'wpk_finish_registration');
+        finishData.append('action',            'pkflow_finish_registration');
         finishData.append('nonce',             WPKProfile.nonce);
         finishData.append('token',             beginResp.data.token);
         finishData.append('clientDataJSON',    bufferToB64url(credential.response.clientDataJSON));
@@ -196,7 +196,7 @@
         if (!credentialId) return;
 
         var data = new FormData();
-        data.append('action',       'wpk_revoke_credential');
+        data.append('action',       'pkflow_revoke_credential');
         data.append('nonce',        WPKProfile.nonce);
         data.append('credentialId', credentialId);
 
@@ -219,7 +219,7 @@
             if (!nonce || !ajaxUrl) return;
 
             var data = new FormData();
-            data.append('action', 'wpk_dismiss_notice');
+            data.append('action', 'pkflow_dismiss_notice');
             data.append('nonce', nonce);
 
             fetch(ajaxUrl, {

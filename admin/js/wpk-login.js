@@ -173,7 +173,7 @@
         setMessage(btn, '');
 
         var beginData = new FormData();
-        beginData.append('action', 'wpk_begin_login');
+        beginData.append('action', 'pkflow_begin_login');
         beginData.append('nonce',  WPKLogin.nonce);
 
         var identifier = getLoginIdentifier();
@@ -190,7 +190,7 @@
         var credential = await navigator.credentials.get(options);
 
         var finishData = new FormData();
-        finishData.append('action',            'wpk_finish_login');
+        finishData.append('action',            'pkflow_finish_login');
         finishData.append('nonce',             WPKLogin.nonce);
         finishData.append('token',             beginResp.data.token);
         finishData.append('id',                bufferToB64url(credential.rawId));

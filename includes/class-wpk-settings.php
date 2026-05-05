@@ -10,10 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class WPK_Settings {
-    private $option_group = 'wpk_settings_group';
+class PKFLOW_Settings {
+    private $option_group = 'pkflow_settings_group';
     private $page_slug = 'passkeyflow';
-    private $notice_transient_prefix = 'wpk_settings_notice_';
+    private $notice_transient_prefix = 'pkflow_settings_notice_';
 
     private function get_notice_transient_key( $user_id ) {
         return $this->notice_transient_prefix . absint( $user_id );
@@ -121,7 +121,7 @@ class WPK_Settings {
             return;
         }
 
-        $version = defined('WPK_VERSION') ? WPK_VERSION : '1.0.0';
+        $version = defined('PKFLOW_VERSION') ? PKFLOW_VERSION : '1.0.0';
         $css_url = '';
 
         /*
@@ -145,127 +145,127 @@ class WPK_Settings {
     }
 
     public function register_settings() {
-        register_setting($this->option_group, 'wpk_enabled', array(
+        register_setting($this->option_group, 'pkflow_enabled', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_show_separator', array(
+        register_setting($this->option_group, 'pkflow_show_separator', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_show_setup_notice', array(
+        register_setting($this->option_group, 'pkflow_show_setup_notice', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_enable_woocommerce_support', array(
+        register_setting($this->option_group, 'pkflow_enable_woocommerce_support', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_enable_edd_support', array(
+        register_setting($this->option_group, 'pkflow_enable_edd_support', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_enable_memberpress_support', array(
+        register_setting($this->option_group, 'pkflow_enable_memberpress_support', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_enable_ultimate_member_support', array(
+        register_setting($this->option_group, 'pkflow_enable_ultimate_member_support', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_enable_learndash_support', array(
+        register_setting($this->option_group, 'pkflow_enable_learndash_support', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_enable_buddyboss_support', array(
+        register_setting($this->option_group, 'pkflow_enable_buddyboss_support', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_enable_gravityforms_support', array(
+        register_setting($this->option_group, 'pkflow_enable_gravityforms_support', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_enable_pmp_support', array(
+        register_setting($this->option_group, 'pkflow_enable_pmp_support', array(
             'type' => 'boolean',
             'sanitize_callback' => array($this, 'sanitize_checkbox'),
             'default' => true,
         ));
 
-        register_setting($this->option_group, 'wpk_eligible_roles', array(
+        register_setting($this->option_group, 'pkflow_eligible_roles', array(
             'type' => 'array',
             'sanitize_callback' => array($this, 'sanitize_roles'),
             'default' => array('administrator'),
         ));
 
-        register_setting($this->option_group, 'wpk_max_passkeys_per_user', array(
+        register_setting($this->option_group, 'pkflow_max_passkeys_per_user', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_max_passkeys'),
             'default' => 0,
         ));
 
-        register_setting($this->option_group, 'wpk_user_verification', array(
+        register_setting($this->option_group, 'pkflow_user_verification', array(
             'type' => 'string',
             'sanitize_callback' => array($this, 'sanitize_user_verification'),
             'default' => 'required',
         ));
 
-        register_setting($this->option_group, 'wpk_rp_name', array(
+        register_setting($this->option_group, 'pkflow_rp_name', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
             'default' => '',
         ));
 
-        register_setting($this->option_group, 'wpk_rp_id', array(
+        register_setting($this->option_group, 'pkflow_rp_id', array(
             'type' => 'string',
             'sanitize_callback' => array($this, 'sanitize_rp_id'),
             'default' => '',
         ));
 
-        register_setting($this->option_group, 'wpk_login_challenge_ttl', array(
+        register_setting($this->option_group, 'pkflow_login_challenge_ttl', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_challenge_ttl'),
             'default' => 300,
         ));
 
-        register_setting($this->option_group, 'wpk_registration_challenge_ttl', array(
+        register_setting($this->option_group, 'pkflow_registration_challenge_ttl', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_challenge_ttl'),
             'default' => 300,
         ));
 
-        register_setting($this->option_group, 'wpk_rate_limit_window', array(
+        register_setting($this->option_group, 'pkflow_rate_limit_window', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_rate_limit_window'),
             'default' => 300,
         ));
 
-        register_setting($this->option_group, 'wpk_rate_limit_max_failures', array(
+        register_setting($this->option_group, 'pkflow_rate_limit_max_failures', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_rate_limit_max_failures'),
             'default' => 8,
         ));
 
-        register_setting($this->option_group, 'wpk_rate_limit_lockout', array(
+        register_setting($this->option_group, 'pkflow_rate_limit_lockout', array(
             'type' => 'integer',
             'sanitize_callback' => array($this, 'sanitize_rate_limit_lockout'),
             'default' => 900,
@@ -340,8 +340,8 @@ class WPK_Settings {
         }
 
         $show_debug = current_user_can( 'manage_options' )
-            && isset( $_GET['wpk_notice_debug'] )
-            && '1' === sanitize_key( wp_unslash( $_GET['wpk_notice_debug'] ) );
+            && isset( $_GET['pkflow_notice_debug'] )
+            && '1' === sanitize_key( wp_unslash( $_GET['pkflow_notice_debug'] ) );
 
         $debug_payload = array();
         if ( $show_debug ) {
@@ -451,17 +451,17 @@ class WPK_Settings {
 
     private function render_preserved_hidden_fields($active_tab) {
         if ($active_tab === 'advanced') {
-            $enabled = (bool) get_option('wpk_enabled', true);
-            $show_setup_notice = (bool) get_option('wpk_show_setup_notice', true);
-            $integration_settings = class_exists( 'WPK_Integration_Manager' ) && method_exists( 'WPK_Integration_Manager', 'get_settings_registry' )
-                ? WPK_Integration_Manager::get_settings_registry()
+            $enabled = (bool) get_option('pkflow_enabled', true);
+            $show_setup_notice = (bool) get_option('pkflow_show_setup_notice', true);
+            $integration_settings = class_exists( 'PKFLOW_Integration_Manager' ) && method_exists( 'PKFLOW_Integration_Manager', 'get_settings_registry' )
+                ? PKFLOW_Integration_Manager::get_settings_registry()
                 : array();
-            $roles = (array) get_option('wpk_eligible_roles', array('administrator'));
-            $max_passkeys = absint(get_option('wpk_max_passkeys_per_user', 0));
-            $verification = get_option('wpk_user_verification', 'required');
+            $roles = (array) get_option('pkflow_eligible_roles', array('administrator'));
+            $max_passkeys = absint(get_option('pkflow_max_passkeys_per_user', 0));
+            $verification = get_option('pkflow_user_verification', 'required');
 
-            echo '<input type="hidden" name="wpk_enabled" value="' . esc_attr($enabled ? '1' : '0') . '" />';
-            echo '<input type="hidden" name="wpk_show_setup_notice" value="' . esc_attr($show_setup_notice ? '1' : '0') . '" />';
+            echo '<input type="hidden" name="pkflow_enabled" value="' . esc_attr($enabled ? '1' : '0') . '" />';
+            echo '<input type="hidden" name="pkflow_show_setup_notice" value="' . esc_attr($show_setup_notice ? '1' : '0') . '" />';
 
             foreach ( $integration_settings as $integration_setting ) {
                 if ( empty( $integration_setting['master_option'] ) ) {
@@ -479,40 +479,40 @@ class WPK_Settings {
             }
 
             foreach ($roles as $role) {
-                echo '<input type="hidden" name="wpk_eligible_roles[]" value="' . esc_attr(sanitize_key($role)) . '" />';
+                echo '<input type="hidden" name="pkflow_eligible_roles[]" value="' . esc_attr(sanitize_key($role)) . '" />';
             }
-            echo '<input type="hidden" name="wpk_max_passkeys_per_user" value="' . esc_attr((string) $max_passkeys) . '" />';
-            echo '<input type="hidden" name="wpk_user_verification" value="' . esc_attr((string) $verification) . '" />';
+            echo '<input type="hidden" name="pkflow_max_passkeys_per_user" value="' . esc_attr((string) $max_passkeys) . '" />';
+            echo '<input type="hidden" name="pkflow_user_verification" value="' . esc_attr((string) $verification) . '" />';
             return;
         }
 
         if ($active_tab === 'settings') {
-            $show_separator = (bool) get_option('wpk_show_separator', true);
-            $rp_name = get_option('wpk_rp_name', '');
-            $rp_id = get_option('wpk_rp_id', '');
-            $login_challenge_ttl = absint(get_option('wpk_login_challenge_ttl', 300));
-            $registration_challenge_ttl = absint(get_option('wpk_registration_challenge_ttl', 300));
-            $window = absint(get_option('wpk_rate_limit_window', 300));
-            $max_failures = absint(get_option('wpk_rate_limit_max_failures', 8));
-            $lockout = absint(get_option('wpk_rate_limit_lockout', 900));
+            $show_separator = (bool) get_option('pkflow_show_separator', true);
+            $rp_name = get_option('pkflow_rp_name', '');
+            $rp_id = get_option('pkflow_rp_id', '');
+            $login_challenge_ttl = absint(get_option('pkflow_login_challenge_ttl', 300));
+            $registration_challenge_ttl = absint(get_option('pkflow_registration_challenge_ttl', 300));
+            $window = absint(get_option('pkflow_rate_limit_window', 300));
+            $max_failures = absint(get_option('pkflow_rate_limit_max_failures', 8));
+            $lockout = absint(get_option('pkflow_rate_limit_lockout', 900));
 
-            echo '<input type="hidden" name="wpk_show_separator" value="' . esc_attr($show_separator ? '1' : '0') . '" />';
-            echo '<input type="hidden" name="wpk_rp_name" value="' . esc_attr((string) $rp_name) . '" />';
-            echo '<input type="hidden" name="wpk_rp_id" value="' . esc_attr((string) $rp_id) . '" />';
-            echo '<input type="hidden" name="wpk_login_challenge_ttl" value="' . esc_attr((string) $login_challenge_ttl) . '" />';
-            echo '<input type="hidden" name="wpk_registration_challenge_ttl" value="' . esc_attr((string) $registration_challenge_ttl) . '" />';
-            echo '<input type="hidden" name="wpk_rate_limit_window" value="' . esc_attr((string) $window) . '" />';
-            echo '<input type="hidden" name="wpk_rate_limit_max_failures" value="' . esc_attr((string) $max_failures) . '" />';
-            echo '<input type="hidden" name="wpk_rate_limit_lockout" value="' . esc_attr((string) $lockout) . '" />';
+            echo '<input type="hidden" name="pkflow_show_separator" value="' . esc_attr($show_separator ? '1' : '0') . '" />';
+            echo '<input type="hidden" name="pkflow_rp_name" value="' . esc_attr((string) $rp_name) . '" />';
+            echo '<input type="hidden" name="pkflow_rp_id" value="' . esc_attr((string) $rp_id) . '" />';
+            echo '<input type="hidden" name="pkflow_login_challenge_ttl" value="' . esc_attr((string) $login_challenge_ttl) . '" />';
+            echo '<input type="hidden" name="pkflow_registration_challenge_ttl" value="' . esc_attr((string) $registration_challenge_ttl) . '" />';
+            echo '<input type="hidden" name="pkflow_rate_limit_window" value="' . esc_attr((string) $window) . '" />';
+            echo '<input type="hidden" name="pkflow_rate_limit_max_failures" value="' . esc_attr((string) $max_failures) . '" />';
+            echo '<input type="hidden" name="pkflow_rate_limit_lockout" value="' . esc_attr((string) $lockout) . '" />';
         }
     }
 
     private function render_settings_tab() {
-        $enabled = (bool) get_option('wpk_enabled', true);
-        $show_setup_notice = (bool) get_option('wpk_show_setup_notice', true);
-        $eligible_roles = (array) get_option('wpk_eligible_roles', array('administrator'));
-        $max_passkeys = absint(get_option('wpk_max_passkeys_per_user', 0));
-        $verification = get_option('wpk_user_verification', 'required');
+        $enabled = (bool) get_option('pkflow_enabled', true);
+        $show_setup_notice = (bool) get_option('pkflow_show_setup_notice', true);
+        $eligible_roles = (array) get_option('pkflow_eligible_roles', array('administrator'));
+        $max_passkeys = absint(get_option('pkflow_max_passkeys_per_user', 0));
+        $verification = get_option('pkflow_user_verification', 'required');
         $roles = wp_roles()->roles;
         ?>
         <section class="wpk-section-header">
@@ -520,7 +520,7 @@ class WPK_Settings {
                 <p class="wpk-eyebrow"><?php esc_html_e('Settings', 'passkeyflow'); ?></p>
                 <h2><?php esc_html_e('Everyday passkey controls', 'passkeyflow'); ?></h2>
             </div>
-            <span class="wpk-badge wpk-badge--pro"><?php esc_html_e('Premium defaults', 'passkeyflow'); ?></span>
+            <span class="wpk-badge"><?php esc_html_e('Recommended defaults', 'passkeyflow'); ?></span>
         </section>
 
         <div class="wpk-card wpk-card--setting">
@@ -529,7 +529,7 @@ class WPK_Settings {
                 <p><?php esc_html_e('Allow eligible users to register and sign in with secure device passkeys.', 'passkeyflow'); ?></p>
             </div>
             <label class="wpk-switch">
-                <input type="checkbox" name="wpk_enabled" value="1" <?php checked($enabled); ?> />
+                <input type="checkbox" name="pkflow_enabled" value="1" <?php checked($enabled); ?> />
                 <span class="wpk-switch__track"><span class="wpk-switch__thumb"></span></span>
                 <span class="screen-reader-text"><?php esc_html_e('Enable passkeys', 'passkeyflow'); ?></span>
             </label>
@@ -541,15 +541,15 @@ class WPK_Settings {
                 <p><?php esc_html_e('Show or hide the admin alert that reminds users to set up a passkey on their profile page.', 'passkeyflow'); ?></p>
             </div>
             <label class="wpk-switch">
-                <input type="checkbox" name="wpk_show_setup_notice" value="1" <?php checked($show_setup_notice); ?> />
+                <input type="checkbox" name="pkflow_show_setup_notice" value="1" <?php checked($show_setup_notice); ?> />
                 <span class="wpk-switch__track"><span class="wpk-switch__thumb"></span></span>
                 <span class="screen-reader-text"><?php esc_html_e('Show setup alert on profile', 'passkeyflow'); ?></span>
             </label>
         </div>
 
         <?php
-        if ( class_exists( 'WPK_Integration_Manager' ) && method_exists( 'WPK_Integration_Manager', 'get_settings_registry' ) ) {
-            $integration_settings = WPK_Integration_Manager::get_settings_registry();
+        if ( class_exists( 'PKFLOW_Integration_Manager' ) && method_exists( 'PKFLOW_Integration_Manager', 'get_settings_registry' ) ) {
+            $integration_settings = PKFLOW_Integration_Manager::get_settings_registry();
             if ( ! empty( $integration_settings ) ) {
                 ?>
                 <div class="wpk-card">
@@ -606,7 +606,7 @@ class WPK_Settings {
             <div class="wpk-role-grid">
                 <?php foreach ($roles as $role_key => $role) : ?>
                     <label class="wpk-role-chip">
-                        <input type="checkbox" name="wpk_eligible_roles[]" value="<?php echo esc_attr($role_key); ?>" <?php checked(in_array($role_key, $eligible_roles, true)); ?> />
+                        <input type="checkbox" name="pkflow_eligible_roles[]" value="<?php echo esc_attr($role_key); ?>" <?php checked(in_array($role_key, $eligible_roles, true)); ?> />
                         <span><?php echo esc_html(translate_user_role($role['name'])); ?></span>
                     </label>
                 <?php endforeach; ?>
@@ -616,18 +616,18 @@ class WPK_Settings {
         <div class="wpk-card wpk-grid-2">
             <div class="wpk-field">
                 <div class="wpk-label-row">
-                    <label for="wpk_max_passkeys_per_user"><?php esc_html_e('Passkeys per user', 'passkeyflow'); ?></label>
+                    <label for="pkflow_max_passkeys_per_user"><?php esc_html_e('Passkeys per user', 'passkeyflow'); ?></label>
                 </div>
-                <input id="wpk_max_passkeys_per_user" class="regular-text" type="number" min="0" max="999999" name="wpk_max_passkeys_per_user" value="<?php echo esc_attr($max_passkeys); ?>" />
+                <input id="pkflow_max_passkeys_per_user" class="regular-text" type="number" min="0" max="999999" name="pkflow_max_passkeys_per_user" value="<?php echo esc_attr($max_passkeys); ?>" />
                 <p><?php esc_html_e('Maximum number of passkeys each user can register. Use 0 for no limit.', 'passkeyflow'); ?></p>
             </div>
 
             <div class="wpk-field">
                 <div class="wpk-label-row">
-                    <label for="wpk_user_verification"><?php esc_html_e('User verification', 'passkeyflow'); ?></label>
+                    <label for="pkflow_user_verification"><?php esc_html_e('User verification', 'passkeyflow'); ?></label>
                     <span class="wpk-badge wpk-badge--success"><?php esc_html_e('Recommended', 'passkeyflow'); ?></span>
                 </div>
-                <select id="wpk_user_verification" name="wpk_user_verification">
+                <select id="pkflow_user_verification" name="pkflow_user_verification">
                     <option value="required" <?php selected($verification, 'required'); ?>><?php esc_html_e('Required — biometric or device PIN', 'passkeyflow'); ?></option>
                     <option value="preferred" <?php selected($verification, 'preferred'); ?>><?php esc_html_e('Preferred — use when available', 'passkeyflow'); ?></option>
                     <option value="discouraged" <?php selected($verification, 'discouraged'); ?>><?php esc_html_e('Discouraged — presence only', 'passkeyflow'); ?></option>
@@ -639,14 +639,14 @@ class WPK_Settings {
     }
 
     private function render_advanced_tab() {
-        $show_separator = (bool) get_option('wpk_show_separator', true);
-        $rp_name = get_option('wpk_rp_name', '');
-        $rp_id = get_option('wpk_rp_id', '');
-        $login_challenge_ttl = absint(get_option('wpk_login_challenge_ttl', 300));
-        $registration_challenge_ttl = absint(get_option('wpk_registration_challenge_ttl', 300));
-        $window = absint(get_option('wpk_rate_limit_window', 300));
-        $max_failures = absint(get_option('wpk_rate_limit_max_failures', 8));
-        $lockout = absint(get_option('wpk_rate_limit_lockout', 900));
+        $show_separator = (bool) get_option('pkflow_show_separator', true);
+        $rp_name = get_option('pkflow_rp_name', '');
+        $rp_id = get_option('pkflow_rp_id', '');
+        $login_challenge_ttl = absint(get_option('pkflow_login_challenge_ttl', 300));
+        $registration_challenge_ttl = absint(get_option('pkflow_registration_challenge_ttl', 300));
+        $window = absint(get_option('pkflow_rate_limit_window', 300));
+        $max_failures = absint(get_option('pkflow_rate_limit_max_failures', 8));
+        $lockout = absint(get_option('pkflow_rate_limit_lockout', 900));
         ?>
         <section class="wpk-section-header">
             <div>
@@ -661,7 +661,7 @@ class WPK_Settings {
                 <p><?php esc_html_e('Display the centered OR divider above the passkey button on wp-login.php.', 'passkeyflow'); ?></p>
             </div>
             <label class="wpk-switch">
-                <input type="checkbox" name="wpk_show_separator" value="1" <?php checked($show_separator); ?> />
+                <input type="checkbox" name="pkflow_show_separator" value="1" <?php checked($show_separator); ?> />
                 <span class="wpk-switch__track"><span class="wpk-switch__thumb"></span></span>
                 <span class="screen-reader-text"><?php esc_html_e('Show login OR separator', 'passkeyflow'); ?></span>
             </label>
@@ -669,13 +669,13 @@ class WPK_Settings {
 
         <div class="wpk-card wpk-grid-2">
             <div class="wpk-field">
-                <label for="wpk_rp_name"><?php esc_html_e('Relying Party Name', 'passkeyflow'); ?></label>
-                <input id="wpk_rp_name" class="regular-text" type="text" name="wpk_rp_name" value="<?php echo esc_attr($rp_name); ?>" placeholder="<?php echo esc_attr(get_bloginfo('name')); ?>" />
+                <label for="pkflow_rp_name"><?php esc_html_e('Relying Party Name', 'passkeyflow'); ?></label>
+                <input id="pkflow_rp_name" class="regular-text" type="text" name="pkflow_rp_name" value="<?php echo esc_attr($rp_name); ?>" placeholder="<?php echo esc_attr(get_bloginfo('name')); ?>" />
                 <p><?php esc_html_e('The name users see in their passkey prompt. Leave blank to use the site name.', 'passkeyflow'); ?></p>
             </div>
             <div class="wpk-field">
-                <label for="wpk_rp_id"><?php esc_html_e('Relying Party ID', 'passkeyflow'); ?></label>
-                <input id="wpk_rp_id" class="regular-text" type="text" name="wpk_rp_id" value="<?php echo esc_attr($rp_id); ?>" placeholder="<?php echo esc_attr(wp_parse_url(home_url(), PHP_URL_HOST)); ?>" />
+                <label for="pkflow_rp_id"><?php esc_html_e('Relying Party ID', 'passkeyflow'); ?></label>
+                <input id="pkflow_rp_id" class="regular-text" type="text" name="pkflow_rp_id" value="<?php echo esc_attr($rp_id); ?>" placeholder="<?php echo esc_attr(wp_parse_url(home_url(), PHP_URL_HOST)); ?>" />
                 <p><?php esc_html_e('Usually your root domain. Leave blank unless you know you need to customize it.', 'passkeyflow'); ?></p>
             </div>
         </div>
@@ -690,13 +690,13 @@ class WPK_Settings {
             </div>
             <div class="wpk-grid-2">
                 <div class="wpk-field">
-                    <label for="wpk_login_challenge_ttl"><?php esc_html_e('Login challenge timeout', 'passkeyflow'); ?></label>
-                    <input id="wpk_login_challenge_ttl" type="number" min="30" max="1200" name="wpk_login_challenge_ttl" value="<?php echo esc_attr($login_challenge_ttl); ?>" />
+                    <label for="pkflow_login_challenge_ttl"><?php esc_html_e('Login challenge timeout', 'passkeyflow'); ?></label>
+                    <input id="pkflow_login_challenge_ttl" type="number" min="30" max="1200" name="pkflow_login_challenge_ttl" value="<?php echo esc_attr($login_challenge_ttl); ?>" />
                     <p><?php esc_html_e('How long a user has to complete passkey sign-in.', 'passkeyflow'); ?></p>
                 </div>
                 <div class="wpk-field">
-                    <label for="wpk_registration_challenge_ttl"><?php esc_html_e('Registration challenge timeout', 'passkeyflow'); ?></label>
-                    <input id="wpk_registration_challenge_ttl" type="number" min="30" max="1200" name="wpk_registration_challenge_ttl" value="<?php echo esc_attr($registration_challenge_ttl); ?>" />
+                    <label for="pkflow_registration_challenge_ttl"><?php esc_html_e('Registration challenge timeout', 'passkeyflow'); ?></label>
+                    <input id="pkflow_registration_challenge_ttl" type="number" min="30" max="1200" name="pkflow_registration_challenge_ttl" value="<?php echo esc_attr($registration_challenge_ttl); ?>" />
                     <p><?php esc_html_e('How long a user has to finish passkey registration.', 'passkeyflow'); ?></p>
                 </div>
             </div>
@@ -712,18 +712,18 @@ class WPK_Settings {
             </div>
             <div class="wpk-grid-3">
                 <div class="wpk-field">
-                    <label for="wpk_rate_limit_window"><?php esc_html_e('Failure window', 'passkeyflow'); ?></label>
-                    <input id="wpk_rate_limit_window" type="number" min="60" max="3600" name="wpk_rate_limit_window" value="<?php echo esc_attr($window); ?>" />
+                    <label for="pkflow_rate_limit_window"><?php esc_html_e('Failure window', 'passkeyflow'); ?></label>
+                    <input id="pkflow_rate_limit_window" type="number" min="60" max="3600" name="pkflow_rate_limit_window" value="<?php echo esc_attr($window); ?>" />
                     <p><?php esc_html_e('Seconds.', 'passkeyflow'); ?></p>
                 </div>
                 <div class="wpk-field">
-                    <label for="wpk_rate_limit_max_failures"><?php esc_html_e('Max failures', 'passkeyflow'); ?></label>
-                    <input id="wpk_rate_limit_max_failures" type="number" min="1" max="50" name="wpk_rate_limit_max_failures" value="<?php echo esc_attr($max_failures); ?>" />
+                    <label for="pkflow_rate_limit_max_failures"><?php esc_html_e('Max failures', 'passkeyflow'); ?></label>
+                    <input id="pkflow_rate_limit_max_failures" type="number" min="1" max="50" name="pkflow_rate_limit_max_failures" value="<?php echo esc_attr($max_failures); ?>" />
                     <p><?php esc_html_e('Attempts before lockout.', 'passkeyflow'); ?></p>
                 </div>
                 <div class="wpk-field">
-                    <label for="wpk_rate_limit_lockout"><?php esc_html_e('Lockout duration', 'passkeyflow'); ?></label>
-                    <input id="wpk_rate_limit_lockout" type="number" min="60" max="86400" name="wpk_rate_limit_lockout" value="<?php echo esc_attr($lockout); ?>" />
+                    <label for="pkflow_rate_limit_lockout"><?php esc_html_e('Lockout duration', 'passkeyflow'); ?></label>
+                    <input id="pkflow_rate_limit_lockout" type="number" min="60" max="86400" name="pkflow_rate_limit_lockout" value="<?php echo esc_attr($lockout); ?>" />
                     <p><?php esc_html_e('Seconds.', 'passkeyflow'); ?></p>
                 </div>
             </div>
@@ -736,32 +736,32 @@ class WPK_Settings {
         $shortcodes = array(
             array(
                 'title' => __('Login Form', 'passkeyflow'),
-                'code' => '[wpk_login_button]',
+                'code' => '[pkflow_login_button]',
                 'description' => __('Display a passkey login form on any page.', 'passkeyflow'),
                 'placement' => __('Best for custom login pages.', 'passkeyflow'),
             ),
             array(
                 'title' => __('Register Button', 'passkeyflow'),
-                'code' => '[wpk_register_button]',
+                'code' => '[pkflow_register_button]',
                 'description' => __('Let signed-in users register a new passkey.', 'passkeyflow'),
                 'placement' => __('Best for account and onboarding pages.', 'passkeyflow'),
             ),
             array(
                 'title' => __('Account Passkeys', 'passkeyflow'),
-                'code' => '[wpk_passkey_profile]',
+                'code' => '[pkflow_passkey_profile]',
                 'description' => __('Show a user-facing passkey management area.', 'passkeyflow'),
                 'placement' => __('Best for profile or dashboard pages.', 'passkeyflow'),
             ),
             array(
                 'title' => __('Conditional Prompt', 'passkeyflow'),
-                'code' => '[wpk_passkey_prompt]',
+                'code' => '[pkflow_passkey_prompt]',
                 'description' => __('Prompt eligible users to set up passwordless login.', 'passkeyflow'),
                 'placement' => __('Best after login or checkout.', 'passkeyflow'),
             ),
         );
 
-        if ( class_exists( 'WPK_Integration_Manager' ) && method_exists( 'WPK_Integration_Manager', 'get_integration_shortcodes' ) ) {
-            $integration_shortcodes = WPK_Integration_Manager::get_integration_shortcodes();
+        if ( class_exists( 'PKFLOW_Integration_Manager' ) && method_exists( 'PKFLOW_Integration_Manager', 'get_integration_shortcodes' ) ) {
+            $integration_shortcodes = PKFLOW_Integration_Manager::get_integration_shortcodes();
 
             foreach ( $integration_shortcodes as $integration_shortcode ) {
                 if ( empty( $integration_shortcode['title'] ) || empty( $integration_shortcode['code'] ) ) {
@@ -798,7 +798,7 @@ class WPK_Settings {
 
         <article class="wpk-shortcode-helper-card" aria-label="<?php esc_attr_e( 'Shortcode quick start guide', 'passkeyflow' ); ?>">
             <header class="wpk-shortcode-helper-card__header">
-                <h3><?php esc_html_e( 'Quick start: use shortcodes like a pro', 'passkeyflow' ); ?></h3>
+                <h3><?php esc_html_e( 'Quick start: shortcode guide', 'passkeyflow' ); ?></h3>
                 <p><?php esc_html_e( 'Paste a shortcode into any page, post, or block that supports shortcodes. Then add options to control labels, redirects, and behavior.', 'passkeyflow' ); ?></p>
             </header>
 
@@ -829,19 +829,19 @@ class WPK_Settings {
                 <div class="wpk-shortcode-examples__grid">
                     <div>
                         <p><?php esc_html_e( 'Custom login button + redirect', 'passkeyflow' ); ?></p>
-                        <code>[wpk_login_button label="Sign in securely" redirect_to="/my-account/"]</code>
+                        <code>[pkflow_login_button label="Sign in securely" redirect_to="/my-account/"]</code>
                     </div>
                     <div>
                         <p><?php esc_html_e( 'Multiple login buttons on one page', 'passkeyflow' ); ?></p>
-                        <code>[wpk_login_button allow_multiple="1" class="my-passkey-login"]</code>
+                        <code>[pkflow_login_button allow_multiple="1" class="my-passkey-login"]</code>
                     </div>
                     <div>
                         <p><?php esc_html_e( 'Custom register button label', 'passkeyflow' ); ?></p>
-                        <code>[wpk_register_button label="Add this device"]</code>
+                        <code>[pkflow_register_button label="Add this device"]</code>
                     </div>
                     <div>
                         <p><?php esc_html_e( 'Prompt users to set up passkeys', 'passkeyflow' ); ?></p>
-                        <code>[wpk_passkey_prompt title="Secure your account" button_label="Set up passkey"]</code>
+                        <code>[pkflow_passkey_prompt title="Secure your account" button_label="Set up passkey"]</code>
                     </div>
                 </div>
             </div>
@@ -851,22 +851,6 @@ class WPK_Settings {
 
     private function render_sidebar_cards() {
         ?>
-        <section class="wpk-side-card wpk-side-card--pro">
-            <span class="wpk-badge wpk-badge--pro"><?php esc_html_e('Pro', 'passkeyflow'); ?></span>
-            <h2><?php esc_html_e('PasskeyFlow Pro', 'passkeyflow'); ?></h2>
-            <p><?php esc_html_e('Unlock a premium passwordless experience with advanced controls and integrations.', 'passkeyflow'); ?></p>
-            <ul>
-                <li><?php esc_html_e('Passkey-only mode per role', 'passkeyflow'); ?></li>
-                <li><?php esc_html_e('Magic-link account recovery', 'passkeyflow'); ?></li>
-                <li><?php esc_html_e('Device health dashboard', 'passkeyflow'); ?></li>
-                <li><?php esc_html_e('Full audit log + CSV export', 'passkeyflow'); ?></li>
-                <li><?php esc_html_e('Conditional access by role &amp; URL', 'passkeyflow'); ?></li>
-                <li><?php esc_html_e('WP-CLI commands', 'passkeyflow'); ?></li>
-                <li><?php esc_html_e('White-label &amp; agency tools', 'passkeyflow'); ?></li>
-            </ul>
-            <a href="<?php echo esc_url( 'https://wppasskey.com/pro' ); ?>" class="wpk-button wpk-button--pro" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Upgrade to Pro', 'passkeyflow'); ?></a>
-        </section>
-
         <section class="wpk-side-card">
             <h2><?php esc_html_e('Quick setup', 'passkeyflow'); ?></h2>
             <ol class="wpk-checklist">
@@ -879,8 +863,8 @@ class WPK_Settings {
         </section>
 
         <?php
-        if ( class_exists( 'WPK_Integration_Manager' ) && method_exists( 'WPK_Integration_Manager', 'get_available_integrations' ) ) {
-            $available_integrations = WPK_Integration_Manager::get_available_integrations();
+        if ( class_exists( 'PKFLOW_Integration_Manager' ) && method_exists( 'PKFLOW_Integration_Manager', 'get_available_integrations' ) ) {
+            $available_integrations = PKFLOW_Integration_Manager::get_available_integrations();
             if ( ! empty( $available_integrations ) ) {
                 ?>
                 <section class="wpk-side-card">

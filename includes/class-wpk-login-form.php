@@ -1,6 +1,6 @@
 <?php
 /**
- * WPK_Login_Form — injects the passkey button into wp-login.php
+ * PKFLOW_Login_Form — injects the passkey button into wp-login.php
  * and stores any redirect_to cookie for post-login handling.
  */
 
@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class WPK_Login_Form {
+class PKFLOW_Login_Form {
 
     public function __construct() {
         add_action( 'login_form',  array( $this, 'render_passkey_button' ) );
@@ -20,7 +20,7 @@ class WPK_Login_Form {
      * Only shown when the WebAuthn library is available and passkeys are enabled.
      */
     public function render_passkey_button(): void {
-        if ( ! class_exists( 'WPK_Passkeys' ) || ! WPK_Passkeys::is_enabled() ) {
+        if ( ! class_exists( 'PKFLOW_Passkeys' ) || ! PKFLOW_Passkeys::is_enabled() ) {
             return;
         }
 
@@ -28,7 +28,7 @@ class WPK_Login_Form {
             return;
         }
 
-        $show_sep = (int) get_option( 'wpk_show_separator', 1 ) === 1;
+        $show_sep = (int) get_option( 'pkflow_show_separator', 1 ) === 1;
 
         ?>
 
@@ -81,7 +81,7 @@ class WPK_Login_Form {
             return;
         }
 
-        setcookie( 'wpk_redirect_to', $redirect, array(
+        setcookie( 'pkflow_redirect_to', $redirect, array(
             'expires'  => time() + 3600,
             'path'     => defined( 'COOKIEPATH' )   ? (string) COOKIEPATH   : '/',
             'domain'   => defined( 'COOKIE_DOMAIN' ) ? (string) COOKIE_DOMAIN : '',

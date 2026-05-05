@@ -1,15 +1,15 @@
 <?php
 /**
- * WPK_Shortcodes — front-end shortcodes for passkey login and registration.
+ * PKFLOW_Shortcodes — front-end shortcodes for passkey login and registration.
  *
- * [wpk_login_button]
+ * [pkflow_login_button]
  *   Renders the passkey sign-in button on any page or post.
  *   Attributes:
  *     label        — Button text. Default: "Sign in with Passkey".
  *     redirect_to  — URL to redirect after login. Default: site home or settings value.
  *     class        — Extra CSS class(es) added to the wrapper div.
  *
- * [wpk_register_button]
+ * [pkflow_register_button]
  *   Renders the passkey registration button for already-logged-in eligible users.
  *   Attributes:
  *     label  — Button text. Default: "Register a Passkey".
@@ -20,25 +20,25 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class WPK_Shortcodes {
+class PKFLOW_Shortcodes {
 
     private static $login_button_rendered = false;
 
     public function __construct() {
-        add_shortcode( 'wpk_login_button',    array( $this, 'render_login_button' ) );
-        add_shortcode( 'wpk_register_button', array( $this, 'render_register_button' ) );
-        add_shortcode( 'wpk_passkey_profile', array( $this, 'render_passkey_profile' ) );
-        add_shortcode( 'wpk_passkey_prompt',  array( $this, 'render_passkey_prompt' ) );
+        add_shortcode( 'pkflow_login_button',    array( $this, 'render_login_button' ) );
+        add_shortcode( 'pkflow_register_button', array( $this, 'render_register_button' ) );
+        add_shortcode( 'pkflow_passkey_profile', array( $this, 'render_passkey_profile' ) );
+        add_shortcode( 'pkflow_passkey_prompt',  array( $this, 'render_passkey_prompt' ) );
     }
 
     private function user_has_active_passkey( int $user_id ): bool {
         global $wpdb;
 
-        if ( ! class_exists( 'WPK_Passkeys' ) ) {
+        if ( ! class_exists( 'PKFLOW_Passkeys' ) ) {
             return false;
         }
 
-        $table = $wpdb->prefix . WPK_Passkeys::TABLE_CREDENTIALS;
+        $table = $wpdb->prefix . PKFLOW_Passkeys::TABLE_CREDENTIALS;
         $count = (int) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- custom credentials table presence check.
             $wpdb->prepare(
                 "SELECT COUNT(*) FROM {$table} WHERE user_id = %d AND revoked_at IS NULL", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is plugin-controlled constant + prefix.
@@ -53,14 +53,14 @@ class WPK_Shortcodes {
         if ( ! wp_script_is( 'wpk-profile', 'enqueued' ) ) {
             wp_enqueue_script(
                 'wpk-profile',
-                WPK_PLUGIN_URL . 'admin/js/wpk-profile.js',
+                PKFLOW_PLUGIN_URL . 'admin/js/wpk-profile.js',
                 array(),
-                WPK_VERSION,
+                PKFLOW_VERSION,
                 true
             );
             wp_localize_script( 'wpk-profile', 'WPKProfile', array(
                 'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
-                'nonce'    => wp_create_nonce( 'wpk_profile' ),
+                'nonce'    => wp_create_nonce( 'pkflow_profile' ),
                 'messages' => array(
                     'labelPlaceholder' => __( 'e.g. iPhone 15, YubiKey 5', 'passkeyflow' ),
                     'starting'         => __( 'Starting passkey registration…', 'passkeyflow' ),
@@ -75,12 +75,12 @@ class WPK_Shortcodes {
             ) );
         }
         if ( ! wp_style_is( 'wpk-admin', 'enqueued' ) ) {
-            wp_enqueue_style( 'wpk-admin', WPK_PLUGIN_URL . 'admin/css/wpk-admin.css', array(), WPK_VERSION );
+            wp_enqueue_style( 'wpk-admin', PKFLOW_PLUGIN_URL . 'admin/css/wpk-admin.css', array(), PKFLOW_VERSION );
         }
     }
 
     public function render_passkey_profile( $atts ): string {
-        if ( ! class_exists( 'WPK_Passkeys' ) || ! WPK_Passkeys::is_enabled() ) {
+        if ( ! class_exists( 'PKFLOW_Passkeys' ) || ! PKFLOW_Passkeys::is_enabled() ) {
             return '';
         }
 
@@ -93,13 +93,13 @@ class WPK_Shortcodes {
         }
 
         $user = wp_get_current_user();
-        if ( ! WPK_Passkeys::user_is_eligible( $user ) ) {
+        if ( ! PKFLOW_Passkeys::user_is_eligible( $user ) ) {
             return '';
         }
 
         $this->enqueue_profile_assets();
 
-        $engine = WPK_Passkeys::get_instance();
+        $engine = PKFLOW_Passkeys::get_instance();
         if ( ! $engine ) {
             return $this->render_register_button( $atts );
         }
@@ -110,7 +110,7 @@ class WPK_Shortcodes {
     }
 
     public function render_passkey_prompt( $atts ): string {
-        if ( ! class_exists( 'WPK_Passkeys' ) || ! WPK_Passkeys::is_enabled() ) {
+        if ( ! class_exists( 'PKFLOW_Passkeys' ) || ! PKFLOW_Passkeys::is_enabled() ) {
             return '';
         }
 
@@ -123,7 +123,7 @@ class WPK_Shortcodes {
         }
 
         $user = wp_get_current_user();
-        if ( ! WPK_Passkeys::user_is_eligible( $user ) ) {
+        if ( ! PKFLOW_Passkeys::user_is_eligible( $user ) ) {
             return '';
         }
 
@@ -133,7 +133,7 @@ class WPK_Shortcodes {
             'button_label' => __( 'Register a Passkey', 'passkeyflow' ),
             'class'        => '',
             'force_show'   => '0',
-        ), $atts, 'wpk_passkey_prompt' );
+        ), $atts, 'pkflow_passkey_prompt' );
 
         $force_show = in_array( strtolower( (string) $atts['force_show'] ), array( '1', 'true', 'yes' ), true )
             && current_user_can( 'manage_options' );
@@ -179,11 +179,11 @@ class WPK_Shortcodes {
     }
 
     // ──────────────────────────────────────────────────────────
-    // [wpk_login_button]
+    // [pkflow_login_button]
     // ──────────────────────────────────────────────────────────
 
     public function render_login_button( $atts ): string {
-        if ( ! class_exists( 'WPK_Passkeys' ) || ! WPK_Passkeys::is_enabled() ) {
+        if ( ! class_exists( 'PKFLOW_Passkeys' ) || ! PKFLOW_Passkeys::is_enabled() ) {
             return '';
         }
 
@@ -200,7 +200,7 @@ class WPK_Shortcodes {
             'redirect_to' => '',
             'class'       => '',
             'allow_multiple' => '0',
-        ), $atts, 'wpk_login_button' );
+        ), $atts, 'pkflow_login_button' );
 
         $allow_multiple = in_array( strtolower( (string) $atts['allow_multiple'] ), array( '1', 'true', 'yes' ), true );
         if ( ! $allow_multiple && self::$login_button_rendered ) {
@@ -217,14 +217,14 @@ class WPK_Shortcodes {
         if ( ! wp_script_is( 'wpk-login', 'enqueued' ) ) {
             wp_enqueue_script(
                 'wpk-login',
-                WPK_PLUGIN_URL . 'admin/js/wpk-login.js',
+                PKFLOW_PLUGIN_URL . 'admin/js/wpk-login.js',
                 array(),
-                WPK_VERSION,
+                PKFLOW_VERSION,
                 true
             );
             wp_localize_script( 'wpk-login', 'WPKLogin', array(
                 'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
-                'nonce'    => wp_create_nonce( 'wpk_login' ),
+                'nonce'    => wp_create_nonce( 'pkflow_login' ),
                 'messages' => array(
                     'notSupported' => __( 'Passkeys are unavailable here. Use HTTPS (or localhost) in a passkey-capable browser, or sign in with your password.', 'passkeyflow' ),
                     'genericError' => __( 'Passkey sign-in failed. Please try again or use your password.', 'passkeyflow' ),
@@ -233,7 +233,7 @@ class WPK_Shortcodes {
             ) );
         }
         if ( ! wp_style_is( 'wpk-login', 'enqueued' ) ) {
-            wp_enqueue_style( 'wpk-login', WPK_PLUGIN_URL . 'admin/css/wpk-admin.css', array(), WPK_VERSION );
+            wp_enqueue_style( 'wpk-login', PKFLOW_PLUGIN_URL . 'admin/css/wpk-admin.css', array(), PKFLOW_VERSION );
         }
 
         $wrapper_class = 'wpk-shortcode-login-wrap' . ( $extra_class ? ' ' . $extra_class : '' );
@@ -264,11 +264,11 @@ class WPK_Shortcodes {
     }
 
     // ──────────────────────────────────────────────────────────
-    // [wpk_register_button]
+    // [pkflow_register_button]
     // ──────────────────────────────────────────────────────────
 
     public function render_register_button( $atts ): string {
-        if ( ! class_exists( 'WPK_Passkeys' ) || ! WPK_Passkeys::is_enabled() ) {
+        if ( ! class_exists( 'PKFLOW_Passkeys' ) || ! PKFLOW_Passkeys::is_enabled() ) {
             return '';
         }
 
@@ -282,14 +282,14 @@ class WPK_Shortcodes {
 
         $user = wp_get_current_user();
 
-        if ( ! WPK_Passkeys::user_is_eligible( $user ) ) {
+        if ( ! PKFLOW_Passkeys::user_is_eligible( $user ) ) {
             return '';
         }
 
         $atts = shortcode_atts( array(
             'label' => __( 'Register a Passkey', 'passkeyflow' ),
             'class' => '',
-        ), $atts, 'wpk_register_button' );
+        ), $atts, 'pkflow_register_button' );
 
         $label       = sanitize_text_field( $atts['label'] );
         $extra_class = implode( ' ', array_map( 'sanitize_html_class', preg_split( '/\s+/', trim( $atts['class'] ) ) ) );
