@@ -13,7 +13,7 @@
 
 PasskeyFlow for Secure Login replaces passwords with passkeys — cryptographic credentials stored in your device's Secure Enclave, Windows Hello, or a hardware key like a YubiKey. Users authenticate with Face ID, Touch ID, fingerprint, or PIN: no password required.
 
-**PasskeyFlow Pro** (coming soon at [wppasskey.com](https://wppasskey.com)) adds WooCommerce checkout integration, a device health dashboard, audit log with export, and more.
+**PasskeyFlow Pro** (coming soon at [wppasskey.com](https://wppasskey.com)) adds passkey-only enforcement, device health analytics, audit exports, and agency tooling.
 
 ---
 
@@ -23,6 +23,8 @@ PasskeyFlow for Secure Login replaces passwords with passkeys — cryptographic 
 - Works with **Face ID, Touch ID, Windows Hello, Android biometrics, YubiKey** and any FIDO2 authenticator
 - Drop-in passkey button on `wp-login.php` — no template edits required
 - `[wpk_login_button]` and `[wpk_register_button]` shortcodes for front-end placement
+- Integration-aware passkey modules for **WooCommerce, Easy Digital Downloads, MemberPress, Ultimate Member, LearnDash, BuddyBoss, Gravity Forms, and Paid Memberships Pro**
+- Integration shortcodes and Gutenberg blocks auto-register when supported plugins are active
 - Per-role eligibility control — grant passkeys to admins only, or all users
 - Configurable per-user passkey limit (or no limit)
 - Passkey management in the **user profile** (rename, revoke, capacity indicator)
@@ -78,12 +80,14 @@ passkeyflow/
 │   │   └── wpk-admin.css          # All admin + login UI styles
 │   └── js/
 │       ├── wpk-login.js           # Login page WebAuthn flow
-│       └── wpk-profile.js         # Profile page registration + revoke flow
+│       ├── wpk-profile.js         # Profile page registration + revoke flow
+│       └── wpk-gutenberg-blocks.js # Integration block registration in editor
 ├── includes/
 │   ├── class-wpk-passkeys.php     # Core WebAuthn engine, AJAX handlers, rate limiting
 │   ├── class-wpk-settings.php     # Settings page, tabs, field renderers
 │   ├── class-wpk-login-form.php   # Injects passkey button on wp-login.php
-│   └── class-wpk-shortcodes.php  # [wpk_login_button] and [wpk_register_button]
+│   ├── class-wpk-shortcodes.php   # [wpk_login_button] and [wpk_register_button]
+│   └── class-wpk-integration-manager.php # Integration modules, shortcodes, and blocks
 ├── languages/                     # Translation files (.pot)
 ├── vendor/                        # Composer dependencies
 ├── composer.json

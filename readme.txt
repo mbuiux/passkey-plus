@@ -21,6 +21,8 @@ Passkeys are phishing-resistant by design. There is no password to steal, no cre
 * One-click "Sign in with Passkey" button on the WordPress login screen
 * Register and manage passkeys from your user profile page
 * Supports Face ID, Touch ID, Windows Hello, YubiKey, iCloud Keychain, and Google Password Manager
+* Includes plugin-aware integration modules for WooCommerce, Easy Digital Downloads, MemberPress, Ultimate Member, LearnDash, BuddyBoss, Gravity Forms, and Paid Memberships Pro
+* Integration-specific shortcodes and Gutenberg blocks are registered automatically when supported plugins are active
 * Configurable per-user passkey limit (or no limit)
 * Configurable eligible roles (default: administrators)
 * Built-in brute-force protection with configurable rate limiting
@@ -32,8 +34,6 @@ Passkeys are phishing-resistant by design. There is no password to steal, no cre
 
 * Passkey-only mode by role (require passkeys, disallow passwords)
 * Magic link account recovery flow
-* WooCommerce checkout passkey support
-* Gutenberg & Elementor shortcode/block
 * Device health dashboard
 * Full audit log with CSV export
 * Conditional access rules (enforce by role, page, or IP range)

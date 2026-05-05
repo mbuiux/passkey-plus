@@ -452,7 +452,7 @@ msgid "Account Passkeys"
 msgstr ""
 
 #: includes/class-wpk-settings.php:634
-msgid "Show a user-facing passkey management area. Legacy alias: [wp_passkey_profile]."
+msgid "Show a user-facing passkey management area."
 msgstr ""
 
 #: includes/class-wpk-settings.php:635
@@ -464,7 +464,7 @@ msgid "Conditional Prompt"
 msgstr ""
 
 #: includes/class-wpk-settings.php:640
-msgid "Prompt eligible users to set up passwordless login. Legacy alias: [wp_passkey_prompt]."
+msgid "Prompt eligible users to set up passwordless login."
 msgstr ""
 
 #: includes/class-wpk-settings.php:641

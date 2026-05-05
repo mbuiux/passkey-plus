@@ -29,10 +29,6 @@ class WPK_Shortcodes {
         add_shortcode( 'wpk_register_button', array( $this, 'render_register_button' ) );
         add_shortcode( 'wpk_passkey_profile', array( $this, 'render_passkey_profile' ) );
         add_shortcode( 'wpk_passkey_prompt',  array( $this, 'render_passkey_prompt' ) );
-
-        // Legacy aliases kept for backward compatibility during shortcode migration.
-        add_shortcode( 'wp_passkey_profile',  array( $this, 'render_passkey_profile' ) );
-        add_shortcode( 'wp_passkey_prompt',   array( $this, 'render_passkey_prompt' ) );
     }
 
     private function user_has_active_passkey( int $user_id ): bool {
