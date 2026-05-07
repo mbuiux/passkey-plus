@@ -21,8 +21,11 @@ PasskeyFlow for Secure Login replaces passwords with passkeys — cryptographic 
 - Works with **Face ID, Touch ID, Windows Hello, Android biometrics, YubiKey** and any FIDO2 authenticator
 - Drop-in passkey button on `wp-login.php` — no template edits required
 - `[pkflow_login_button]` and `[pkflow_register_button]` shortcodes for front-end placement
+- `[pkflow_passkey_profile]` shortcode for logged-in passkey management UI
+- `[pkflow_passkey_prompt]` shortcode for conditional passkey enrollment prompts
 - Integration-aware passkey modules for **WooCommerce, Easy Digital Downloads, MemberPress, Ultimate Member, LearnDash, BuddyBoss, Gravity Forms, and PMPro**
 - Integration shortcodes and Gutenberg blocks auto-register when supported plugins are active
+- Integration modules also auto-inject passkey entry points into supported login and checkout surfaces when enabled
 - Per-role eligibility control — grant passkeys to admins only, or all users
 - Configurable per-user passkey limit (or no limit)
 - Passkey management in the **user profile** (rename, revoke, capacity indicator)
@@ -32,6 +35,7 @@ PasskeyFlow for Secure Login replaces passwords with passkeys — cryptographic 
 - Rate limiting on login and revoke endpoints
 - Daily cron cleanup of expired rate-limit rows and activity logs
 - Challenge TTL, login redirect URL, RP name, and log retention are all configurable
+- Multisite-aware activation and provisioning for newly created network sites
 - Fully translatable — `.pot` file included, `passkeyflow` text domain
 
 ---
@@ -154,6 +158,55 @@ Renders the passkey registration button for logged-in eligible users.
 ```
 [pkflow_register_button label="Add a passkey to your account"]
 ```
+
+### `[pkflow_passkey_profile]`
+
+Renders passkey profile management for logged-in, eligible users.
+
+```text
+[pkflow_passkey_profile]
+```
+
+### `[pkflow_passkey_prompt]`
+
+Renders a conditional passkey setup prompt for logged-in, eligible users.
+
+Supported attributes:
+- `title`
+- `message`
+- `button_label`
+- `class`
+- `force_show`
+
+```text
+[pkflow_passkey_prompt title="Secure your account" button_label="Set up passkey"]
+```
+
+### Integration Shortcodes
+
+These are registered only when the related plugin is active and its module is enabled:
+
+- `[pkflow_woocommerce_login]`
+- `[pkflow_edd_login]`
+- `[pkflow_memberpress_login]`
+- `[pkflow_ultimate_member_login]`
+- `[pkflow_learndash_login]`
+- `[pkflow_buddyboss_login]`
+- `[pkflow_gravityforms_login]`
+- `[pkflow_pmp_login]`
+
+### Integration Gutenberg Blocks
+
+These are registered only when the related plugin is active and its module is enabled:
+
+- `passkeyflow/woocommerce-login-card`
+- `passkeyflow/edd-login-card`
+- `passkeyflow/memberpress-login-card`
+- `passkeyflow/ultimate-member-login-card`
+- `passkeyflow/learndash-login-card`
+- `passkeyflow/buddyboss-login-card`
+- `passkeyflow/gravityforms-login-card`
+- `passkeyflow/pmp-login-card`
 
 ---
 

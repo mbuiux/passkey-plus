@@ -21,11 +21,15 @@ Passkeys are phishing-resistant by design. There is no password to steal, no cre
 * One-click "Sign in with Passkey" button on the WordPress login screen
 * Register and manage passkeys from your user profile page
 * Supports Face ID, Touch ID, Windows Hello, YubiKey, iCloud Keychain, and Google Password Manager
+* Includes `[pkflow_passkey_profile]` shortcode for logged-in passkey management UI
+* Includes `[pkflow_passkey_prompt]` shortcode for conditional passkey enrollment prompts
 * Includes plugin-aware integration modules for WooCommerce, Easy Digital Downloads, MemberPress, Ultimate Member, LearnDash, BuddyBoss, Gravity Forms, and PMPro
 * Integration-specific shortcodes and Gutenberg blocks are registered automatically when supported plugins are active
+* Integration modules can auto-inject passkey entry points on supported login and checkout surfaces
 * Configurable per-user passkey limit (or no limit)
 * Configurable eligible roles (default: administrators)
 * Built-in brute-force protection with configurable rate limiting
+* Multisite-aware activation and provisioning for newly created network sites
 * Clean uninstall — no orphaned tables or options left behind
 
 = Requirements =
@@ -89,6 +93,36 @@ Yes, in production. The WebAuthn specification only allows passkey operations ov
 = Can I control which user roles can use passkeys? =
 
 Yes — in **Settings > PasskeyFlow for Secure Login > Eligible Roles**. By default, only Administrators are selected, and you can enable passkeys for any WordPress role, including custom roles.
+
+= Which shortcodes are available? =
+
+Core shortcodes:
+* `[pkflow_login_button]`
+* `[pkflow_register_button]`
+* `[pkflow_passkey_profile]`
+* `[pkflow_passkey_prompt]`
+
+Integration shortcodes (registered when the related plugin is active and the module is enabled):
+* `[pkflow_woocommerce_login]`
+* `[pkflow_edd_login]`
+* `[pkflow_memberpress_login]`
+* `[pkflow_ultimate_member_login]`
+* `[pkflow_learndash_login]`
+* `[pkflow_buddyboss_login]`
+* `[pkflow_gravityforms_login]`
+* `[pkflow_pmp_login]`
+
+= Which integration Gutenberg blocks are available? =
+
+When a supported integration plugin is active and enabled, PasskeyFlow can register:
+* `passkeyflow/woocommerce-login-card`
+* `passkeyflow/edd-login-card`
+* `passkeyflow/memberpress-login-card`
+* `passkeyflow/ultimate-member-login-card`
+* `passkeyflow/learndash-login-card`
+* `passkeyflow/buddyboss-login-card`
+* `passkeyflow/gravityforms-login-card`
+* `passkeyflow/pmp-login-card`
 
 = What happens if I deactivate or delete the plugin? =
 
