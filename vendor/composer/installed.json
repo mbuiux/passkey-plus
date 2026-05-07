@@ -49,6 +49,6 @@
             "install-path": "../lbuchs/webauthn"
         }
     ],
-    "dev": true,
+    "dev": false,
     "dev-package-names": []
 }

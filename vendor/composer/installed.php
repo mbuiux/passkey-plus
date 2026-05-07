@@ -1,13 +1,13 @@
 <?php return array(
     'root' => array(
-        'name' => 'passkeyflow/passkeyflow',
+        'name' => 'mbuiux/passkeyflow',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '612c56567347c354fbe92b56f07e786f2d33e3b2',
+        'reference' => 'bdfbb8aaea7ff3daf0f6c37086baadeef385c490',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => true,
+        'dev' => false,
     ),
     'versions' => array(
         'lbuchs/webauthn' => array(
@@ -19,10 +19,10 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'passkeyflow/passkeyflow' => array(
+        'mbuiux/passkeyflow' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '612c56567347c354fbe92b56f07e786f2d33e3b2',
+            'reference' => 'bdfbb8aaea7ff3daf0f6c37086baadeef385c490',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
