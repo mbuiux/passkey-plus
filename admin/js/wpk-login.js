@@ -64,7 +64,58 @@
         return root.querySelector('.wpk-login-message') || document.getElementById('wpk-passkey-login-message');
     }
 
+    function isWpLoginContext(btn) {
+        var form = document.getElementById('loginform');
+        if (!form) {
+            return false;
+        }
+
+        if (!btn || !btn.closest) {
+            return true;
+        }
+
+        return !!btn.closest('#wpk-login-passkey-block') || !!btn.closest('#loginform');
+    }
+
+    function getOrCreateWpLoginNoticeNode() {
+        var loginWrap = document.getElementById('login');
+        var form = document.getElementById('loginform');
+        if (!loginWrap || !form || !form.parentNode) {
+            return null;
+        }
+
+        var node = document.getElementById('pkflow-login-notice');
+        if (!node) {
+            node = document.createElement('div');
+            node.id = 'pkflow-login-notice';
+            node.className = 'notice notice-error';
+            node.setAttribute('role', 'alert');
+            node.setAttribute('aria-live', 'assertive');
+            form.parentNode.insertBefore(node, form);
+        }
+
+        return node;
+    }
+
     function setMessage(btn, text) {
+        if (isWpLoginContext(btn)) {
+            var wpNotice = getOrCreateWpLoginNoticeNode();
+            if (!wpNotice) return;
+
+            wpNotice.textContent = text || '';
+            wpNotice.style.display = text ? '' : 'none';
+
+            // Keep inline node empty/hidden on wp-login so messages only appear
+            // in the native notice region above the form.
+            var inlineNode = getMessageNode(btn);
+            if (inlineNode) {
+                inlineNode.textContent = '';
+                inlineNode.classList.add('wpk-is-hidden');
+            }
+
+            return;
+        }
+
         var node = getMessageNode(btn);
         if (!node) return;
         node.textContent = text;
