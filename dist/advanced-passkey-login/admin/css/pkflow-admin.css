@@ -1,0 +1,1557 @@
+:root {
+    --pkflow-ink: #1d2327;
+    --pkflow-ink-soft: #34404a;
+    --pkflow-accent: #7e5bef;
+    --pkflow-accent-dark: #6344d8;
+    --pkflow-accent-deep: #4f33ba;
+    --pkflow-bg: #f4f6f8;
+    --pkflow-card: #ffffff;
+    --pkflow-border: #dce2e8;
+    --pkflow-border-strong: #c7d0da;
+    --pkflow-muted: #667085;
+    --pkflow-muted-bg: #f8fafc;
+    --pkflow-success: #15803d;
+    --pkflow-success-bg: #e8f7ee;
+    --pkflow-radius: 14px;
+    --pkflow-shadow: 0 18px 45px rgba(29, 35, 39, 0.08);
+    --pkflow-shadow-soft: 0 8px 24px rgba(29, 35, 39, 0.06);
+}
+
+.pkflow-admin-wrap {
+    margin: 20px 20px 0 0;
+    color: var(--pkflow-ink);
+}
+
+/* Hard-block: any notice injected inside the hero or shell by WP core or
+   third-party plugins is invisible. Our notices live in .pkflow-notices-wrap
+   which sits BEFORE .pkflow-premium-shell in the DOM. */
+.pkflow-premium-shell .notice,
+.pkflow-premium-shell .updated,
+.pkflow-premium-shell .error,
+.pkflow-premium-shell [class*="notice-"] {
+    display: none !important;
+}
+
+.pkflow-premium-shell {
+    max-width: 1280px;
+}
+
+.pkflow-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 150px;
+    padding: 30px;
+    color: #fff;
+    background:
+        radial-gradient(circle at top right, rgba(126, 91, 239, 0.42), transparent 36%),
+        linear-gradient(135deg, var(--pkflow-ink), #111820 72%);
+    border-radius: 18px;
+    box-shadow: var(--pkflow-shadow);
+    overflow: hidden;
+}
+
+.pkflow-product-mark {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.pkflow-product-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    font-size: 30px;
+    line-height: 1;
+    color: #fff;
+}
+
+.pkflow-hero h1,
+.pkflow-section-header h2,
+.pkflow-card h3,
+.pkflow-side-card h2,
+.pkflow-shortcode-card h3 {
+    margin: 0;
+    color: inherit;
+    line-height: 1.2;
+}
+
+.pkflow-hero h1 {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.pkflow-eyebrow {
+    margin: 0 0 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: currentColor;
+    opacity: 0.72;
+}
+
+.pkflow-hero__copy {
+    max-width: 560px;
+    margin: 14px 0 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 15px;
+}
+
+.pkflow-hero__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.pkflow-status-pill,
+.pkflow-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    width: fit-content;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.pkflow-status-pill {
+    padding: 9px 12px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pkflow-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #38d87b;
+    box-shadow: 0 0 0 4px rgba(56, 216, 123, 0.14);
+}
+
+/* Settings notices — rendered above the hero */
+.pkflow-notices-wrap {
+    margin-bottom: 16px;
+}
+
+.pkflow-debug-banner {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border: 1px solid #e8b949;
+    border-left: 4px solid #e8b949;
+    border-radius: 8px;
+    background: #fff9e8;
+    color: #1d2327;
+    box-shadow: var(--pkflow-shadow-soft);
+}
+
+.pkflow-debug-banner strong {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.pkflow-debug-banner pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #1d2327;
+}
+
+.pkflow-flash {
+    margin: 0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border-left: 4px solid #4b5563;
+    background: #fff;
+    color: #1d2327;
+    box-shadow: var(--pkflow-shadow-soft);
+}
+
+.pkflow-flash + .pkflow-flash {
+    margin-top: 10px;
+}
+
+.pkflow-flash p {
+    margin: 0;
+    color: #1d2327;
+    font-size: 13.5px;
+}
+
+.pkflow-flash--success {
+    border-left-color: #0f9f4b;
+    background: #eefbf3;
+}
+
+.pkflow-flash--error {
+    border-left-color: #d63638;
+    background: #fff0f1;
+}
+
+.pkflow-flash--warning {
+    border-left-color: #dba617;
+    background: #fff9e8;
+}
+
+.pkflow-flash--info {
+    border-left-color: #2271b1;
+    background: #eef6fc;
+}
+
+.pkflow-tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 8px;
+    background: var(--pkflow-card);
+    border: 1px solid var(--pkflow-border);
+    border-radius: 16px;
+    box-shadow: var(--pkflow-shadow-soft);
+    overflow-x: auto;
+}
+
+.pkflow-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 11px;
+    color: var(--pkflow-muted);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.pkflow-tab:hover,
+.pkflow-tab:focus {
+    color: var(--pkflow-ink);
+    background: var(--pkflow-muted-bg);
+    outline: none;
+    box-shadow: none;
+}
+
+.pkflow-tab.is-active {
+    color: #fff;
+    background: var(--pkflow-ink);
+    box-shadow: 0 8px 18px rgba(29, 35, 39, 0.16);
+}
+
+.pkflow-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 22px;
+    margin-top: 22px;
+    align-items: start;
+}
+
+.pkflow-main-panel,
+.pkflow-side-card,
+.pkflow-card,
+.pkflow-shortcode-card {
+    background: var(--pkflow-card);
+    border: 1px solid var(--pkflow-border);
+    border-radius: var(--pkflow-radius);
+    box-shadow: var(--pkflow-shadow-soft);
+}
+
+.pkflow-main-panel {
+    overflow: hidden;
+}
+
+.pkflow-section-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 26px 28px;
+    border-bottom: 1px solid var(--pkflow-border);
+    background: linear-gradient(180deg, #fff, #fbfcfe);
+}
+
+.pkflow-section-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.pkflow-section-header .pkflow-eyebrow {
+    color: var(--pkflow-accent);
+    opacity: 1;
+}
+
+.pkflow-shortcode-tab-note {
+    margin: 10px 0 0;
+    max-width: 780px;
+    color: var(--pkflow-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.pkflow-settings-form .pkflow-card,
+.pkflow-shortcode-grid {
+    margin: 22px 28px;
+}
+
+.pkflow-card {
+    padding: 22px;
+}
+
+.pkflow-card--setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.pkflow-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+}
+
+.pkflow-setting-copy h2,
+.pkflow-setting-copy h3,
+.pkflow-setting-copy h4,
+.pkflow-setting-copy h5,
+.pkflow-setting-copy h6 {
+    margin: 0;
+    line-height: 1.3;
+}
+
+.pkflow-setting-copy h3,
+.pkflow-setting-copy h4,
+.pkflow-card h3,
+.pkflow-side-card h2,
+.pkflow-shortcode-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.pkflow-setting-copy p,
+.pkflow-card__header p,
+.pkflow-field p,
+.pkflow-side-card p,
+.pkflow-shortcode-card p,
+.pkflow-form-footer p {
+    margin: 7px 0 0;
+    color: var(--pkflow-muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.pkflow-switch {
+    position: relative;
+    display: inline-flex;
+    cursor: pointer;
+}
+
+.pkflow-switch input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pkflow-switch__track {
+    position: relative;
+    display: inline-flex;
+    width: 54px;
+    height: 30px;
+    border-radius: 999px;
+    background: #cbd5df;
+    transition: background 160ms ease;
+}
+
+.pkflow-switch__thumb {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 3px 8px rgba(29, 35, 39, 0.22);
+    transition: transform 160ms ease;
+}
+
+.pkflow-switch input:checked + .pkflow-switch__track {
+    background: var(--pkflow-accent);
+}
+
+.pkflow-switch input:checked + .pkflow-switch__track .pkflow-switch__thumb {
+    transform: translateX(24px);
+}
+
+.pkflow-role-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.pkflow-role-chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--pkflow-border);
+    border-radius: 12px;
+    background: var(--pkflow-muted-bg);
+    font-weight: 650;
+    cursor: pointer;
+}
+
+.pkflow-role-chip input {
+    accent-color: var(--pkflow-accent);
+}
+
+.pkflow-grid-2,
+.pkflow-grid-3 {
+    display: grid;
+    gap: 18px;
+}
+
+.pkflow-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pkflow-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pkflow-integration-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.pkflow-integration-setting-card {
+    margin: 0;
+    padding: 16px;
+    border: 1px solid var(--pkflow-border);
+    border-radius: 12px;
+    background: var(--pkflow-muted-bg);
+}
+
+.pkflow-integration-setting-card.is-missing {
+    opacity: 0.72;
+}
+
+.pkflow-integration-setting-card header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.pkflow-integration-setting-card h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--pkflow-ink);
+}
+
+.pkflow-integration-status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid var(--pkflow-border);
+    color: var(--pkflow-muted);
+    background: #fff;
+}
+
+.pkflow-integration-status.is-active {
+    color: var(--pkflow-success);
+    border-color: rgba(21, 128, 61, 0.22);
+    background: var(--pkflow-success-bg);
+}
+
+.pkflow-integration-status.is-missing {
+    color: #9ca3af;
+    border-color: #d1d5db;
+    background: #f3f4f6;
+}
+
+.pkflow-integration-toggle-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--pkflow-border);
+}
+
+.pkflow-integration-toggle-row label {
+    margin: 0;
+    color: var(--pkflow-ink-soft);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.pkflow-field label,
+.pkflow-label-row label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--pkflow-ink);
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.pkflow-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.pkflow-label-row label {
+    margin-bottom: 0;
+}
+
+.pkflow-field input[type="text"],
+.pkflow-field input[type="number"],
+.pkflow-field select {
+    width: 100%;
+    max-width: none;
+    min-height: 42px;
+    border-radius: 10px;
+    border-color: var(--pkflow-border-strong);
+    color: var(--pkflow-ink);
+    background-color: #fff;
+}
+
+.pkflow-field input:focus,
+.pkflow-field select:focus {
+    border-color: var(--pkflow-accent);
+    box-shadow: 0 0 0 3px rgba(126, 91, 239, 0.14);
+    outline: none;
+}
+
+.pkflow-badge {
+    padding: 7px 9px;
+    color: var(--pkflow-muted);
+    background: var(--pkflow-muted-bg);
+    border: 1px solid var(--pkflow-border);
+}
+
+.pkflow-badge--accent {
+    color: var(--pkflow-accent-dark);
+    background: rgba(126, 91, 239, 0.1);
+    border-color: rgba(126, 91, 239, 0.22);
+}
+
+.pkflow-badge--success {
+    color: var(--pkflow-success);
+    background: var(--pkflow-success-bg);
+    border-color: rgba(21, 128, 61, 0.16);
+}
+
+.pkflow-button,
+.wp-core-ui .pkflow-save-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px !important;
+    padding: 0 16px !important;
+    border-radius: 10px !important;
+    border: 0 !important;
+    font-weight: 750 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.pkflow-button:hover,
+.wp-core-ui .pkflow-save-button:hover {
+    transform: translateY(-1px);
+}
+
+.wp-core-ui .pkflow-save-button {
+    background: var(--pkflow-ink) !important;
+    color: #fff !important;
+    box-shadow: 0 10px 20px rgba(29, 35, 39, 0.18) !important;
+}
+
+.pkflow-button--ghost {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+.pkflow-button--accent {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    color: #fff !important;
+    background: var(--pkflow-accent);
+    box-shadow: 0 12px 24px rgba(126, 91, 239, 0.28);
+    text-align: center;
+}
+
+.pkflow-button--accent:hover,
+.pkflow-button--accent:focus {
+    color: #fff !important;
+    background: var(--pkflow-accent-deep);
+    transform: translateY(-1px);
+    box-shadow: 0 16px 28px rgba(126, 91, 239, 0.38);
+}
+
+.pkflow-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 28px;
+    background: var(--pkflow-muted-bg);
+    border-top: 1px solid var(--pkflow-border);
+}
+
+.pkflow-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pkflow-shell-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 18px;
+    padding: 12px 10px 4px;
+    border-top: 1px solid var(--pkflow-border);
+    color: var(--pkflow-muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.pkflow-shell-footer__label {
+    font-weight: 600;
+    color: var(--pkflow-muted);
+    opacity: 0.9;
+}
+
+.pkflow-shell-footer__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--pkflow-muted);
+    text-decoration: none;
+    font-weight: 600;
+    opacity: 0.92;
+    transition: color 160ms ease, opacity 160ms ease;
+}
+
+.pkflow-shell-footer__link:hover,
+.pkflow-shell-footer__link:focus {
+    color: var(--pkflow-ink-soft);
+    opacity: 1;
+}
+
+.pkflow-shell-footer__icon {
+    display: inline-flex;
+    width: 14px;
+    height: 14px;
+}
+
+.pkflow-shell-footer__icon svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.pkflow-shell-footer__icon .dashicons {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    line-height: 14px;
+}
+
+.pkflow-side-card {
+    padding: 22px;
+}
+
+.pkflow-side-card--accent {
+    color: #fff;
+    background:
+        radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.28), transparent 30%),
+        linear-gradient(145deg, var(--pkflow-accent), #4f33ba);
+    border-color: rgba(126, 91, 239, 0.2);
+}
+
+.pkflow-side-card--accent p,
+.pkflow-side-card--accent li,
+.pkflow-side-card--accent h2 {
+    color: #fff;
+}
+
+.pkflow-side-card--accent p,
+.pkflow-side-card--accent li {
+    opacity: 0.88;
+}
+
+.pkflow-side-card--accent .pkflow-badge--accent {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.pkflow-side-card ul,
+.pkflow-checklist {
+    margin: 16px 0 18px;
+    padding: 0;
+    list-style: none;
+}
+
+.pkflow-side-card li,
+.pkflow-checklist li,
+.pkflow-compat-list span {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.pkflow-side-card ul li::before,
+.pkflow-checklist li::before {
+    content: "✓";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    border-radius: 50%;
+    color: var(--pkflow-success);
+    background: var(--pkflow-success-bg);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.pkflow-side-card--accent ul li::before {
+    color: var(--pkflow-accent-dark);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.pkflow-compat-list {
+    display: grid;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.pkflow-compat-list span {
+    justify-content: space-between;
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--pkflow-muted-bg);
+}
+
+.pkflow-compat-list strong {
+    color: var(--pkflow-success);
+}
+
+.pkflow-shortcode-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.pkflow-shortcode-helper-card {
+    margin: 22px 28px;
+    padding: 20px;
+    border: 1px solid var(--pkflow-border);
+    border-radius: var(--pkflow-radius);
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    box-shadow: var(--pkflow-shadow-soft);
+}
+
+.pkflow-shortcode-helper-card__header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--pkflow-ink);
+}
+
+.pkflow-shortcode-helper-card__header p {
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--pkflow-muted);
+}
+
+.pkflow-shortcode-helper-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.pkflow-shortcode-helper-grid section {
+    padding: 14px;
+    border: 1px solid var(--pkflow-border);
+    border-radius: 12px;
+    background: #fff;
+}
+
+.pkflow-shortcode-helper-grid h4,
+.pkflow-shortcode-examples h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--pkflow-ink);
+}
+
+.pkflow-shortcode-helper-grid ol,
+.pkflow-shortcode-helper-list {
+    margin: 10px 0 0;
+    padding-left: 18px;
+}
+
+.pkflow-shortcode-helper-grid li,
+.pkflow-shortcode-helper-list li {
+    margin: 6px 0;
+    color: var(--pkflow-ink-soft);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.pkflow-shortcode-helper-list code {
+    margin-right: 5px;
+    padding: 1px 6px;
+    border-radius: 6px;
+    border: 1px solid var(--pkflow-border);
+    background: #fff;
+    color: var(--pkflow-ink);
+    font-size: 12px;
+}
+
+.pkflow-shortcode-examples {
+    margin-top: 16px;
+}
+
+.pkflow-shortcode-examples__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.pkflow-shortcode-examples__grid > div {
+    padding: 12px;
+    border: 1px dashed var(--pkflow-border-strong);
+    border-radius: 10px;
+    background: #fff;
+}
+
+.pkflow-shortcode-examples__grid p {
+    margin: 0 0 8px;
+    color: var(--pkflow-ink);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.pkflow-shortcode-examples__grid code {
+    display: block;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid #1f2937;
+    background: #111820;
+    color: #f8fafc;
+    font-size: 12px;
+    white-space: normal;
+}
+
+.pkflow-shortcode-card {
+    padding: 22px;
+}
+
+.pkflow-shortcode-card code {
+    display: block;
+    margin-top: 16px;
+    padding: 13px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--pkflow-border);
+    background: #111820;
+    color: #f8fafc;
+    font-size: 13px;
+    white-space: normal;
+}
+
+.pkflow-shortcode-card span {
+    display: block;
+    margin-top: 12px;
+    color: var(--pkflow-muted);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+/* Integration module wrappers used by injected and shortcode renders. */
+.pkflow-integration-passkey {
+    margin: 14px 0;
+    padding: 12px;
+    border: 1px solid var(--pkflow-border);
+    border-radius: 12px;
+    background: linear-gradient(180deg, #fff, #f8fafc);
+}
+
+.pkflow-integration-passkey--auto-inject {
+    border-color: rgba(126, 91, 239, 0.28);
+    box-shadow: 0 8px 16px rgba(126, 91, 239, 0.08);
+}
+
+.pkflow-integration-passkey .pkflow-shortcode-login-wrap {
+    margin: 0;
+}
+
+@media (max-width: 1100px) {
+    .pkflow-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .pkflow-sidebar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: grid;
+    }
+}
+
+@media (max-width: 782px) {
+    .pkflow-admin-wrap {
+        margin-right: 12px;
+    }
+
+    .pkflow-hero,
+    .pkflow-card--setting,
+    .pkflow-card__header,
+    .pkflow-form-footer,
+    .pkflow-section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pkflow-hero {
+        padding: 24px;
+    }
+
+    .pkflow-hero h1 {
+        font-size: 28px;
+    }
+
+    .pkflow-role-grid,
+    .pkflow-grid-2,
+    .pkflow-grid-3,
+    .pkflow-integration-settings-grid,
+    .pkflow-shortcode-helper-grid,
+    .pkflow-shortcode-examples__grid,
+    .pkflow-shortcode-grid,
+    .pkflow-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .pkflow-settings-form .pkflow-card,
+    .pkflow-shortcode-grid,
+    .pkflow-shortcode-helper-card {
+        margin: 16px;
+    }
+
+    .pkflow-section-header,
+    .pkflow-form-footer {
+        padding: 20px;
+    }
+
+    .pkflow-shell-footer {
+        justify-content: flex-start;
+        gap: 10px 14px;
+    }
+}
+
+/* ── Profile section ──────────────────────────────────────── */
+
+.pkflow-profile-section {
+    margin: 28px 0;
+    color: var(--pkflow-ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.pkflow-profile-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.pkflow-profile-header h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--pkflow-ink);
+}
+
+.pkflow-profile-header p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--pkflow-muted);
+    line-height: 1.5;
+}
+
+.pkflow-profile-count {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--pkflow-border);
+    background: var(--pkflow-muted-bg);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--pkflow-ink);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pkflow-profile-count-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--pkflow-muted);
+}
+
+.pkflow-profile-card {
+    background: #fff;
+    border: 1px solid var(--pkflow-border);
+    border-radius: var(--pkflow-radius);
+    box-shadow: var(--pkflow-shadow-soft);
+    overflow: hidden;
+}
+
+/* Register row */
+.pkflow-profile-register-row {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--pkflow-border);
+}
+
+.pkflow-profile-register-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.pkflow-profile-register-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--pkflow-ink);
+    white-space: nowrap;
+}
+
+.pkflow-profile-register-desc {
+    font-size: 13px;
+    color: var(--pkflow-muted);
+    line-height: 1.5;
+}
+
+.pkflow-profile-register-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 520px;
+}
+
+.pkflow-profile-register-label {
+    flex: 1;
+    min-width: 0;
+}
+
+.pkflow-profile-register-label label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--pkflow-ink);
+}
+
+.pkflow-profile-label-input {
+    width: 100%;
+    height: 46px;
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--pkflow-border-strong) !important;
+    border-radius: 10px !important;
+    font-size: 14.5px;
+    color: var(--pkflow-ink);
+    background: #fff;
+    box-shadow: none !important;
+    box-sizing: border-box;
+}
+
+.pkflow-profile-label-input:focus {
+    border-color: var(--pkflow-accent) !important;
+    box-shadow: 0 0 0 3px rgba(126, 91, 239, 0.14) !important;
+    outline: none;
+}
+
+.pkflow-profile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 0 20px;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: var(--pkflow-ink) !important;
+    color: #fff !important;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 140ms ease, box-shadow 140ms ease;
+    box-shadow: 0 8px 18px rgba(29, 35, 39, 0.18);
+    width: 100%;
+}
+
+.pkflow-profile-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(29, 35, 39, 0.24);
+    color: #fff !important;
+}
+
+.pkflow-profile-tip {
+    margin: 0;
+    font-size: 12px;
+    color: var(--pkflow-muted);
+    line-height: 1.5;
+}
+
+/* Hidden by default; JS sets display:'' when content is written */
+#pkflow-passkey-profile-message {
+    display: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pkflow-profile-limit-notice {
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(202, 138, 4, 0.28);
+    background: rgba(254, 249, 195, 0.6);
+    color: #854d0e;
+    font-size: 13px;
+    line-height: 1.5;
+    min-width: 260px;
+}
+
+/* Credentials table */
+.pkflow-profile-creds {
+    padding: 0;
+}
+
+.pkflow-profile-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 20px 28px 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(202, 138, 4, 0.28);
+    background: rgba(254, 249, 195, 0.6);
+    color: #854d0e;
+    font-size: 12.5px;
+    line-height: 1.4;
+}
+
+.pkflow-profile-warning svg {
+    flex-shrink: 0;
+    stroke: #a16207;
+}
+
+.pkflow-creds-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 13.5px;
+}
+
+.pkflow-creds-table thead tr {
+    border-bottom: 1px solid var(--pkflow-border);
+}
+
+.pkflow-creds-table thead th {
+    padding: 10px 28px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--pkflow-muted);
+    background: var(--pkflow-muted-bg);
+}
+
+.pkflow-creds-table tbody tr {
+    border-bottom: 1px solid var(--pkflow-border);
+    transition: background 120ms ease;
+}
+
+.pkflow-creds-table tbody tr:last-child {
+    border-bottom: 0;
+}
+
+.pkflow-creds-table tbody tr:hover {
+    background: #fafbff;
+}
+
+.pkflow-creds-table td {
+    padding: 14px 28px;
+    color: var(--pkflow-ink);
+    vertical-align: middle;
+}
+
+.pkflow-creds-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 650;
+}
+
+.pkflow-creds-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pkflow-accent);
+    flex-shrink: 0;
+}
+
+.pkflow-revoke-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 0 12px;
+    border: 1px solid rgba(185, 28, 28, 0.3) !important;
+    border-radius: 8px !important;
+    background: rgba(254, 226, 226, 0.6) !important;
+    color: #b91c1c !important;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 140ms ease, border-color 140ms ease;
+}
+
+.pkflow-revoke-btn:hover {
+    background: rgba(254, 202, 202, 0.9) !important;
+    border-color: rgba(185, 28, 28, 0.55) !important;
+}
+
+/* Login form passkey button: black style, same size as SSO button */
+/* Front-end shortcode login button: mirror wp-login passkey styling */
+.pkflow-shortcode-login-wrap {
+    max-width: 320px;
+    margin: 12px 0;
+}
+
+.pkflow-shortcode-login-wrap .pkflow-passkey-btn {
+    width: 100% !important;
+    min-height: 30px;
+    margin: 0;
+    padding: 0 12px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    border: 1px solid #111820 !important;
+    border-radius: 4px !important;
+    background: #111820 !important;
+    color: #fff !important;
+    font-weight: 600;
+    text-shadow: none;
+    box-shadow: 0 2px 8px rgba(17, 24, 32, 0.22);
+    transition: background 150ms ease, border-color 150ms ease, transform 120ms ease, box-shadow 150ms ease;
+}
+
+.pkflow-shortcode-login-wrap .pkflow-passkey-btn:hover,
+.pkflow-shortcode-login-wrap .pkflow-passkey-btn:focus {
+    border-color: #0b0f14 !important;
+    background: #0b0f14 !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(17, 24, 32, 0.24);
+}
+
+.pkflow-shortcode-login-wrap .pkflow-passkey-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 159, 254, 0.45), 0 6px 14px rgba(17, 24, 32, 0.24);
+}
+
+.pkflow-shortcode-login-wrap .pkflow-passkey-icon {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    color: #fff;
+}
+
+.pkflow-shortcode-login-wrap .pkflow-passkey-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.2;
+}
+
+.pkflow-shortcode-login-wrap .pkflow-login-message {
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #5f6873;
+}
+
+.pkflow-passkey-prompt {
+    margin: 18px 0;
+}
+
+.pkflow-passkey-prompt__card {
+    max-width: 640px;
+    padding: 22px;
+    border-radius: 14px;
+    border: 1px solid #dbe2ea;
+    background:
+        radial-gradient(circle at top right, rgba(58, 173, 255, 0.14), transparent 42%),
+        linear-gradient(165deg, #ffffff 0%, #f6f9fc 100%);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.pkflow-passkey-prompt__eyebrow {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0f6b8e;
+}
+
+.pkflow-passkey-prompt h3 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.25;
+    color: #111827;
+}
+
+.pkflow-passkey-prompt__copy {
+    margin: 10px 0 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #3f4b5a;
+}
+
+.pkflow-passkey-prompt__benefits {
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+}
+
+.pkflow-passkey-prompt__benefits li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #243447;
+    font-size: 13.5px;
+    line-height: 1.4;
+}
+
+.pkflow-passkey-prompt__benefits li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1597d4;
+    box-shadow: 0 0 0 4px rgba(21, 151, 212, 0.14);
+    flex: 0 0 8px;
+}
+
+.pkflow-passkey-prompt__actions {
+    margin-top: 16px;
+}
+
+.pkflow-passkey-prompt .pkflow-passkey-prompt-register {
+    max-width: 520px;
+}
+
+.pkflow-passkey-prompt .pkflow-passkey-prompt-register .pkflow-profile-register-controls {
+    gap: 10px;
+}
+
+.pkflow-passkey-prompt .pkflow-passkey-prompt-register .pkflow-profile-tip {
+    margin-top: 6px;
+}
+
+@media (max-width: 782px) {
+    .pkflow-passkey-prompt__card {
+        padding: 16px;
+    }
+
+    .pkflow-passkey-prompt h3 {
+        font-size: 20px;
+    }
+}
+
+.pkflow-passkey-btn.pkflow-btn-disabled,
+.pkflow-passkey-btn.pkflow-btn-disabled:hover,
+.pkflow-passkey-btn.pkflow-btn-disabled:focus {
+    border-color: #c8ced6 !important;
+    background: #f1f3f5 !important;
+    color: #8a929b !important;
+    box-shadow: none !important;
+    transform: none !important;
+    cursor: not-allowed;
+    opacity: 0.92;
+}
+
+.pkflow-passkey-btn.pkflow-btn-disabled .pkflow-passkey-icon {
+    color: #9aa3ad;
+}
+
+.pkflow-is-hidden {
+    display: none !important;
+}
+
+.pkflow-user-passkeys-muted {
+    color: #8a8f96;
+}
+
+body.login #pkflow-login-passkey-block {
+    clear: both;
+    margin-top: 18px;
+}
+
+body.login .pkflow-login-separator {
+    width: 100%;
+    margin: 14px 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8b949e;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+body.login .pkflow-login-separator::before,
+body.login .pkflow-login-separator::after {
+    content: "";
+    flex: 1 1 auto;
+    border-top: 1px solid #d8dde3;
+}
+
+body.login .pkflow-login-separator span {
+    display: inline-block;
+    padding: 0 10px;
+    line-height: 1;
+    background: #fff;
+}
+
+body.login .pkflow-login-passkey-wrap {
+    margin-top: 0;
+}
+
+body.login .pkflow-login-passkey-wrap .pkflow-passkey-btn {
+    width: 100% !important;
+    min-height: 30px;
+    margin-bottom: 0;
+    padding: 0 12px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    border: 1px solid #111820 !important;
+    border-radius: 4px !important;
+    background: #111820 !important;
+    color: #fff !important;
+    font-weight: 600;
+    text-shadow: none;
+    box-shadow: 0 2px 8px rgba(17, 24, 32, 0.22);
+    transition: background 150ms ease, border-color 150ms ease, transform 120ms ease, box-shadow 150ms ease;
+}
+
+body.login .pkflow-login-passkey-wrap .pkflow-passkey-btn:hover,
+body.login .pkflow-login-passkey-wrap .pkflow-passkey-btn:focus {
+    border-color: #0b0f14 !important;
+    background: #0b0f14 !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(17, 24, 32, 0.24);
+}
+
+body.login .pkflow-login-passkey-wrap .pkflow-passkey-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 159, 254, 0.45), 0 6px 14px rgba(17, 24, 32, 0.24);
+}
+
+body.login .pkflow-login-passkey-wrap .pkflow-passkey-icon {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    color: #fff;
+}
+
+body.login .pkflow-login-passkey-wrap .pkflow-passkey-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.2;
+}
+
+body.login #pkflow-passkey-login-message {
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+@media (max-width: 782px) {
+    .pkflow-profile-register-row {
+        flex-direction: column;
+    }
+
+    .pkflow-profile-register-controls,
+    .pkflow-profile-limit-notice {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .pkflow-creds-table thead th,
+    .pkflow-creds-table td {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .pkflow-profile-warning {
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+}

@@ -1,27 +1,27 @@
 <?php
 /**
- * Plugin Name: PasskeyFlow for Secure Login
- * Plugin URI:  https://github.com/mbuiux/passkeyflow.git
- * Description: PasskeyFlow for Secure Login enables passwordless passkey login for WordPress. Supports Face ID, Touch ID, Windows Hello, YubiKey, and more.
- * Version:     1.1.2
+ * Plugin Name: Advanced Passkeys for Secure Login
+ * Plugin URI:  https://wordpress.org/plugins/advanced-passkey-login/
+ * Description: Advanced Passkeys for Secure Login enables passwordless passkey login for WordPress. Supports Face ID, Touch ID, Windows Hello, YubiKey, and more.
+ * Version:     1.1.3
  * Author:      mbuiux
  * Author URI:  https://profiles.wordpress.org/mbuiux/
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: passkeyflow
+ * Text Domain: advanced-passkey-login
  * Domain Path: /languages
  * Requires at least: 6.0
  * Tested up to: 6.9
  * Requires PHP: 8.0
  *
- * @package PasskeyFlow
+ * @package PKFLOW
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PKFLOW_VERSION', '1.1.2' );
+define( 'PKFLOW_VERSION', '1.1.3' );
 define( 'PKFLOW_PLUGIN_FILE', __FILE__ );
 define( 'PKFLOW_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PKFLOW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -201,11 +201,11 @@ register_deactivation_hook( __FILE__, 'pkflow_deactivate' );
 function pkflow_activate( bool $network_wide = false ) {
 	if ( version_compare( PHP_VERSION, '8.0', '<' ) ) {
 		deactivate_plugins( plugin_basename( PKFLOW_PLUGIN_FILE ) );
-		wp_die( esc_html__( 'PasskeyFlow for Secure Login requires PHP 8.0 or higher. Please upgrade PHP before activating this plugin.', 'passkeyflow' ) );
+		wp_die( esc_html__( 'Advanced Passkeys for Secure Login requires PHP 8.0 or higher. Please upgrade PHP before activating this plugin.', 'advanced-passkey-login' ) );
 	}
 	if ( version_compare( $GLOBALS['wp_version'], '6.0', '<' ) ) {
 		deactivate_plugins( plugin_basename( PKFLOW_PLUGIN_FILE ) );
-		wp_die( esc_html__( 'PasskeyFlow for Secure Login requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'passkeyflow' ) );
+		wp_die( esc_html__( 'Advanced Passkeys for Secure Login requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'advanced-passkey-login' ) );
 	}
 
 	require_once PKFLOW_PLUGIN_DIR . 'includes/class-pkflow-passkeys.php';
@@ -264,8 +264,8 @@ add_action( 'wp_initialize_site', 'pkflow_multisite_initialize_site' );
 add_filter(
 	'plugin_action_links_' . plugin_basename( __FILE__ ),
 	function ( $links ) {
-		$url = admin_url( 'options-general.php?page=passkeyflow' );
-		array_unshift( $links, sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'Settings', 'passkeyflow' ) ) );
+		$url = admin_url( 'options-general.php?page=advanced-passkey-login' );
+		array_unshift( $links, sprintf( '<a href="%s">%s</a>', esc_url( $url ), esc_html__( 'Settings', 'advanced-passkey-login' ) ) );
 		return $links;
 	}
 );
@@ -280,12 +280,12 @@ add_filter(
 		$links[] = sprintf(
 			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
 			esc_url( 'https://profiles.wordpress.org/mbuiux/' ),
-			esc_html__( 'Author: mbuiux', 'passkeyflow' )
+			esc_html__( 'Author: mbuiux', 'advanced-passkey-login' )
 		);
 		$links[] = sprintf(
 			'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-			esc_url( 'https://github.com/mbuiux/passkeyflow.git' ),
-			esc_html__( 'GitHub Repository', 'passkeyflow' )
+			esc_url( 'https://wordpress.org/plugins/advanced-passkey-login/' ),
+			esc_html__( 'Plugin Page', 'advanced-passkey-login' )
 		);
 
 		return $links;
@@ -310,7 +310,7 @@ add_action(
 		if ( empty( $warnings ) ) {
 			return;
 		}
-		echo '<div class="notice notice-error"><p><strong>PasskeyFlow for Secure Login security warning:</strong></p><ul>';
+		echo '<div class="notice notice-error"><p><strong>Advanced Passkeys for Secure Login security warning:</strong></p><ul>';
 		foreach ( $warnings as $w ) {
 			echo '<li>' . wp_kses( $w, array( 'strong' => array() ) ) . '</li>';
 		}
