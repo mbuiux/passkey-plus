@@ -85,8 +85,6 @@ class PKFLOW_Passkeys {
 			return;
 		}
 
-		self::migrate_legacy_table_names();
-
 		if ( ! class_exists( 'lbuchs\\WebAuthn\\WebAuthn' ) ) {
 			add_action( 'admin_notices', array( $this, 'render_missing_dependency_notice' ) );
 			return;
@@ -115,29 +113,20 @@ class PKFLOW_Passkeys {
 		// Admin: passkey setup nudge notice.
 		add_action( 'admin_notices', array( $this, 'render_setup_notice' ) );
 		add_action( 'wp_ajax_pkflow_dismiss_notice', array( $this, 'ajax_dismiss_notice' ) );
-		add_action( 'wp_ajax_wpk_dismiss_notice', array( $this, 'ajax_dismiss_notice' ) );
 
 		// Cron: scheduled cleanup.
 		add_action( 'pkflow_scheduled_cleanup', array( $this, 'run_scheduled_cleanup' ) );
 
 		// AJAX — authenticated (registration + revocation).
-		// Keep both pkflow_* and wpk_* action names for backward compatibility.
 		add_action( 'wp_ajax_pkflow_begin_registration', array( $this, 'ajax_begin_registration' ) );
-		add_action( 'wp_ajax_wpk_begin_registration', array( $this, 'ajax_begin_registration' ) );
 		add_action( 'wp_ajax_pkflow_finish_registration', array( $this, 'ajax_finish_registration' ) );
-		add_action( 'wp_ajax_wpk_finish_registration', array( $this, 'ajax_finish_registration' ) );
 		add_action( 'wp_ajax_pkflow_revoke_credential', array( $this, 'ajax_revoke_credential' ) );
-		add_action( 'wp_ajax_wpk_revoke_credential', array( $this, 'ajax_revoke_credential' ) );
 
 		// AJAX — public + authenticated (login).
 		add_action( 'wp_ajax_nopriv_pkflow_begin_login', array( $this, 'ajax_begin_login' ) );
 		add_action( 'wp_ajax_pkflow_begin_login', array( $this, 'ajax_begin_login' ) );
-		add_action( 'wp_ajax_nopriv_wpk_begin_login', array( $this, 'ajax_begin_login' ) );
-		add_action( 'wp_ajax_wpk_begin_login', array( $this, 'ajax_begin_login' ) );
 		add_action( 'wp_ajax_nopriv_pkflow_finish_login', array( $this, 'ajax_finish_login' ) );
 		add_action( 'wp_ajax_pkflow_finish_login', array( $this, 'ajax_finish_login' ) );
-		add_action( 'wp_ajax_nopriv_wpk_finish_login', array( $this, 'ajax_finish_login' ) );
-		add_action( 'wp_ajax_wpk_finish_login', array( $this, 'ajax_finish_login' ) );
 	}
 
 	/**
@@ -159,8 +148,6 @@ class PKFLOW_Passkeys {
 	public static function create_tables(): void {
 		global $wpdb;
 		$charset = $wpdb->get_charset_collate();
-
-		self::migrate_legacy_table_names();
 
 		$cred = $wpdb->prefix . self::TABLE_CREDENTIALS;
 		$rate = $wpdb->prefix . self::TABLE_RATE_LIMITS;
@@ -214,37 +201,6 @@ class PKFLOW_Passkeys {
 
 		self::ensure_credentials_schema_v2();
 		update_option( 'pkflow_credentials_schema_v2', 1, false );
-	}
-
-	/**
-	 * Move legacy wpk_* table names to pkflow_* names when safe.
-	 */
-	private static function migrate_legacy_table_names(): void {
-		global $wpdb;
-
-		$table_pairs = array(
-			'wpk_credentials' => self::TABLE_CREDENTIALS,
-			'wpk_rate_limits' => self::TABLE_RATE_LIMITS,
-			'wpk_logs'        => 'pkflow_logs',
-		);
-
-		foreach ( $table_pairs as $legacy_suffix => $new_suffix ) {
-			$legacy_table = $wpdb->prefix . $legacy_suffix;
-			$new_table    = $wpdb->prefix . $new_suffix;
-
-			$legacy_like = $wpdb->esc_like( $legacy_table );
-			$new_like    = $wpdb->esc_like( $new_table );
-			$legacy_row  = (string) $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $legacy_like ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			$new_row     = (string) $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $new_like ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-
-			if ( $legacy_table !== $legacy_row || $new_table === $new_row ) {
-				continue;
-			}
-
-			$legacy_table_escaped = esc_sql( $legacy_table );
-			$new_table_escaped    = esc_sql( $new_table );
-			$wpdb->query( "RENAME TABLE {$legacy_table_escaped} TO {$new_table_escaped}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		}
 	}
 
 	/**
@@ -329,10 +285,10 @@ class PKFLOW_Passkeys {
 			return;
 		}
 
-		$profile_url = admin_url( 'profile.php#wpk-profile-section' );
+		$profile_url = admin_url( 'profile.php#pkflow-profile-section' );
 		$nonce       = wp_create_nonce( 'pkflow_dismiss_notice' );
 		?>
-		<div class="notice notice-info is-dismissible wpk-setup-notice" data-nonce="<?php echo esc_attr( $nonce ); ?>">
+		<div class="notice notice-info is-dismissible pkflow-setup-notice" data-nonce="<?php echo esc_attr( $nonce ); ?>">
 			<p>
 				<strong><?php esc_html_e( 'Set up a passkey for faster, more secure sign-ins.', 'passkeyflow' ); ?></strong>
 				<?php
@@ -394,18 +350,18 @@ class PKFLOW_Passkeys {
 
 		$user = get_user_by( 'id', $user_id );
 		if ( ! $user || ! $this->is_eligible_user( $user ) ) {
-			return '<span class="wpk-user-passkeys-muted">—</span>';
+			return '<span class="pkflow-user-passkeys-muted">—</span>';
 		}
 
 		$count = $this->count_user_credentials( $user_id );
 		if ( 0 === $count ) {
-			return '<span class="wpk-user-passkeys-muted">0</span>';
+			return '<span class="pkflow-user-passkeys-muted">0</span>';
 		}
 
 		$url = add_query_arg(
 			array(
 				'user_id' => $user_id,
-				'anchor'  => 'wpk-profile-section',
+				'anchor'  => 'pkflow-profile-section',
 			),
 			admin_url( 'user-edit.php' )
 		);
@@ -479,7 +435,7 @@ class PKFLOW_Passkeys {
 		// Purge log rows older than the configured retention window.
 		$keep_days = max( 7, (int) get_option( 'pkflow_log_retention_days', 90 ) );
 		$log_table = esc_sql( $wpdb->prefix . 'pkflow_logs' );
-		$wpdb->query(
+		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- maintenance delete on plugin-owned log table.
 			$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				"DELETE FROM {$log_table} WHERE log_timestamp < DATE_SUB(UTC_TIMESTAMP(), INTERVAL %d DAY)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$keep_days
@@ -509,16 +465,16 @@ class PKFLOW_Passkeys {
 		}
 
 		wp_enqueue_script(
-			'wpk-profile',
-			PKFLOW_PLUGIN_URL . 'admin/js/wpk-profile.js',
+			'pkflow-profile',
+			PKFLOW_PLUGIN_URL . 'admin/js/pkflow-profile.js',
 			array(),
 			PKFLOW_VERSION,
 			true
 		);
 
 		wp_localize_script(
-			'wpk-profile',
-			'WPKProfile',
+			'pkflow-profile',
+			'PKFLOWProfile',
 			array(
 				'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'pkflow_profile' ),
@@ -536,7 +492,7 @@ class PKFLOW_Passkeys {
 			)
 		);
 
-		wp_enqueue_style( 'wpk-admin', PKFLOW_PLUGIN_URL . 'admin/css/wpk-admin.css', array(), PKFLOW_VERSION );
+		wp_enqueue_style( 'pkflow-admin', PKFLOW_PLUGIN_URL . 'admin/css/pkflow-admin.css', array(), PKFLOW_VERSION );
 	}
 
 	/**
@@ -544,16 +500,16 @@ class PKFLOW_Passkeys {
 	 */
 	public function enqueue_login_assets(): void {
 		wp_enqueue_script(
-			'wpk-login',
-			PKFLOW_PLUGIN_URL . 'admin/js/wpk-login.js',
+			'pkflow-login',
+			PKFLOW_PLUGIN_URL . 'admin/js/pkflow-login.js',
 			array(),
 			PKFLOW_VERSION,
 			true
 		);
 
 		wp_localize_script(
-			'wpk-login',
-			'WPKLogin',
+			'pkflow-login',
+			'PKFLOWLogin',
 			array(
 				'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'pkflow_login' ),
@@ -565,7 +521,7 @@ class PKFLOW_Passkeys {
 			)
 		);
 
-		wp_enqueue_style( 'wpk-login', PKFLOW_PLUGIN_URL . 'admin/css/wpk-admin.css', array(), PKFLOW_VERSION );
+		wp_enqueue_style( 'pkflow-login', PKFLOW_PLUGIN_URL . 'admin/css/pkflow-admin.css', array(), PKFLOW_VERSION );
 	}
 
 	// ──────────────────────────────────────────────────────────
@@ -591,28 +547,28 @@ class PKFLOW_Passkeys {
 		$at_limit     = count( $credentials ) >= $max_passkeys;
 		$max_display  = $max_passkeys >= 999999 ? __( 'unlimited', 'passkeyflow' ) : (string) $max_passkeys;
 		?>
-		<div class="wpk-profile-section" id="wpk-profile-section">
+		<div class="pkflow-profile-section" id="pkflow-profile-section">
 
-			<div class="wpk-profile-header">
+			<div class="pkflow-profile-header">
 				<div>
 					<h2><?php esc_html_e( 'Passkeys', 'passkeyflow' ); ?></h2>
 					<p><?php esc_html_e( 'Sign in with your fingerprint, face, or a hardware security key — no password needed.', 'passkeyflow' ); ?></p>
 				</div>
-				<span class="wpk-profile-count">
+				<span class="pkflow-profile-count">
 					<?php echo esc_html( count( $credentials ) ); ?>&thinsp;/&thinsp;<?php echo esc_html( $max_display ); ?>
-					<span class="wpk-profile-count-label"><?php esc_html_e( 'passkeys', 'passkeyflow' ); ?></span>
+					<span class="pkflow-profile-count-label"><?php esc_html_e( 'passkeys', 'passkeyflow' ); ?></span>
 				</span>
 			</div>
 
-			<div class="wpk-profile-card">
+			<div class="pkflow-profile-card">
 
-				<div class="wpk-profile-register-row">
-					<div class="wpk-profile-register-header">
-						<span class="wpk-profile-register-title"><?php esc_html_e( 'Register new passkey', 'passkeyflow' ); ?></span>
+				<div class="pkflow-profile-register-row">
+					<div class="pkflow-profile-register-header">
+						<span class="pkflow-profile-register-title"><?php esc_html_e( 'Register new passkey', 'passkeyflow' ); ?></span>
 					</div>
 
 					<?php if ( $at_limit ) : ?>
-						<div class="wpk-profile-limit-notice">
+						<div class="pkflow-profile-limit-notice">
 							<?php
 							printf(
 								/* translators: %d number of passkeys */
@@ -623,33 +579,33 @@ class PKFLOW_Passkeys {
 							<?php do_action( 'pkflow_profile_limit_reached_cta', $user ); ?>
 						</div>
 					<?php else : ?>
-						<div class="wpk-profile-register-controls">
-							<label for="wpk-passkey-label" class="screen-reader-text"><?php esc_html_e( 'Device label (optional)', 'passkeyflow' ); ?></label>
+						<div class="pkflow-profile-register-controls">
+							<label for="pkflow-passkey-label" class="screen-reader-text"><?php esc_html_e( 'Device label (optional)', 'passkeyflow' ); ?></label>
 							<input type="text"
-									id="wpk-passkey-label"
-									class="wpk-profile-label-input"
+									id="pkflow-passkey-label"
+									class="pkflow-profile-label-input"
 									placeholder="<?php esc_attr_e( 'Device label (optional)', 'passkeyflow' ); ?>"
 									maxlength="100" />
-							<button type="button" class="wpk-profile-btn" id="wpk-passkey-register">
+							<button type="button" class="pkflow-profile-btn" id="pkflow-passkey-register">
 								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>
 								<?php esc_html_e( 'Register New Passkey', 'passkeyflow' ); ?>
 							</button>
-							<p class="wpk-profile-tip"><?php esc_html_e( 'Tip: open this page on your phone to save to iCloud Keychain or Google Password Manager.', 'passkeyflow' ); ?></p>
-							<p id="wpk-passkey-profile-message" class="wpk-inline-message" role="alert" aria-live="assertive"></p>
+							<p class="pkflow-profile-tip"><?php esc_html_e( 'Tip: open this page on your phone to save to iCloud Keychain or Google Password Manager.', 'passkeyflow' ); ?></p>
+							<p id="pkflow-passkey-profile-message" class="pkflow-inline-message" role="alert" aria-live="assertive"></p>
 						</div>
 					<?php endif; ?>
 				</div>
 
 				<?php if ( ! empty( $credentials ) ) : ?>
-				<div class="wpk-profile-creds">
+				<div class="pkflow-profile-creds">
 					<?php if ( 1 === count( $credentials ) ) : ?>
-						<div class="wpk-profile-warning">
+						<div class="pkflow-profile-warning">
 							<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
 							<?php esc_html_e( 'Only one passkey registered. Add a backup on another device to avoid getting locked out.', 'passkeyflow' ); ?>
 						</div>
 					<?php endif; ?>
 
-					<table class="wpk-creds-table">
+					<table class="pkflow-creds-table">
 						<thead>
 							<tr>
 								<th><?php esc_html_e( 'Label', 'passkeyflow' ); ?></th>
@@ -662,15 +618,15 @@ class PKFLOW_Passkeys {
 						<tbody>
 							<?php foreach ( $credentials as $cred ) : ?>
 								<tr data-credential-id="<?php echo esc_attr( (string) $cred->id ); ?>">
-									<td class="wpk-creds-label">
-										<span class="wpk-creds-dot" aria-hidden="true"></span>
+									<td class="pkflow-creds-label">
+										<span class="pkflow-creds-dot" aria-hidden="true"></span>
 										<?php echo esc_html( '' !== (string) $cred->credential_label ? (string) $cred->credential_label : __( 'Passkey', 'passkeyflow' ) ); ?>
 									</td>
 									<td><?php echo esc_html( $this->format_utc_datetime_for_display( (string) $cred->created_at ) ); ?></td>
 									<td><?php echo null !== $cred->last_used_at ? esc_html( $this->format_utc_datetime_for_display( (string) $cred->last_used_at ) ) : esc_html__( 'Never', 'passkeyflow' ); ?></td>
 									<?php do_action( 'pkflow_profile_table_row', $cred, $user ); ?>
 									<td>
-										<button class="wpk-revoke-btn wpk-passkey-revoke" type="button">
+										<button class="pkflow-revoke-btn pkflow-passkey-revoke" type="button">
 											<?php esc_html_e( 'Revoke', 'passkeyflow' ); ?>
 										</button>
 									</td>
@@ -681,8 +637,8 @@ class PKFLOW_Passkeys {
 				</div>
 				<?php endif; ?>
 
-			</div><!-- .wpk-profile-card -->
-		</div><!-- .wpk-profile-section -->
+			</div><!-- .pkflow-profile-card -->
+		</div><!-- .pkflow-profile-section -->
 		<?php
 	}
 
@@ -757,7 +713,7 @@ class PKFLOW_Passkeys {
 				'pkflow_reg_' . $token,
 				array(
 					'user_id'   => (int) $user->ID,
-					'challenge' => base64_encode( $web_authn->getChallenge()->getBinaryString() ),
+					'challenge' => base64_encode( $web_authn->getChallenge()->getBinaryString() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- WebAuthn challenge binary is stored in transient-safe format.
 				),
 				$this->get_registration_challenge_ttl()
 			);
@@ -865,7 +821,7 @@ class PKFLOW_Passkeys {
 
 		try {
 			$web_authn = $this->new_webauthn();
-			$challenge = base64_decode( $state['challenge'], true );
+			$challenge = base64_decode( $state['challenge'], true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- decodes previously stored WebAuthn challenge bytes.
 			if ( false === $challenge ) {
 				throw new \RuntimeException( 'Challenge decode failed' );
 			}
@@ -981,7 +937,7 @@ class PKFLOW_Passkeys {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_CREDENTIALS;
 
-		$cred = $wpdb->get_row(
+		$cred = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- credential ownership check against custom table.
 			$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- credential ownership check against custom table.
 				"SELECT id, user_id FROM {$table} WHERE id = %d AND revoked_at IS NULL LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$cred_row_id
@@ -1101,7 +1057,7 @@ class PKFLOW_Passkeys {
 				'pkflow_login_' . $token,
 				array(
 					'user_id'   => $state_uid,
-					'challenge' => base64_encode( $web_authn->getChallenge()->getBinaryString() ),
+					'challenge' => base64_encode( $web_authn->getChallenge()->getBinaryString() ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- WebAuthn challenge binary is stored in transient-safe format.
 				),
 				$this->get_login_challenge_ttl()
 			);
@@ -1201,7 +1157,7 @@ class PKFLOW_Passkeys {
 
 		// Fetch stored credential.
 		if ( $state_uid > 0 ) {
-			$cred = $wpdb->get_row(
+			$cred = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- custom credential lookup for user-bound login flow.
 				$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- custom credential lookup for user-bound login flow.
 					"SELECT * FROM {$table} WHERE credential_id_hash = %s AND user_id = %d AND revoked_at IS NULL LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 					$cred_hash,
@@ -1209,7 +1165,7 @@ class PKFLOW_Passkeys {
 				)
 			);
 		} else {
-			$cred = $wpdb->get_row(
+			$cred = $wpdb->get_row( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- custom credential lookup for discoverable login flow.
 				$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- custom credential lookup for discoverable login flow.
 					"SELECT * FROM {$table} WHERE credential_id_hash = %s AND revoked_at IS NULL LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 					$cred_hash
@@ -1235,7 +1191,7 @@ class PKFLOW_Passkeys {
 
 		try {
 			$web_authn = $this->new_webauthn();
-			$challenge = base64_decode( $state['challenge'], true );
+			$challenge = base64_decode( $state['challenge'], true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- decodes previously stored WebAuthn challenge bytes.
 			if ( false === $challenge ) {
 				throw new \RuntimeException( 'Challenge decode failed' );
 			}
@@ -1488,7 +1444,7 @@ class PKFLOW_Passkeys {
 	 * @return string
 	 */
 	private function encode_b64url( string $value ): string {
-		return rtrim( strtr( base64_encode( $value ), '+/', '-_' ), '=' );
+		return rtrim( strtr( base64_encode( $value ), '+/', '-_' ), '=' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- canonical base64url encoding for WebAuthn payloads.
 	}
 
 	// ──────────────────────────────────────────────────────────
@@ -1564,7 +1520,7 @@ class PKFLOW_Passkeys {
 	private function get_user_credentials( int $user_id ): array {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_CREDENTIALS;
-		return (array) $wpdb->get_results(
+		return (array) $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- authentication requires live reads from plugin credential table.
 			$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				"SELECT * FROM {$table} WHERE user_id = %d AND revoked_at IS NULL ORDER BY created_at DESC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$user_id
@@ -1582,7 +1538,7 @@ class PKFLOW_Passkeys {
 	private function get_user_credentials_meta( int $user_id ): array {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_CREDENTIALS;
-		return (array) $wpdb->get_results(
+		return (array) $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- admin credential metadata view reads plugin-owned custom table.
 			$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				"SELECT id, credential_label, created_at, last_used_at FROM {$table} WHERE user_id = %d AND revoked_at IS NULL ORDER BY created_at DESC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$user_id
@@ -1600,7 +1556,7 @@ class PKFLOW_Passkeys {
 	private function count_user_credentials( int $user_id ): int {
 		global $wpdb;
 		$table = $wpdb->prefix . self::TABLE_CREDENTIALS;
-		return (int) $wpdb->get_var(
+		return (int) $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- realtime credential count used for limit enforcement.
 			$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				"SELECT COUNT(*) FROM {$table} WHERE user_id = %d AND revoked_at IS NULL", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$user_id
@@ -1753,7 +1709,7 @@ class PKFLOW_Passkeys {
 		global $wpdb;
 		$table = esc_sql( $wpdb->prefix . self::TABLE_RATE_LIMITS );
 		$key   = $this->bucket_key( $prefix, (string) $identifier );
-		$until = $wpdb->get_var(
+		$until = $wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- rate-limit lock checks require live table reads.
 			$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				"SELECT lock_expires_at FROM {$table} WHERE bucket_key = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$key
@@ -1776,14 +1732,14 @@ class PKFLOW_Passkeys {
 		$max     = $this->get_rate_max_attempts();
 		$lockout = $this->get_rate_lockout();
 
-		$wpdb->query(
+		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- rate-limit bucket initialization write.
 			$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				"INSERT IGNORE INTO {$table} (bucket_key, failure_count, window_expires_at, lock_expires_at, updated_at) VALUES (%s, 0, NULL, NULL, UTC_TIMESTAMP())", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$key
 			)
 		);
 
-		$wpdb->query(
+		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- rate-limit counters and expirations are updated atomically.
 			$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is derived from plugin constant + WP prefix and escaped via esc_sql().
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is derived from plugin constant + WP prefix and escaped via esc_sql().
 				"UPDATE {$table} SET
@@ -1818,7 +1774,7 @@ class PKFLOW_Passkeys {
 		global $wpdb;
 		$table = esc_sql( $wpdb->prefix . self::TABLE_RATE_LIMITS );
 		$key   = $this->bucket_key( $prefix, (string) $identifier );
-		$wpdb->query(
+		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- explicit reset of a rate-limit bucket.
 			$wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				"DELETE FROM {$table} WHERE bucket_key = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$key
@@ -1832,7 +1788,7 @@ class PKFLOW_Passkeys {
 	private function cleanup_rate_table(): void {
 		global $wpdb;
 		$table = esc_sql( $wpdb->prefix . self::TABLE_RATE_LIMITS );
-		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- periodic cleanup for expired rate-limit buckets.
 			"DELETE FROM {$table} WHERE (lock_expires_at IS NULL OR lock_expires_at <= UTC_TIMESTAMP()) AND (window_expires_at IS NULL OR window_expires_at <= UTC_TIMESTAMP())" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		);
 	}

@@ -1,4 +1,4 @@
-/* global WPKLogin */
+/* global PKFLOWLogin */
 (function () {
     'use strict';
 
@@ -57,11 +57,11 @@
     // ── DOM helpers ─────────────────────────────────────────────────────────
 
     function getMessageNode(btn) {
-        var root = btn && btn.closest ? btn.closest('.wpk-login-passkey-wrap, .wpk-shortcode-login-wrap') : null;
+        var root = btn && btn.closest ? btn.closest('.pkflow-login-passkey-wrap, .pkflow-shortcode-login-wrap') : null;
         if (!root) {
-            return document.getElementById('wpk-passkey-login-message');
+            return document.getElementById('pkflow-passkey-login-message');
         }
-        return root.querySelector('.wpk-login-message') || document.getElementById('wpk-passkey-login-message');
+        return root.querySelector('.pkflow-login-message') || document.getElementById('pkflow-passkey-login-message');
     }
 
     function isWpLoginContext(btn) {
@@ -74,7 +74,7 @@
             return true;
         }
 
-        return !!btn.closest('#wpk-login-passkey-block') || !!btn.closest('#loginform');
+        return !!btn.closest('#pkflow-login-passkey-block') || !!btn.closest('#loginform');
     }
 
     function getOrCreateWpLoginNoticeNode() {
@@ -110,7 +110,7 @@
             var inlineNode = getMessageNode(btn);
             if (inlineNode) {
                 inlineNode.textContent = '';
-                inlineNode.classList.add('wpk-is-hidden');
+                inlineNode.classList.add('pkflow-is-hidden');
             }
 
             return;
@@ -119,12 +119,12 @@
         var node = getMessageNode(btn);
         if (!node) return;
         node.textContent = text;
-        node.classList.toggle('wpk-is-hidden', !text);
+        node.classList.toggle('pkflow-is-hidden', !text);
     }
 
     function relocateLoginPasskeyBlock() {
         var form = document.getElementById('loginform');
-        var block = document.getElementById('wpk-login-passkey-block');
+        var block = document.getElementById('pkflow-login-passkey-block');
         if (!form || !block) return;
 
         var submitRow = form.querySelector('p.submit');
@@ -139,10 +139,10 @@
     function setButtonState(btn, busy) {
         if (!btn) return;
         btn.disabled = busy;
-        btn.classList.toggle('wpk-btn-busy', busy);
+        btn.classList.toggle('pkflow-btn-busy', busy);
         if (busy) {
             btn.setAttribute('data-original-html', btn.innerHTML);
-            btn.textContent = WPKLogin.messages.signingIn || 'Signing in…';
+            btn.textContent = PKFLOWLogin.messages.signingIn || 'Signing in…';
         } else {
             var orig = btn.getAttribute('data-original-html');
             if (orig) btn.innerHTML = orig;
@@ -190,13 +190,13 @@
         if (msg && /did not match the expected pattern/i.test(msg)) {
             return 'Your passkey request data was invalid. Please refresh this page and try again.';
         }
-        return msg || WPKLogin.messages.genericError;
+        return msg || PKFLOWLogin.messages.genericError;
     }
 
     // ── AJAX ────────────────────────────────────────────────────────────────
 
     async function postForm(data) {
-        var resp = await fetch(WPKLogin.ajaxUrl, {
+        var resp = await fetch(PKFLOWLogin.ajaxUrl, {
             method: 'POST',
             credentials: 'same-origin',
             body: data,
@@ -212,7 +212,7 @@
         }
 
         if (!resp.ok) {
-            throw new Error((payload && payload.data && payload.data.message) || WPKLogin.messages.genericError);
+            throw new Error((payload && payload.data && payload.data.message) || PKFLOWLogin.messages.genericError);
         }
 
         return payload;
@@ -225,7 +225,7 @@
 
         var beginData = new FormData();
         beginData.append('action', 'pkflow_begin_login');
-        beginData.append('nonce',  WPKLogin.nonce);
+        beginData.append('nonce',  PKFLOWLogin.nonce);
 
         var identifier = getLoginIdentifier();
         if (identifier) {
@@ -234,7 +234,7 @@
 
         var beginResp = await postForm(beginData);
         if (!beginResp || !beginResp.success) {
-            throw new Error((beginResp && beginResp.data && beginResp.data.message) || WPKLogin.messages.genericError);
+            throw new Error((beginResp && beginResp.data && beginResp.data.message) || PKFLOWLogin.messages.genericError);
         }
 
         var options    = hydrateGetOptions(beginResp.data.options);
@@ -242,7 +242,7 @@
 
         var finishData = new FormData();
         finishData.append('action',            'pkflow_finish_login');
-        finishData.append('nonce',             WPKLogin.nonce);
+        finishData.append('nonce',             PKFLOWLogin.nonce);
         finishData.append('token',             beginResp.data.token);
         finishData.append('id',                bufferToB64url(credential.rawId));
         finishData.append('clientDataJSON',    bufferToB64url(credential.response.clientDataJSON));
@@ -255,7 +255,7 @@
 
         var finishResp = await postForm(finishData);
         if (!finishResp || !finishResp.success || !finishResp.data || !finishResp.data.redirect) {
-            throw new Error((finishResp && finishResp.data && finishResp.data.message) || WPKLogin.messages.genericError);
+            throw new Error((finishResp && finishResp.data && finishResp.data.message) || PKFLOWLogin.messages.genericError);
         }
 
         var redirectUrl = finishResp.data.redirect;
@@ -275,23 +275,23 @@
     function init() {
         relocateLoginPasskeyBlock();
 
-        var buttons = Array.prototype.slice.call(document.querySelectorAll('#wpk-signin-passkey, [data-wpk-passkey-login-btn="1"]'));
+        var buttons = Array.prototype.slice.call(document.querySelectorAll('#pkflow-signin-passkey, [data-pkflow-passkey-login-btn="1"]'));
         if (!buttons.length) return;
 
         // Graceful degradation for unsupported browsers
         if (!window.PublicKeyCredential || !navigator.credentials || !navigator.credentials.get) {
             buttons.forEach(function (btn) {
                 btn.disabled = true;
-                btn.classList.add('wpk-btn-disabled');
+                btn.classList.add('pkflow-btn-disabled');
                 btn.setAttribute('aria-disabled', 'true');
-                btn.title = WPKLogin.messages.notSupported;
-                setMessage(btn, WPKLogin.messages.notSupported);
+                btn.title = PKFLOWLogin.messages.notSupported;
+                setMessage(btn, PKFLOWLogin.messages.notSupported);
             });
             return;
         }
 
         buttons.forEach(function (btn) {
-            btn.classList.remove('wpk-btn-disabled');
+            btn.classList.remove('pkflow-btn-disabled');
             btn.removeAttribute('aria-disabled');
         });
 

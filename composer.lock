@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f3a8cced627d63d5d78c786ed4fd7fd",
+    "content-hash": "c0565eb5251e762fce56bd2d8fd3cde5",
     "packages": [
         {
             "name": "lbuchs/webauthn",
@@ -62,8 +62,5 @@
         "php": ">=8.0"
     },
     "platform-dev": {},
-    "platform-overrides": {
-        "php": "8.0"
-    },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

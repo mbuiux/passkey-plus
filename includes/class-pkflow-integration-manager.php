@@ -203,6 +203,8 @@ class PKFLOW_Integration_Manager {
 	 * Register shortcodes, blocks, and hooks for active integrations.
 	 */
 	public function register_integrations(): void {
+		$this->register_core_blocks();
+
 		foreach ( $this->registry as $integration_key => $config ) {
 			if ( empty( $config['dependency_active'] ) ) {
 				continue;
@@ -222,6 +224,297 @@ class PKFLOW_Integration_Manager {
 				$this->register_gravityforms_field_support();
 			}
 		}
+	}
+
+	/**
+	 * Register core PasskeyFlow blocks that do not depend on external integrations.
+	 */
+	private function register_core_blocks(): void {
+		if ( ! function_exists( 'register_block_type' ) ) {
+			return;
+		}
+
+		$this->register_block_editor_script();
+
+		register_block_type(
+			'passkeyflow/login-button',
+			array(
+				'editor_script'   => 'pkflow-gutenberg-blocks',
+				'editor_style'    => 'pkflow-gutenberg-blocks',
+				'title'           => __( 'Passkey Login Button', 'passkeyflow' ),
+				'category'        => 'widgets',
+				'icon'            => 'shield',
+				'keywords'        => array( 'passkey', 'login', 'passwordless' ),
+				'render_callback' => static function ( $attributes ) {
+					$label = isset( $attributes['label'] ) ? sanitize_text_field( (string) $attributes['label'] ) : __( 'Sign in with Passkey', 'passkeyflow' );
+					$redirect_to   = isset( $attributes['redirect_to'] ) ? esc_url_raw( (string) $attributes['redirect_to'] ) : '';
+					$extra_class   = isset( $attributes['class'] ) ? self::sanitize_class_list( (string) $attributes['class'] ) : '';
+					$allow_multiple = ! empty( $attributes['allow_multiple'] ) ? '1' : '0';
+
+					$shortcode = '[pkflow_login_button label="' . esc_attr( $label ) . '" allow_multiple="' . $allow_multiple . '"';
+					if ( '' !== $redirect_to ) {
+						$shortcode .= ' redirect_to="' . esc_attr( $redirect_to ) . '"';
+					}
+					if ( '' !== $extra_class ) {
+						$shortcode .= ' class="' . esc_attr( $extra_class ) . '"';
+					}
+					$shortcode .= ']';
+
+					return do_shortcode( $shortcode );
+				},
+			)
+		);
+
+		$this->registered_blocks[] = array(
+			'name'             => 'passkeyflow/login-button',
+			'title'            => __( 'Passkey Login Button', 'passkeyflow' ),
+			'description'      => __( 'Render a passkey sign-in button.', 'passkeyflow' ),
+			'label'            => __( 'Sign in with Passkey', 'passkeyflow' ),
+			'keywords'         => array( 'passkey', 'login', 'passwordless' ),
+			'icon'             => 'shield',
+			'category'         => 'widgets',
+			'attributes'       => array(
+				'label'          => array(
+					'type'    => 'string',
+					'default' => __( 'Sign in with Passkey', 'passkeyflow' ),
+				),
+				'redirect_to'    => array(
+					'type'    => 'string',
+					'default' => '',
+				),
+				'class'          => array(
+					'type'    => 'string',
+					'default' => '',
+				),
+				'allow_multiple' => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
+			),
+			'inspector_fields' => array(
+				array(
+					'name'        => 'label',
+					'type'        => 'text',
+					'label'       => __( 'Button label', 'passkeyflow' ),
+					'placeholder' => __( 'Sign in with Passkey', 'passkeyflow' ),
+				),
+				array(
+					'name'        => 'redirect_to',
+					'type'        => 'url',
+					'label'       => __( 'Redirect URL', 'passkeyflow' ),
+					'placeholder' => home_url( '/' ),
+					'help'        => __( 'Optional URL to redirect users after a successful passkey login.', 'passkeyflow' ),
+				),
+				array(
+					'name'        => 'class',
+					'type'        => 'text',
+					'label'       => __( 'Extra CSS classes', 'passkeyflow' ),
+					'placeholder' => __( 'my-custom-class', 'passkeyflow' ),
+				),
+				array(
+					'name'  => 'allow_multiple',
+					'type'  => 'toggle',
+					'label' => __( 'Allow multiple login buttons on the same page', 'passkeyflow' ),
+				),
+			),
+		);
+
+		register_block_type(
+			'passkeyflow/register-button',
+			array(
+				'editor_script'   => 'pkflow-gutenberg-blocks',
+				'editor_style'    => 'pkflow-gutenberg-blocks',
+				'title'           => __( 'Passkey Register Button', 'passkeyflow' ),
+				'category'        => 'widgets',
+				'icon'            => 'shield',
+				'keywords'        => array( 'passkey', 'register', 'onboarding' ),
+				'render_callback' => static function ( $attributes ) {
+					$label       = isset( $attributes['label'] ) ? sanitize_text_field( (string) $attributes['label'] ) : __( 'Register a Passkey', 'passkeyflow' );
+					$extra_class = isset( $attributes['class'] ) ? self::sanitize_class_list( (string) $attributes['class'] ) : '';
+
+					$shortcode = '[pkflow_register_button label="' . esc_attr( $label ) . '"';
+					if ( '' !== $extra_class ) {
+						$shortcode .= ' class="' . esc_attr( $extra_class ) . '"';
+					}
+					$shortcode .= ']';
+
+					return do_shortcode( $shortcode );
+				},
+			)
+		);
+
+		$this->registered_blocks[] = array(
+			'name'             => 'passkeyflow/register-button',
+			'title'            => __( 'Passkey Register Button', 'passkeyflow' ),
+			'description'      => __( 'Render a passkey registration button for eligible signed-in users.', 'passkeyflow' ),
+			'label'            => __( 'Register a Passkey', 'passkeyflow' ),
+			'keywords'         => array( 'passkey', 'register', 'onboarding' ),
+			'icon'             => 'shield',
+			'category'         => 'widgets',
+			'attributes'       => array(
+				'label' => array(
+					'type'    => 'string',
+					'default' => __( 'Register a Passkey', 'passkeyflow' ),
+				),
+				'class' => array(
+					'type'    => 'string',
+					'default' => '',
+				),
+			),
+			'inspector_fields' => array(
+				array(
+					'name'        => 'label',
+					'type'        => 'text',
+					'label'       => __( 'Button label', 'passkeyflow' ),
+					'placeholder' => __( 'Register a Passkey', 'passkeyflow' ),
+				),
+				array(
+					'name'        => 'class',
+					'type'        => 'text',
+					'label'       => __( 'Extra CSS classes', 'passkeyflow' ),
+					'placeholder' => __( 'my-custom-class', 'passkeyflow' ),
+				),
+			),
+		);
+
+		register_block_type(
+			'passkeyflow/passkey-profile',
+			array(
+				'editor_script'   => 'pkflow-gutenberg-blocks',
+				'editor_style'    => 'pkflow-gutenberg-blocks',
+				'title'           => __( 'Account Passkeys', 'passkeyflow' ),
+				'category'        => 'widgets',
+				'icon'            => 'shield',
+				'keywords'        => array( 'passkey', 'profile', 'account' ),
+				'render_callback' => static function () {
+					return do_shortcode( '[pkflow_passkey_profile]' );
+				},
+			)
+		);
+
+		$this->registered_blocks[] = array(
+			'name'             => 'passkeyflow/passkey-profile',
+			'title'            => __( 'Account Passkeys', 'passkeyflow' ),
+			'description'      => __( 'Render the account passkey management section.', 'passkeyflow' ),
+			'label'            => __( 'Manage Passkeys', 'passkeyflow' ),
+			'keywords'         => array( 'passkey', 'profile', 'account' ),
+			'icon'             => 'shield',
+			'category'         => 'widgets',
+			'attributes'       => array(),
+			'inspector_fields' => array(),
+		);
+
+		register_block_type(
+			'passkeyflow/setup-prompt',
+			array(
+				'editor_script'   => 'pkflow-gutenberg-blocks',
+				'editor_style'    => 'pkflow-gutenberg-blocks',
+				'title'           => __( 'Passkey Setup Prompt', 'passkeyflow' ),
+				'category'        => 'widgets',
+				'icon'            => 'shield',
+				'keywords'        => array( 'passkey', 'security', 'onboarding' ),
+				'render_callback' => static function ( $attributes ) {
+					$title        = isset( $attributes['title'] ) ? sanitize_text_field( (string) $attributes['title'] ) : __( 'Upgrade your account security with a passkey', 'passkeyflow' );
+					$message      = isset( $attributes['message'] ) ? sanitize_text_field( (string) $attributes['message'] ) : __( 'Use Face ID, Touch ID, Windows Hello, or a hardware key for fast passwordless sign-in.', 'passkeyflow' );
+					$button_label = isset( $attributes['button_label'] ) ? sanitize_text_field( (string) $attributes['button_label'] ) : __( 'Register a Passkey', 'passkeyflow' );
+					$extra_class  = isset( $attributes['class'] ) ? self::sanitize_class_list( (string) $attributes['class'] ) : '';
+					$force_show   = ! empty( $attributes['force_show'] ) ? '1' : '0';
+
+					$shortcode  = '[pkflow_passkey_prompt title="' . esc_attr( $title ) . '" message="' . esc_attr( $message ) . '" button_label="' . esc_attr( $button_label ) . '" force_show="' . $force_show . '"';
+					if ( '' !== $extra_class ) {
+						$shortcode .= ' class="' . esc_attr( $extra_class ) . '"';
+					}
+					$shortcode .= ']';
+
+					return do_shortcode( $shortcode );
+				},
+			)
+		);
+
+		$this->registered_blocks[] = array(
+			'name'             => 'passkeyflow/setup-prompt',
+			'title'            => __( 'Passkey Setup Prompt', 'passkeyflow' ),
+			'description'      => __( 'Render a passkey onboarding card for eligible logged-in users.', 'passkeyflow' ),
+			'label'            => __( 'Register a Passkey', 'passkeyflow' ),
+			'keywords'         => array( 'passkey', 'security', 'onboarding' ),
+			'icon'             => 'shield',
+			'category'         => 'widgets',
+			'attributes'       => array(
+				'title'        => array(
+					'type'    => 'string',
+					'default' => __( 'Upgrade your account security with a passkey', 'passkeyflow' ),
+				),
+				'message'      => array(
+					'type'    => 'string',
+					'default' => __( 'Use Face ID, Touch ID, Windows Hello, or a hardware key for fast passwordless sign-in.', 'passkeyflow' ),
+				),
+				'button_label' => array(
+					'type'    => 'string',
+					'default' => __( 'Register a Passkey', 'passkeyflow' ),
+				),
+				'class'        => array(
+					'type'    => 'string',
+					'default' => '',
+				),
+				'force_show'   => array(
+					'type'    => 'boolean',
+					'default' => false,
+				),
+			),
+			'inspector_fields' => array(
+				array(
+					'name'        => 'title',
+					'type'        => 'text',
+					'label'       => __( 'Card title', 'passkeyflow' ),
+					'placeholder' => __( 'Upgrade your account security with a passkey', 'passkeyflow' ),
+				),
+				array(
+					'name'        => 'message',
+					'type'        => 'textarea',
+					'label'       => __( 'Card message', 'passkeyflow' ),
+					'placeholder' => __( 'Use Face ID, Touch ID, Windows Hello, or a hardware key for fast passwordless sign-in.', 'passkeyflow' ),
+				),
+				array(
+					'name'        => 'button_label',
+					'type'        => 'text',
+					'label'       => __( 'Button label', 'passkeyflow' ),
+					'placeholder' => __( 'Register a Passkey', 'passkeyflow' ),
+				),
+				array(
+					'name'        => 'class',
+					'type'        => 'text',
+					'label'       => __( 'Extra CSS classes', 'passkeyflow' ),
+					'placeholder' => __( 'my-custom-class', 'passkeyflow' ),
+				),
+				array(
+					'name'  => 'force_show',
+					'type'  => 'toggle',
+					'label' => __( 'Force show for administrators (debug)', 'passkeyflow' ),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Sanitize a user-provided class list for shortcode attributes.
+	 *
+	 * @param string $raw_class Raw class list.
+	 * @return string
+	 */
+	private static function sanitize_class_list( string $raw_class ): string {
+		$parts = preg_split( '/\s+/', trim( $raw_class ) );
+		if ( ! is_array( $parts ) ) {
+			return '';
+		}
+
+		$parts = array_filter(
+			array_map( 'sanitize_html_class', $parts ),
+			static function ( string $value ): bool {
+				return '' !== $value;
+			}
+		);
+
+		return implode( ' ', $parts );
 	}
 
 	/**
@@ -245,10 +538,10 @@ class PKFLOW_Integration_Manager {
 
 				$label   = sanitize_text_field( (string) $atts['label'] );
 				$context = sanitize_key( (string) $atts['context'] );
-				$classes = 'wpk-integration-passkey wpk-integration-passkey--' . esc_attr( $integration_key );
+				$classes = 'pkflow-integration-passkey pkflow-integration-passkey--' . esc_attr( $integration_key );
 
 				if ( 'auto-inject' === $context ) {
-					$classes .= ' wpk-integration-passkey--auto-inject';
+					$classes .= ' pkflow-integration-passkey--auto-inject';
 				}
 
 				return '<div class="' . $classes . '">'
@@ -275,31 +568,69 @@ class PKFLOW_Integration_Manager {
 		register_block_type(
 			$block_name,
 			array(
-				'editor_script'   => 'wpk-gutenberg-blocks',
-				'editor_style'    => 'wpk-gutenberg-blocks',
+				'editor_script'   => 'pkflow-gutenberg-blocks',
+				'editor_style'    => 'pkflow-gutenberg-blocks',
 				'title'           => $this->get_integration_block_title( $integration_key ),
 				'category'        => 'widgets',
 				'icon'            => 'shield',
 				'keywords'        => array( 'passkey', 'login', $this->get_integration_label( $integration_key ) ),
 				'render_callback' => function ( $attributes ) use ( $shortcode_tag ) {
 					$label = isset( $attributes['label'] ) ? sanitize_text_field( (string) $attributes['label'] ) : __( 'Sign in with Passkey', 'passkeyflow' );
-					return do_shortcode( '[' . $shortcode_tag . ' label="' . esc_attr( $label ) . '"]' );
+					$context = isset( $attributes['context'] ) ? sanitize_key( (string) $attributes['context'] ) : 'manual';
+					if ( ! in_array( $context, array( 'manual', 'auto-inject' ), true ) ) {
+						$context = 'manual';
+					}
+
+					return do_shortcode( '[' . $shortcode_tag . ' label="' . esc_attr( $label ) . '" context="' . esc_attr( $context ) . '"]' );
 				},
 			)
 		);
 
 		$this->registered_blocks[] = array(
-			'name'        => $block_name,
-			'title'       => $this->get_integration_block_title( $integration_key ),
-			'description' => sprintf(
+			'name'             => $block_name,
+			'title'            => $this->get_integration_block_title( $integration_key ),
+			'description'      => sprintf(
 				/* translators: %s integration label. */
 				__( 'Render a passkey sign-in card for %s flows.', 'passkeyflow' ),
 				$this->get_integration_label( $integration_key )
 			),
-			'label'       => __( 'Sign in with Passkey', 'passkeyflow' ),
-			'keywords'    => array( 'passkey', 'login', $this->get_integration_label( $integration_key ) ),
-			'icon'        => 'shield',
-			'category'    => 'widgets',
+			'label'            => __( 'Sign in with Passkey', 'passkeyflow' ),
+			'keywords'         => array( 'passkey', 'login', $this->get_integration_label( $integration_key ) ),
+			'icon'             => 'shield',
+			'category'         => 'widgets',
+			'attributes'       => array(
+				'label'   => array(
+					'type'    => 'string',
+					'default' => __( 'Sign in with Passkey', 'passkeyflow' ),
+				),
+				'context' => array(
+					'type'    => 'string',
+					'default' => 'manual',
+				),
+			),
+			'inspector_fields' => array(
+				array(
+					'name'        => 'label',
+					'type'        => 'text',
+					'label'       => __( 'Button label', 'passkeyflow' ),
+					'placeholder' => __( 'Sign in with Passkey', 'passkeyflow' ),
+				),
+				array(
+					'name'    => 'context',
+					'type'    => 'select',
+					'label'   => __( 'Render context', 'passkeyflow' ),
+					'options' => array(
+						array(
+							'label' => __( 'Manual', 'passkeyflow' ),
+							'value' => 'manual',
+						),
+						array(
+							'label' => __( 'Auto-inject styling', 'passkeyflow' ),
+							'value' => 'auto-inject',
+						),
+					),
+				),
+			),
 		);
 	}
 
@@ -307,21 +638,21 @@ class PKFLOW_Integration_Manager {
 	 * Register shared block editor assets.
 	 */
 	private function register_block_editor_script(): void {
-		if ( wp_script_is( 'wpk-gutenberg-blocks', 'registered' ) ) {
+		if ( wp_script_is( 'pkflow-gutenberg-blocks', 'registered' ) ) {
 			return;
 		}
 
 		wp_register_style(
-			'wpk-gutenberg-blocks',
-			PKFLOW_PLUGIN_URL . 'admin/css/wpk-gutenberg-blocks.css',
+			'pkflow-gutenberg-blocks',
+			PKFLOW_PLUGIN_URL . 'admin/css/pkflow-gutenberg-blocks.css',
 			array(),
 			PKFLOW_VERSION
 		);
 
 		wp_register_script(
-			'wpk-gutenberg-blocks',
-			PKFLOW_PLUGIN_URL . 'admin/js/wpk-gutenberg-blocks.js',
-			array( 'wp-blocks', 'wp-element', 'wp-i18n', 'wp-block-editor' ),
+			'pkflow-gutenberg-blocks',
+			PKFLOW_PLUGIN_URL . 'admin/js/pkflow-gutenberg-blocks.js',
+			array( 'wp-blocks', 'wp-element', 'wp-i18n', 'wp-block-editor', 'wp-components' ),
 			PKFLOW_VERSION,
 			true
 		);
@@ -338,15 +669,15 @@ class PKFLOW_Integration_Manager {
 		$this->register_block_editor_script();
 
 		wp_localize_script(
-			'wpk-gutenberg-blocks',
-			'WPKIntegrationBlocks',
+			'pkflow-gutenberg-blocks',
+			'PKFLOWIntegrationBlocks',
 			array(
 				'blocks' => array_values( $this->registered_blocks ),
 			)
 		);
 
-		wp_enqueue_style( 'wpk-gutenberg-blocks' );
-		wp_enqueue_script( 'wpk-gutenberg-blocks' );
+		wp_enqueue_style( 'pkflow-gutenberg-blocks' );
+		wp_enqueue_script( 'pkflow-gutenberg-blocks' );
 	}
 
 	/**

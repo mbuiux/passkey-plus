@@ -41,19 +41,19 @@ class PKFLOW_Login_Form {
 
 		?>
 
-		<div id="wpk-login-passkey-block">
+		<div id="pkflow-login-passkey-block">
 			<?php if ( $show_sep ) : ?>
-			<div class="wpk-login-separator" role="separator" aria-label="<?php esc_attr_e( 'or', 'passkeyflow' ); ?>">
+			<div class="pkflow-login-separator" role="separator" aria-label="<?php esc_attr_e( 'or', 'passkeyflow' ); ?>">
 				<span><?php esc_html_e( 'OR', 'passkeyflow' ); ?></span>
 			</div>
 			<?php endif; ?>
 
-			<div class="<?php echo esc_attr( 'wpk-login-passkey-wrap' . ( $show_sep ? '' : ' wpk-no-separator' ) ); ?>">
+			<div class="<?php echo esc_attr( 'pkflow-login-passkey-wrap' . ( $show_sep ? '' : ' pkflow-no-separator' ) ); ?>">
 				<button type="button"
-						id="wpk-signin-passkey"
-						class="button button-large wpk-passkey-btn"
+						id="pkflow-signin-passkey"
+						class="button button-large pkflow-passkey-btn"
 						aria-label="<?php esc_attr_e( 'Sign in with a passkey (Face ID, Touch ID, or security key)', 'passkeyflow' ); ?>">
-					<span class="wpk-passkey-icon" aria-hidden="true">
+					<span class="pkflow-passkey-icon" aria-hidden="true">
 						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 							<path d="M12.4 2.7a2.5 2.5 0 0 1 3.4 0l5.5 5.5a2.5 2.5 0 0 1 0 3.4l-3.7 3.7a2.5 2.5 0 0 1-3.4 0L8.7 9.8a2.5 2.5 0 0 1 0-3.4z"/>
 							<path d="m14 7 3 3"/>
@@ -62,8 +62,8 @@ class PKFLOW_Login_Form {
 					</span>
 					<?php esc_html_e( 'Sign in with Passkey', 'passkeyflow' ); ?>
 				</button>
-				<p id="wpk-passkey-login-message"
-					class="wpk-login-message wpk-is-hidden"
+				<p id="pkflow-passkey-login-message"
+					class="pkflow-login-message pkflow-is-hidden"
 					aria-live="polite"
 					></p>
 			</div>

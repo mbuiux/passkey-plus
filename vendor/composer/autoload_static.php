@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit3f25ed56e87fa48eaa580702c7f9ae1d
 {
     public static $prefixLengthsPsr4 = array (
-        'l' => 
+        'l' =>
         array (
             'lbuchs\\WebAuthn\\' => 16,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'lbuchs\\WebAuthn\\' => 
+        'lbuchs\\WebAuthn\\' =>
         array (
             0 => __DIR__ . '/..' . '/lbuchs/webauthn/src',
         ),

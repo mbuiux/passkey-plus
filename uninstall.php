@@ -56,35 +56,31 @@ function pkflow_uninstall_cleanup_current_blog(): void {
 
 	foreach ( $options as $option ) {
 		delete_option( $option );
-		// Remove legacy option keys from earlier prefixing as well.
-		if ( str_starts_with( $option, 'pkflow_' ) ) {
-			delete_option( 'wpk_' . substr( $option, 7 ) );
-		}
 	}
 
 	// Remove per-user dismissed-notice meta.
 	$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		"DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE 'pkflow\_notice\_dismissed\_%' OR meta_key LIKE 'wpk\_notice\_dismissed\_%'"
+		"DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE 'pkflow\_notice\_dismissed\_%'"
 	);
 
 	// Remove any transients left behind.
 	$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_pkflow_%' OR option_name LIKE '_transient_timeout_pkflow_%' OR option_name LIKE '_transient_wpk_%' OR option_name LIKE '_transient_timeout_wpk_%'"
+		"DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_pkflow_%' OR option_name LIKE '_transient_timeout_pkflow_%'"
 	);
 }
 
 if ( is_multisite() ) {
 	$pkflow_current_blog_id = get_current_blog_id();
 
-	$site_page     = 1;
-	$site_per_page = 200;
+	$pkflow_site_page     = 1;
+	$pkflow_site_per_page = 200;
 
 	do {
 		$pkflow_site_ids = get_sites(
 			array(
 				'fields' => 'ids',
-				'number' => $site_per_page,
-				'paged'  => $site_page,
+					'number' => $pkflow_site_per_page,
+					'paged'  => $pkflow_site_page,
 			)
 		);
 
@@ -94,7 +90,7 @@ if ( is_multisite() ) {
 			restore_current_blog();
 		}
 
-			++$site_page;
+			++$pkflow_site_page;
 	} while ( ! empty( $pkflow_site_ids ) );
 
 	if ( get_current_blog_id() !== (int) $pkflow_current_blog_id ) {

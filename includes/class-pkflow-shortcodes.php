@@ -76,17 +76,17 @@ class PKFLOW_Shortcodes {
 	 * @return void
 	 */
 	private function enqueue_profile_assets(): void {
-		if ( ! wp_script_is( 'wpk-profile', 'enqueued' ) ) {
+		if ( ! wp_script_is( 'pkflow-profile', 'enqueued' ) ) {
 			wp_enqueue_script(
-				'wpk-profile',
-				PKFLOW_PLUGIN_URL . 'admin/js/wpk-profile.js',
+				'pkflow-profile',
+				PKFLOW_PLUGIN_URL . 'admin/js/pkflow-profile.js',
 				array(),
 				PKFLOW_VERSION,
 				true
 			);
 			wp_localize_script(
-				'wpk-profile',
-				'WPKProfile',
+				'pkflow-profile',
+				'PKFLOWProfile',
 				array(
 					'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 					'nonce'    => wp_create_nonce( 'pkflow_profile' ),
@@ -104,8 +104,8 @@ class PKFLOW_Shortcodes {
 				)
 			);
 		}
-		if ( ! wp_style_is( 'wpk-admin', 'enqueued' ) ) {
-			wp_enqueue_style( 'wpk-admin', PKFLOW_PLUGIN_URL . 'admin/css/wpk-admin.css', array(), PKFLOW_VERSION );
+		if ( ! wp_style_is( 'pkflow-admin', 'enqueued' ) ) {
+			wp_enqueue_style( 'pkflow-admin', PKFLOW_PLUGIN_URL . 'admin/css/pkflow-admin.css', array(), PKFLOW_VERSION );
 		}
 	}
 
@@ -195,7 +195,7 @@ class PKFLOW_Shortcodes {
 		$register_markup = $this->render_register_button(
 			array(
 				'label' => $button_label,
-				'class' => 'wpk-passkey-prompt-register',
+				'class' => 'pkflow-passkey-prompt-register',
 			)
 		);
 
@@ -203,21 +203,21 @@ class PKFLOW_Shortcodes {
 			return '';
 		}
 
-		$wrapper_class = 'wpk-passkey-prompt' . ( '' !== $extra_class ? ' ' . $extra_class : '' );
+		$wrapper_class = 'pkflow-passkey-prompt' . ( '' !== $extra_class ? ' ' . $extra_class : '' );
 
 		ob_start();
 		?>
 		<section class="<?php echo esc_attr( $wrapper_class ); ?>" aria-label="<?php esc_attr_e( 'Passkey setup prompt', 'passkeyflow' ); ?>">
-			<div class="wpk-passkey-prompt__card">
-				<p class="wpk-passkey-prompt__eyebrow"><?php esc_html_e( 'Recommended', 'passkeyflow' ); ?></p>
+			<div class="pkflow-passkey-prompt__card">
+				<p class="pkflow-passkey-prompt__eyebrow"><?php esc_html_e( 'Recommended', 'passkeyflow' ); ?></p>
 				<h3><?php echo esc_html( $title ); ?></h3>
-				<p class="wpk-passkey-prompt__copy"><?php echo esc_html( $message ); ?></p>
-				<ul class="wpk-passkey-prompt__benefits" role="list">
+				<p class="pkflow-passkey-prompt__copy"><?php echo esc_html( $message ); ?></p>
+				<ul class="pkflow-passkey-prompt__benefits" role="list">
 					<li><?php esc_html_e( 'Biometric login in seconds', 'passkeyflow' ); ?></li>
 					<li><?php esc_html_e( 'Stronger protection than passwords', 'passkeyflow' ); ?></li>
 					<li><?php esc_html_e( 'Works across your trusted devices', 'passkeyflow' ); ?></li>
 				</ul>
-				<div class="wpk-passkey-prompt__actions">
+				<div class="pkflow-passkey-prompt__actions">
 					<?php echo $register_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</div>
 			</div>
@@ -266,17 +266,17 @@ class PKFLOW_Shortcodes {
 		$extra_class = implode( ' ', array_map( 'sanitize_html_class', preg_split( '/\s+/', trim( $atts['class'] ) ) ) );
 
 		// Enqueue assets if not already queued.
-		if ( ! wp_script_is( 'wpk-login', 'enqueued' ) ) {
+		if ( ! wp_script_is( 'pkflow-login', 'enqueued' ) ) {
 			wp_enqueue_script(
-				'wpk-login',
-				PKFLOW_PLUGIN_URL . 'admin/js/wpk-login.js',
+				'pkflow-login',
+				PKFLOW_PLUGIN_URL . 'admin/js/pkflow-login.js',
 				array(),
 				PKFLOW_VERSION,
 				true
 			);
 			wp_localize_script(
-				'wpk-login',
-				'WPKLogin',
+				'pkflow-login',
+				'PKFLOWLogin',
 				array(
 					'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 					'nonce'    => wp_create_nonce( 'pkflow_login' ),
@@ -288,25 +288,25 @@ class PKFLOW_Shortcodes {
 				)
 			);
 		}
-		if ( ! wp_style_is( 'wpk-login', 'enqueued' ) ) {
-			wp_enqueue_style( 'wpk-login', PKFLOW_PLUGIN_URL . 'admin/css/wpk-admin.css', array(), PKFLOW_VERSION );
+		if ( ! wp_style_is( 'pkflow-login', 'enqueued' ) ) {
+			wp_enqueue_style( 'pkflow-login', PKFLOW_PLUGIN_URL . 'admin/css/pkflow-admin.css', array(), PKFLOW_VERSION );
 		}
 
-		$wrapper_class               = 'wpk-shortcode-login-wrap' . ( $extra_class ? ' ' . $extra_class : '' );
+		$wrapper_class               = 'pkflow-shortcode-login-wrap' . ( $extra_class ? ' ' . $extra_class : '' );
 		self::$login_button_rendered = true;
 
 		ob_start();
 		?>
 		<div class="<?php echo esc_attr( $wrapper_class ); ?>">
 			<button type="button"
-					class="wpk-passkey-btn wpk-sc-btn wpk-signin-passkey"
-					data-wpk-passkey-login-btn="1"
+					class="pkflow-passkey-btn pkflow-sc-btn pkflow-signin-passkey"
+					data-pkflow-passkey-login-btn="1"
 					aria-label="<?php esc_attr_e( 'Sign in with a passkey (Face ID, Touch ID, or security key)', 'passkeyflow' ); ?>"
 					<?php
 					if ( $redirect_to ) :
 						?>
 						data-redirect="<?php echo esc_attr( $redirect_to ); ?>"<?php endif; ?>>
-				<span class="wpk-passkey-icon" aria-hidden="true">
+				<span class="pkflow-passkey-icon" aria-hidden="true">
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M12.4 2.7a2.5 2.5 0 0 1 3.4 0l5.5 5.5a2.5 2.5 0 0 1 0 3.4l-3.7 3.7a2.5 2.5 0 0 1-3.4 0L8.7 9.8a2.5 2.5 0 0 1 0-3.4z"/>
 						<path d="m14 7 3 3"/>
@@ -315,7 +315,7 @@ class PKFLOW_Shortcodes {
 				</span>
 				<?php echo esc_html( $label ); ?>
 			</button>
-			<p class="wpk-login-message wpk-is-hidden"
+			<p class="pkflow-login-message pkflow-is-hidden"
 				aria-live="polite"></p>
 		</div>
 		<?php
@@ -359,27 +359,27 @@ class PKFLOW_Shortcodes {
 
 		$this->enqueue_profile_assets();
 
-		$wrapper_class = 'wpk-shortcode-register-wrap' . ( $extra_class ? ' ' . $extra_class : '' );
-		$instance_id   = wp_unique_id( 'wpk-passkey-register-' );
+		$wrapper_class = 'pkflow-shortcode-register-wrap' . ( $extra_class ? ' ' . $extra_class : '' );
+		$instance_id   = wp_unique_id( 'pkflow-passkey-register-' );
 		$input_id      = $instance_id . '-label';
 		$message_id    = $instance_id . '-message';
 
 		ob_start();
 		?>
 		<div class="<?php echo esc_attr( $wrapper_class ); ?>">
-			<div class="wpk-profile-register-controls">
+			<div class="pkflow-profile-register-controls">
 				<label for="<?php echo esc_attr( $input_id ); ?>" class="screen-reader-text"><?php esc_html_e( 'Device label (optional)', 'passkeyflow' ); ?></label>
 				<input type="text"
 						id="<?php echo esc_attr( $input_id ); ?>"
-						class="wpk-profile-label-input"
+						class="pkflow-profile-label-input"
 						placeholder="<?php esc_attr_e( 'Device label (optional)', 'passkeyflow' ); ?>"
 						maxlength="100" />
-				<div class="wpk-register-actions">
-					<button type="button" class="wpk-profile-btn" data-wpk-passkey-register="1" data-wpk-passkey-input-id="<?php echo esc_attr( $input_id ); ?>" data-wpk-passkey-message-id="<?php echo esc_attr( $message_id ); ?>" aria-describedby="<?php echo esc_attr( $message_id ); ?>">
+				<div class="pkflow-register-actions">
+					<button type="button" class="pkflow-profile-btn" data-pkflow-passkey-register="1" data-pkflow-passkey-input-id="<?php echo esc_attr( $input_id ); ?>" data-pkflow-passkey-message-id="<?php echo esc_attr( $message_id ); ?>" aria-describedby="<?php echo esc_attr( $message_id ); ?>">
 						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>
 						<?php echo esc_html( $label ); ?>
 					</button>
-					<p id="<?php echo esc_attr( $message_id ); ?>" class="wpk-profile-tip" aria-live="polite"></p>
+					<p id="<?php echo esc_attr( $message_id ); ?>" class="pkflow-profile-tip" aria-live="polite"></p>
 				</div>
 			</div>
 		</div>

@@ -21,11 +21,11 @@
     color: var(--wpkpro-ink);
 }
 
-.wpk-layout.wpk-layout--dashboard {
+.pkflow-layout.pkflow-layout--dashboard {
     grid-template-columns: minmax(0, 1fr);
 }
 
-.wpk-layout.wpk-layout--dashboard .wpk-main-panel {
+.pkflow-layout.pkflow-layout--dashboard .pkflow-main-panel {
     max-width: none;
     width: 100%;
 }

@@ -27,6 +27,7 @@ define( 'PKFLOW_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PKFLOW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 // Allow env-based constant injection (same pattern used in planning-center-sso).
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound -- dynamic constant names are constrained to PKFLOW_* entries in this allowlist.
 foreach ( array(
 	'PKFLOW_ALLOW_HTTP',
 	'PKFLOW_RP_ID',
@@ -45,6 +46,7 @@ foreach ( array(
 		}
 	}
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
 unset( $pkflow_env_const, $pkflow_env_value );
 
 // ──────────────────────────────────────────────────────────────
@@ -71,47 +73,11 @@ if ( PHP_VERSION_ID >= 80000 && file_exists( $pkflow_autoload ) ) {
 unset( $pkflow_autoload, $pkflow_should_load_autoloader, $pkflow_autoload_real, $pkflow_autoload_real_src );
 
 /**
- * Copy legacy option keys into pkflow_* keys once, preserving existing values.
+ * Run one-time option normalization tasks for pkflow_* keys.
  */
 function pkflow_migrate_legacy_options_once(): void {
 	if ( (int) get_option( 'pkflow_legacy_options_migrated_v1', 0 ) === 1 ) {
 		return;
-	}
-
-	$legacy_keys = array(
-		'enabled',
-		'show_separator',
-		'show_setup_notice',
-		'eligible_roles',
-		'max_passkeys_per_user',
-		'user_verification',
-		'rp_id',
-		'rp_name',
-		'challenge_ttl',
-		'login_challenge_ttl',
-		'registration_challenge_ttl',
-		'rate_limit_window',
-		'rate_limit_max_failures',
-		'rate_limit_lockout',
-		'rate_window',
-		'rate_max_attempts',
-		'rate_lockout',
-		'login_redirect',
-		'log_retention_days',
-		'credentials_schema_v2',
-	);
-
-	foreach ( $legacy_keys as $key ) {
-		$new_option = 'pkflow_' . $key;
-		if ( null !== get_option( $new_option, null ) ) {
-			continue;
-		}
-
-		$old_option = 'wpk_' . $key;
-		$old_value  = get_option( $old_option, null );
-		if ( null !== $old_value ) {
-			update_option( $new_option, $old_value );
-		}
 	}
 
 	// Legacy free builds commonly stored a default cap of 5; move to unlimited.
@@ -141,11 +107,11 @@ function pkflow_remove_legacy_passkey_cap_once(): void {
 // ──────────────────────────────────────────────────────────────
 // Load classes
 // ──────────────────────────────────────────────────────────────
-require_once PKFLOW_PLUGIN_DIR . 'includes/class-wpk-passkeys.php';
-require_once PKFLOW_PLUGIN_DIR . 'includes/class-wpk-settings.php';
-require_once PKFLOW_PLUGIN_DIR . 'includes/class-wpk-login-form.php';
-require_once PKFLOW_PLUGIN_DIR . 'includes/class-wpk-shortcodes.php';
-require_once PKFLOW_PLUGIN_DIR . 'includes/class-wpk-integration-manager.php';
+require_once PKFLOW_PLUGIN_DIR . 'includes/class-pkflow-passkeys.php';
+require_once PKFLOW_PLUGIN_DIR . 'includes/class-pkflow-settings.php';
+require_once PKFLOW_PLUGIN_DIR . 'includes/class-pkflow-login-form.php';
+require_once PKFLOW_PLUGIN_DIR . 'includes/class-pkflow-shortcodes.php';
+require_once PKFLOW_PLUGIN_DIR . 'includes/class-pkflow-integration-manager.php';
 
 // ──────────────────────────────────────────────────────────────
 // Bootstrap
@@ -242,7 +208,7 @@ function pkflow_activate( bool $network_wide = false ) {
 		wp_die( esc_html__( 'PasskeyFlow for Secure Login requires WordPress 6.0 or higher. Please update WordPress before activating this plugin.', 'passkeyflow' ) );
 	}
 
-	require_once PKFLOW_PLUGIN_DIR . 'includes/class-wpk-passkeys.php';
+	require_once PKFLOW_PLUGIN_DIR . 'includes/class-pkflow-passkeys.php';
 
 	pkflow_for_each_site(
 		$network_wide,
@@ -261,7 +227,7 @@ function pkflow_activate( bool $network_wide = false ) {
  * @param bool $network_wide Whether plugin is being deactivated network-wide.
  */
 function pkflow_deactivate( bool $network_wide = false ) {
-	require_once PKFLOW_PLUGIN_DIR . 'includes/class-wpk-passkeys.php';
+	require_once PKFLOW_PLUGIN_DIR . 'includes/class-pkflow-passkeys.php';
 
 	pkflow_for_each_site(
 		$network_wide,
@@ -283,7 +249,7 @@ function pkflow_multisite_initialize_site( WP_Site $new_site ): void {
 		return;
 	}
 
-	require_once PKFLOW_PLUGIN_DIR . 'includes/class-wpk-passkeys.php';
+	require_once PKFLOW_PLUGIN_DIR . 'includes/class-pkflow-passkeys.php';
 
 	switch_to_blog( (int) $new_site->blog_id );
 	PKFLOW_Passkeys::create_tables();

@@ -3,7 +3,7 @@
         'name' => 'mbuiux/passkeyflow',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'bdfbb8aaea7ff3daf0f6c37086baadeef385c490',
+        'reference' => 'a9ff7319b0908e8273a756bc4f6857d43733fc4a',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'mbuiux/passkeyflow' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'bdfbb8aaea7ff3daf0f6c37086baadeef385c490',
+            'reference' => 'a9ff7319b0908e8273a756bc4f6857d43733fc4a',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -81,18 +81,18 @@ Then symlink or copy the folder into your WordPress plugins directory and activa
 passkeyflow/
 ├── admin/
 │   ├── css/
-│   │   └── wpk-admin.css          # All admin + login UI styles
+│   │   └── pkflow-admin.css          # All admin + login UI styles
 │   └── js/
-│       ├── wpk-login.js           # Login page WebAuthn flow
-│       ├── wpk-profile.js         # Profile page registration + revoke flow
-│       ├── wpk-dashboard.js       # Dashboard tab charts and activity rendering
-│       └── wpk-gutenberg-blocks.js # Integration block registration in editor
+│       ├── pkflow-login.js           # Login page WebAuthn flow
+│       ├── pkflow-profile.js         # Profile page registration + revoke flow
+│       ├── pkflow-dashboard.js       # Dashboard tab charts and activity rendering
+│       └── pkflow-gutenberg-blocks.js # Integration block registration in editor
 ├── includes/
-│   ├── class-wpk-passkeys.php     # Core WebAuthn engine, AJAX handlers, rate limiting
-│   ├── class-wpk-settings.php     # Settings page, tabs, field renderers
-│   ├── class-wpk-login-form.php   # Injects passkey button on wp-login.php
-│   ├── class-wpk-shortcodes.php   # [pkflow_login_button] and [pkflow_register_button]
-│   └── class-wpk-integration-manager.php # Integration modules, shortcodes, and blocks
+│   ├── class-pkflow-passkeys.php     # Core WebAuthn engine, AJAX handlers, rate limiting
+│   ├── class-pkflow-settings.php     # Settings page, tabs, field renderers
+│   ├── class-pkflow-login-form.php   # Injects passkey button on wp-login.php
+│   ├── class-pkflow-shortcodes.php   # [pkflow_login_button] and [pkflow_register_button]
+│   └── class-pkflow-integration-manager.php # Integration modules, shortcodes, and blocks
 ├── languages/                     # Translation files (.pot)
 ├── vendor/                        # Composer dependencies
 ├── composer.json
