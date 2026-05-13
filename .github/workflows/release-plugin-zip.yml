@@ -1,0 +1,99 @@
+name: Release Plugin ZIP
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-attach:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          tools: composer:v2
+
+      - name: Install production dependencies
+        run: composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      - name: Build installable plugin ZIP (strict allowlist)
+        run: |
+          set -euo pipefail
+
+          PLUGIN_SLUG="advanced-passkey-login"
+          DIST_DIR="dist"
+          BUILD_ROOT="${DIST_DIR}/${PLUGIN_SLUG}"
+
+          rm -rf "${DIST_DIR}"
+          mkdir -p "${BUILD_ROOT}"
+
+          cp -R admin includes languages vendor "${BUILD_ROOT}/"
+          cp index.php advanced-passkey-login.php readme.txt uninstall.php composer.json composer.lock "${BUILD_ROOT}/"
+
+          # Remove hidden files (e.g. .DS_Store, .gitignore) from packaged output.
+          find "${BUILD_ROOT}" -type d -name '.*' -prune -exec rm -rf {} +
+          find "${BUILD_ROOT}" -type f -name '.*' -delete
+
+          (
+            cd "${DIST_DIR}"
+            zip -rq "${PLUGIN_SLUG}.zip" "${PLUGIN_SLUG}" -x "*.DS_Store" "__MACOSX/*"
+          )
+
+      - name: Validate packaged ZIP contents
+        run: |
+          set -euo pipefail
+
+          PLUGIN_SLUG="advanced-passkey-login"
+          ZIP_PATH="dist/${PLUGIN_SLUG}.zip"
+
+          unzip -Z1 "${ZIP_PATH}" > /tmp/zip-contents.txt
+
+          # Fail if hidden files were included.
+          if grep -E '(^|/)\.[^/]+' /tmp/zip-contents.txt >/dev/null; then
+            echo "Hidden path segment(s) detected in release ZIP:"
+            grep -E '(^|/)\.[^/]+' /tmp/zip-contents.txt || true
+            exit 1
+          fi
+
+          # Ensure all root-level entries are expected.
+          awk -F/ -v slug="${PLUGIN_SLUG}" '$1==slug && NF>=2 {print $2}' /tmp/zip-contents.txt | sort -u > /tmp/root-entries.txt
+          cat <<'EOF' | sort -u > /tmp/expected-root-entries.txt
+          admin
+          advanced-passkey-login.php
+          composer.json
+          composer.lock
+          includes
+          index.php
+          languages
+          readme.txt
+          uninstall.php
+          vendor
+          EOF
+
+          if ! diff -u /tmp/expected-root-entries.txt /tmp/root-entries.txt; then
+            echo "Unexpected root-level files found in release ZIP."
+            exit 1
+          fi
+
+      - name: Upload ZIP as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: advanced-passkey-login-release-build
+          path: dist/advanced-passkey-login.zip
+          if-no-files-found: error
+
+      - name: Attach ZIP to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/advanced-passkey-login.zip
