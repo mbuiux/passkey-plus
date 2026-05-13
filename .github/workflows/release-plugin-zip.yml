@@ -34,6 +34,8 @@ jobs:
           MYSQL_USER: wp
           MYSQL_PASSWORD: wp
           MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
           --health-interval=10s
@@ -88,9 +90,21 @@ jobs:
             --dbname=wordpress \
             --dbuser=wp \
             --dbpass=wp \
-            --dbhost=mysql \
+            --dbhost=127.0.0.1:3306 \
             --skip-check \
             --allow-root
+
+          for i in {1..30}; do
+            if wp db check --allow-root >/dev/null 2>&1; then
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              echo "Timed out waiting for MySQL readiness"
+              exit 1
+            fi
+            sleep 2
+          done
+
           wp core install \
             --url=http://localhost \
             --title="Plugin Check CI" \
