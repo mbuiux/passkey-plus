@@ -114,13 +114,23 @@ jobs:
           wp plugin check advanced-passkey-login \
             --exclude-directories=dist,.github \
             --exclude-files=.gitignore,.DS_Store \
-            --format=strict-json \
-            --allow-root > /tmp/plugin-check-results.json
+            --format=json \
+            --allow-root > /tmp/plugin-check-results.raw
 
           php -r '
-          $rows = json_decode(file_get_contents("/tmp/plugin-check-results.json"), true);
+          $raw = (string) file_get_contents("/tmp/plugin-check-results.raw");
+          $start = strpos($raw, "[");
+          $end = strrpos($raw, "]");
+          if ($start === false || $end === false || $end < $start) {
+              fwrite(STDERR, "Plugin Check did not return JSON array output.\n");
+              fwrite(STDERR, "Raw output:\n" . $raw . "\n");
+              exit(2);
+          }
+          $json = substr($raw, $start, $end - $start + 1);
+          $rows = json_decode($json, true);
           if (!is_array($rows)) {
-              fwrite(STDERR, "Plugin Check did not return valid JSON.\n");
+              fwrite(STDERR, "Plugin Check JSON parse failed.\n");
+              fwrite(STDERR, "Extracted payload:\n" . $json . "\n");
               exit(2);
           }
           $errors = 0;
