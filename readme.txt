@@ -150,6 +150,9 @@ Yes — add `define( 'PKFLOW_RP_ID', 'example.com' );` to `wp-config.php`.
 = 1.1.4 =
 * Added: Dashboard tab with an Authenticator Overview card
 * Added: Last Login activity card in the Dashboard tab
+* Improved: nonce and capability enforcement across sensitive request handlers
+* Improved: release packaging workflow with strict file allowlist validation
+* Fixed: release automation now publishes real GitHub releases with attached installable ZIP
 
 = 1.1.2 =
 * Added: integration manager for popular ecosystem plugins with dependency-aware module loading
@@ -179,7 +182,7 @@ Yes — add `define( 'PKFLOW_RP_ID', 'example.com' );` to `wp-config.php`.
 == Upgrade Notice ==
 
 = 1.1.4 =
-Recommended update: adds Dashboard insights for authenticator coverage and recent login activity.
+Recommended update: adds dashboard visibility, hardens request validation, and improves release packaging quality gates.
 
 = 1.1.2 =
 Recommended update: adds integration module controls, Gutenberg block support, and shortcode UX improvements.
