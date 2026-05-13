@@ -185,6 +185,16 @@
         return node ? (node.value || '').trim() : '';
     }
 
+    function getRedirectTarget() {
+        var redirectNode = document.getElementById('redirect_to');
+        if (!redirectNode) {
+            return '';
+        }
+
+        var value = typeof redirectNode.value === 'string' ? redirectNode.value.trim() : '';
+        return value;
+    }
+
     function toFriendlyErrorMessage(err) {
         var msg = (err && err.message) ? String(err.message) : '';
         if (msg && /did not match the expected pattern/i.test(msg)) {
@@ -251,6 +261,11 @@
 
         if (credential.response.userHandle) {
             finishData.append('userHandle', bufferToB64url(credential.response.userHandle));
+        }
+
+        var redirectTo = getRedirectTarget();
+        if (redirectTo) {
+            finishData.append('redirect_to', redirectTo);
         }
 
         var finishResp = await postForm(finishData);

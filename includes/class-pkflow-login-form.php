@@ -21,7 +21,6 @@ class PKFLOW_Login_Form {
 
 	public function __construct() {
 		add_action( 'login_form', array( $this, 'render_passkey_button' ) );
-		add_action( 'login_init', array( $this, 'store_redirect_cookie' ) );
 	}
 
 	/**
@@ -71,36 +70,4 @@ class PKFLOW_Login_Form {
 		<?php
 	}
 
-	/**
-	 * Stores the redirect_to parameter as a short-lived httponly cookie so the
-	 * passkey AJAX login handler can honour it without JS state.
-	 */
-	public function store_redirect_cookie(): void {
-		$redirect_raw = filter_input( INPUT_GET, 'redirect_to', FILTER_UNSAFE_RAW );
-		if ( null === $redirect_raw || false === $redirect_raw ) {
-			return;
-		}
-
-		if ( ! is_string( $redirect_raw ) ) {
-			return;
-		}
-
-		$redirect = wp_validate_redirect( esc_url_raw( $redirect_raw ), '' );
-		if ( '' === $redirect ) {
-			return;
-		}
-
-		setcookie(
-			'pkflow_redirect_to',
-			$redirect,
-			array(
-				'expires'  => time() + 3600,
-				'path'     => defined( 'COOKIEPATH' ) ? (string) COOKIEPATH : '/',
-				'domain'   => defined( 'COOKIE_DOMAIN' ) ? (string) COOKIE_DOMAIN : '',
-				'secure'   => is_ssl(),
-				'httponly' => true,
-				'samesite' => 'Lax',
-			)
-		);
-	}
 }

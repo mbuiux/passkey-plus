@@ -55,7 +55,6 @@ class PKFLOW_Settings {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
-		add_action( 'admin_init', array( $this, 'flag_settings_save' ), 1 );
 		add_action( 'admin_action_update', array( $this, 'flag_settings_save' ), 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
@@ -192,7 +191,7 @@ class PKFLOW_Settings {
 			wp_enqueue_style( 'pkflow-admin', $css_url, array(), $version );
 		}
 
-		$active_tab = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'dashboard'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only tab routing.
+		$active_tab = $this->resolve_active_tab();
 		if ( 'dashboard' !== $active_tab ) {
 			return;
 		}
@@ -462,12 +461,7 @@ class PKFLOW_Settings {
 			wp_die( esc_html__( 'You do not have permission to access this page.', 'advanced-passkey-login' ) );
 		}
 
-		$active_tab   = isset( $_GET['tab'] ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'dashboard'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only tab routing.
-		$allowed_tabs = array( 'dashboard', 'settings', 'advanced', 'shortcodes' );
-
-		if ( ! in_array( $active_tab, $allowed_tabs, true ) ) {
-			$active_tab = 'settings';
-		}
+		$active_tab = $this->resolve_active_tab();
 
 		$base_url = admin_url( 'options-general.php?page=' . $this->page_slug );
 
@@ -513,34 +507,20 @@ class PKFLOW_Settings {
 			}
 		}
 
-		$settings_updated = filter_input( INPUT_GET, 'settings-updated', FILTER_UNSAFE_RAW );
-		if ( empty( $queued_notices ) && is_string( $settings_updated ) ) {
-			$updated = sanitize_key( $settings_updated );
-			if ( in_array( $updated, array( '1', 'true' ), true ) ) {
-				$queued_notices[] = array(
-					'type'    => 'success',
-					'message' => __( 'Settings saved.', 'advanced-passkey-login' ),
-				);
-				$notice_source    = 'query_arg';
-			}
-		}
-
-		$notice_debug = filter_input( INPUT_GET, 'pkflow_notice_debug', FILTER_UNSAFE_RAW );
+		$notice_debug = filter_input( INPUT_GET, 'pkflow_notice_debug', FILTER_SANITIZE_NUMBER_INT );
 		$show_debug   = current_user_can( 'manage_options' )
 			&& is_string( $notice_debug )
-			&& '1' === sanitize_key( $notice_debug );
+			&& '1' === $notice_debug;
 
 		$debug_payload = array();
 		if ( $show_debug ) {
 			$request_method_debug = isset( $_SERVER['REQUEST_METHOD'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : '';
-			$page_debug           = filter_input( INPUT_GET, 'page', FILTER_UNSAFE_RAW );
-			$settings_debug       = filter_input( INPUT_GET, 'settings-updated', FILTER_UNSAFE_RAW );
 
 			$debug_payload = array(
 				'method'               => $request_method_debug,
-				'page'                 => is_string( $page_debug ) ? sanitize_key( $page_debug ) : '',
+				'page'                 => $this->page_slug,
 				'tab'                  => $active_tab,
-				'settings_updated_get' => is_string( $settings_debug ) ? sanitize_text_field( $settings_debug ) : '(absent)',
+				'settings_updated_get' => '(not read)',
 				'core_errors_count'    => count( $core_settings_errors ),
 				'transient_present'    => $transient_present ? 'yes' : 'no',
 				'queued_notices_count' => count( $queued_notices ),
@@ -643,12 +623,46 @@ class PKFLOW_Settings {
 			$classes .= ' is-active';
 		}
 
+		$tab_url = add_query_arg( 'tab', $tab, $base_url );
+		$tab_url = wp_nonce_url( $tab_url, 'pkflow_tab_' . $tab, 'pkflow_tab_nonce' );
+
 		printf(
 			'<a class="%1$s" href="%2$s">%3$s</a>',
 			esc_attr( $classes ),
-			esc_url( add_query_arg( 'tab', $tab, $base_url ) ),
+			esc_url( $tab_url ),
 			esc_html( $label )
 		);
+	}
+
+	/**
+	 * Resolve active settings tab with nonce verification.
+	 *
+	 * @return string
+	 */
+	private function resolve_active_tab() {
+		$allowed_tabs = array( 'dashboard', 'settings', 'advanced', 'shortcodes' );
+		$raw_tab      = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+		if ( ! is_string( $raw_tab ) || '' === $raw_tab ) {
+			return 'dashboard';
+		}
+
+		$active_tab = sanitize_key( $raw_tab );
+		if ( ! in_array( $active_tab, $allowed_tabs, true ) ) {
+			return 'settings';
+		}
+
+		$raw_nonce = filter_input( INPUT_GET, 'pkflow_tab_nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		if ( ! is_string( $raw_nonce ) || '' === $raw_nonce ) {
+			return 'settings';
+		}
+
+		$nonce = sanitize_text_field( $raw_nonce );
+		if ( ! wp_verify_nonce( $nonce, 'pkflow_tab_' . $active_tab ) ) {
+			return 'settings';
+		}
+
+		return $active_tab;
 	}
 
 	/**

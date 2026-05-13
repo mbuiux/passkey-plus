@@ -313,10 +313,21 @@ class PKFLOW_Passkeys {
 		if ( ! check_ajax_referer( 'pkflow_dismiss_notice', 'nonce', false ) ) {
 			wp_send_json_error( null, 403 );
 		}
-		$user_id = get_current_user_id();
-		if ( $user_id ) {
-			update_user_meta( $user_id, 'pkflow_notice_dismissed_' . $user_id, 1 );
+
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( null, 403 );
 		}
+
+		$user_id = get_current_user_id();
+		if ( $user_id <= 0 ) {
+			wp_send_json_error( null, 403 );
+		}
+
+		if ( ! current_user_can( 'edit_user', $user_id ) ) {
+			wp_send_json_error( null, 403 );
+		}
+
+		update_user_meta( $user_id, 'pkflow_notice_dismissed_' . $user_id, 1 );
 		wp_send_json_success();
 	}
 
@@ -457,7 +468,18 @@ class PKFLOW_Passkeys {
 			return;
 		}
 
-		$screen_uid  = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : get_current_user_id(); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only admin screen context, no state change.
+		$screen_uid = get_current_user_id();
+		if ( 'user-edit.php' === $hook ) {
+			global $user_id;
+			if ( isset( $user_id ) ) {
+				$screen_uid = absint( $user_id );
+			}
+		}
+
+		if ( $screen_uid < 1 ) {
+			return;
+		}
+
 		$target_user = get_user_by( 'id', $screen_uid );
 
 		if ( ! $target_user || ! $this->is_eligible_user( $target_user ) ) {
@@ -770,6 +792,12 @@ class PKFLOW_Passkeys {
 			wp_send_json_error( array( 'message' => 'Too many attempts. Please wait and try again.' ), 429 );
 		}
 
+		if ( ! current_user_can( 'edit_user', (int) $user->ID ) ) {
+			$this->record_failure( 'reg_finish_ip', $ip );
+			$this->record_failure( 'reg_finish_user', (int) $user->ID );
+			wp_send_json_error( array( 'message' => 'Unauthorized' ), 403 );
+		}
+
 		if ( ! $this->is_eligible_user( $user ) ) {
 			$this->record_failure( 'reg_finish_ip', $ip );
 			wp_send_json_error( array( 'message' => 'Your account is not eligible for passkeys.' ), 403 );
@@ -798,7 +826,14 @@ class PKFLOW_Passkeys {
 		// Validate transports: decode JSON, allowlist known values, re-encode.
 		$transports       = '';
 		$transports_input = '';
-		$transports_raw   = filter_input( INPUT_POST, 'transports', FILTER_UNSAFE_RAW );
+		$transports_raw   = filter_input(
+			INPUT_POST,
+			'transports',
+			FILTER_CALLBACK,
+			array(
+				'options' => 'sanitize_text_field',
+			)
+		);
 		if ( is_string( $transports_raw ) ) {
 			$transports_input = wp_check_invalid_utf8( $transports_raw );
 		}
@@ -946,8 +981,7 @@ class PKFLOW_Passkeys {
 			wp_send_json_error( array( 'message' => 'Credential not found.' ), 404 );
 		}
 
-		// Users may only revoke their own passkeys; admins can revoke any user's.
-		if ( (int) $cred->user_id !== (int) $user->ID && ! current_user_can( 'edit_users' ) ) {
+		if ( ! current_user_can( 'edit_user', (int) $cred->user_id ) ) {
 			wp_send_json_error( array( 'message' => 'Unauthorized' ), 403 );
 		}
 
@@ -1262,12 +1296,10 @@ class PKFLOW_Passkeys {
 			$this->clear_failures( 'login_finish_cred', $cred_hash );
 
 			// Determine redirect target.
-			$request_redirect = '';
-			if ( isset( $_REQUEST['redirect_to'] ) ) {
-				$request_redirect_raw = wp_unslash( $_REQUEST['redirect_to'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized via esc_url_raw/safe_redirect.
-				if ( is_string( $request_redirect_raw ) ) {
-					$request_redirect = esc_url_raw( $request_redirect_raw );
-				}
+			$request_redirect     = '';
+			$request_redirect_raw = filter_input( INPUT_POST, 'redirect_to', FILTER_SANITIZE_URL );
+			if ( is_string( $request_redirect_raw ) && '' !== $request_redirect_raw ) {
+				$request_redirect = esc_url_raw( wp_unslash( $request_redirect_raw ) );
 			}
 			$redirect = '' !== $request_redirect ? $this->safe_redirect( $request_redirect ) : '';
 
